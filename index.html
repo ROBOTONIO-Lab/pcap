@@ -270,6 +270,7 @@
       <div class="ring" id="ring"><div class="inner"><div><div class="pct" id="res-pct">0%</div><div class="sub" id="res-frac">0 / 40</div></div></div></div>
       <div class="verdict" id="res-verdict"></div>
       <div class="score-line" id="res-line"></div>
+      <div id="res-send" style="font-size:.84rem;margin-top:8px;min-height:1.1em"></div>
     </div>
     <div class="res-actions">
       <button class="btn btn-ghost" onclick="window.print()">🖨️ Εκτύπωση / PDF</button>
@@ -908,6 +909,28 @@ function highlight(raw){
   }).join("\n");
 }
 
+/* ====== Συλλογή αποτελεσμάτων (Google Sheet) ======
+   Βάλε εδώ μέσα στα εισαγωγικά το URL του Web App που θα φτιάξεις στο
+   Google Apps Script (Deploy → New deployment → Web app). Αν το αφήσεις
+   κενό, το κουίζ λειτουργεί κανονικά αλλά ΔΕΝ στέλνει αποτελέσματα.        */
+const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycby-61yhLhspuR0w9r5XnCky7MCaLNL00K1_CGhoMkGmy1HJCg3kfYDG9T8weJSL1cZjgg/exec";
+
+function sendResults(payload){
+  const el = $("res-send");
+  if(!RESULTS_ENDPOINT){ if(el) el.innerHTML=""; return; }
+  if(el) el.innerHTML = '<span style="color:var(--muted)">⏳ Αποστολή αποτελέσματος…</span>';
+  // Χρησιμοποιούμε text/plain ώστε να μην ενεργοποιείται CORS preflight προς το Apps Script.
+  fetch(RESULTS_ENDPOINT, {
+    method:"POST",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(el) el.innerHTML = '<span style="color:var(--good)">✓ Το αποτέλεσμα στάλθηκε στον/στην καθηγητή/τρια.</span>';
+  }).catch(()=>{
+    if(el) el.innerHTML = '<span style="color:var(--bad)">⚠️ Δεν στάλθηκε το αποτέλεσμα (έλεγξε τη σύνδεση). Το σκορ σου φαίνεται κανονικά εδώ.</span>';
+  });
+}
+
 /* ====== Κατάσταση ====== */
 const N = QUESTIONS.length;
 let cur = 0;
@@ -1036,6 +1059,16 @@ function scoreAndShow(){
 
   buildReview(perResult);
   show("screen-results");
+
+  // Αποστολή αποτελέσματος στο Google Sheet (αν έχει ρυθμιστεί endpoint)
+  sendResults({
+    name: studentName || "(ανώνυμος)",
+    score: correct,
+    total: N,
+    percent: pct,
+    pass: pass,
+    marks: perResult           // πίνακας true/false ανά ερώτηση (Q1..Q40)
+  });
 }
 
 function optClass(q,idx,chosen){
