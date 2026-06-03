@@ -916,6 +916,7 @@ function highlight(raw){
    Google Apps Script (Deploy → New deployment → Web app). Αν το αφήσεις
    κενό, το κουίζ λειτουργεί κανονικά αλλά ΔΕΝ στέλνει αποτελέσματα.        */
 const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycbznmCQwmpAnAFBjvlRoUXTUJhqLPmI33MHntK79lZ_f4RFcnHpjh679E4r9eos7rc8/exec";
+const QUIZ_ID = "Mock 2 — Ελληνικά";
 
 function sendResults(payload){
   const el = $("res-send");
@@ -1066,6 +1067,7 @@ function scoreAndShow(){
 
   // Αποστολή αποτελέσματος στο Google Sheet (αν έχει ρυθμιστεί endpoint)
   sendResults({
+    quiz: QUIZ_ID,
     name: studentName || "(ανώνυμος)",
     score: correct,
     total: N,
