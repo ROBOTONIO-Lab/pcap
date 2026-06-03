@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="el">
 <head>
@@ -294,7 +293,8 @@
 
 <script>
 /* ====== ΔΕΔΟΜΕΝΑ ΕΡΩΤΗΣΕΩΝ ====== */
-// PCAP Mock 2 — 40 ερωτήσεις. Όλες οι απαντήσεις επαληθεύτηκαν με εκτέλεση κώδικα.
+// PCAP Mock 2 — 40 ερωτήσεις. Κείμενο ερωτήσεων/επιλογών στα αγγλικά (όπως οι αυθεντικές),
+// επεξηγήσεις στα αγγλικά. Όλες οι απαντήσεις επαληθεύτηκαν με εκτέλεση κώδικα.
 // type: "single" (μία απάντηση) ή "multi" (select two)
 // correct: λίστα δεικτών (0-based) στις options
 // verified: true => εμφανίζει badge "✓ Επαληθεύτηκε με εκτέλεση"
@@ -302,168 +302,168 @@
 const QUESTIONS = [
 {
   n:1, type:"multi", verified:false,
-  prompt:"Ποιες από τις παρακάτω προτάσεις είναι <b>ψευδείς</b>; (Διάλεξε δύο.)",
+  prompt:"Which of the following statements are <b>false</b>? (Select <u>two</u> answers.)",
   options:[
-    "Η επέκταση <code>.pby</code> χαρακτηρίζει αρχεία που περιέχουν ημι-μεταγλωττισμένο byte-code της Python.",
-    "Ένα αρχείο πηγαίου κώδικα με όνομα <code>__init__.py</code> χρησιμοποιείται για να σημάνει έναν φάκελο ως πακέτο Python και να αρχικοποιήσει την κατάστασή του.",
-    "Ο προγραμματιστής είναι υποχρεωμένος να δημιουργεί χειροκίνητα έναν φάκελο <code>__pycache__</code> μέσα σε κάθε πακέτο.",
-    "Μια μεταβλητή με όνομα <code>__name__</code> είναι ένα string που περιέχει το όνομα του module."
+    "The extension <code>.pby</code> marks files containing Python semi-compiled byte-code.",
+    "A source file named <code>__init__.py</code> is used to mark a directory/folder as containing a Python package and to initialize the package's state.",
+    "A programmer is obliged to manually create a directory/folder named <code>__pycache__</code> inside every package.",
+    "A variable named <code>__name__</code> is a string containing the module name."
   ],
   correct:[0,2],
   expl:{
-    concept:"Η ερώτηση ζητά τις <b>ψευδείς</b> προτάσεις γύρω από modules, πακέτα και byte-code της Python.",
-    steps:"Η σωστή επέκταση του μεταγλωττισμένου byte-code είναι <code>.pyc</code> (όχι <code>.pby</code>) — άρα η 1η είναι ψευδής. Τον φάκελο <code>__pycache__</code> τον δημιουργεί <b>αυτόματα</b> ο διερμηνέας, ποτέ ο προγραμματιστής χειροκίνητα — άρα η 3η είναι ψευδής.",
-    others:"Η 2η είναι αληθής: το <code>__init__.py</code> πράγματι ορίζει/αρχικοποιεί πακέτο. Η 4η είναι αληθής: το <code>__name__</code> είναι string με το όνομα του module."
+    concept:"The question asks for the <b>false</b> statements about Python modules, packages and byte-code.",
+    steps:"The correct extension for compiled byte-code is <code>.pyc</code> (not <code>.pby</code>) — so statement 1 is false. The <code>__pycache__</code> folder is created <b>automatically</b> by the interpreter, never manually by the programmer — so statement 3 is false.",
+    others:"Statement 2 is true: <code>__init__.py</code> does mark/initialize a package. Statement 4 is true: <code>__name__</code> is a string holding the module name."
   }
 },
 {
   n:2, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"import math\n\nx = 1.7\nprint(-abs(math.floor(x) + math.ceil(x)))",
   options:["-2","2","3","-3"],
   correct:[3],
   expl:{
-    concept:"Συνδυασμός <code>math.floor</code>, <code>math.ceil</code>, <code>abs</code> και αρνητικού προσήμου.",
-    steps:"<code>floor(1.7)=1</code>, <code>ceil(1.7)=2</code> → άθροισμα <code>3</code>. <code>abs(3)=3</code>, και το μπροστινό <code>-</code> δίνει <code>-3</code>.",
-    others:"Το <code>2</code> και το <code>3</code> αγνοούν το πρόσημο/abs· το <code>-2</code> προκύπτει από λάθος υπολογισμό του αθροίσματος."
+    concept:"Combination of <code>math.floor</code>, <code>math.ceil</code>, <code>abs</code> and a unary minus.",
+    steps:"<code>floor(1.7)=1</code>, <code>ceil(1.7)=2</code> → sum <code>3</code>. <code>abs(3)=3</code>, and the leading <code>-</code> gives <code>-3</code>.",
+    others:"<code>2</code> and <code>3</code> ignore the sign/abs; <code>-2</code> comes from miscomputing the sum."
   }
 },
 {
   n:3, type:"multi", verified:false,
-  prompt:"Ποιες από τις παρακάτω προτάσεις είναι <b>αληθείς</b>; (Διάλεξε δύο.)",
+  prompt:"Which of the following statements are <b>true</b>? (Select <u>two</u> answers.)",
   options:[
-    "Ο φάκελος από τον οποίο εκτελείται ο κώδικας δεν ψάχνεται ποτέ.",
-    "Μεταβλητές με ονόματα που <b>ξεκινούν</b> με δύο underscores θεωρούνται ιδιωτικές μέσα στο module τους.",
-    "Μεταβλητές με ονόματα που <b>τελειώνουν</b> σε δύο underscores θεωρούνται ιδιωτικές μέσα στο module τους.",
-    "Ο φάκελος από τον οποίο εκτελείται ο κώδικας ψάχνεται πάντα ώστε να βρεθούν τα απαραίτητα modules."
+    "The directory from which the code is run is never searched through.",
+    "Variables with names <b>starting</b> with two underscores are considered private inside their home module.",
+    "Variables with names <b>ending</b> with two underscores are considered private inside their home module.",
+    "The directory from which the Python code is run is always searched through in order to find the necessary modules."
   ],
   correct:[1,3],
   expl:{
-    concept:"Αναζήτηση modules (<code>sys.path</code>) και σύμβαση ιδιωτικότητας ονομάτων.",
-    steps:"Ο φάκελος του τρέχοντος script προστίθεται στην αρχή του <code>sys.path</code>, άρα ψάχνεται πάντα (4η αληθής). Κατά τη σύμβαση της Python, ονόματα που ξεκινούν με underscores θεωρούνται «ιδιωτικά» στο module (2η αληθής).",
-    others:"Η 1η είναι το αντίθετο της 4ης (ψευδής). Η ιδιωτικότητα αφορά το <b>ξεκίνημα</b> του ονόματος, όχι την κατάληξη — άρα η 3η είναι ψευδής."
+    concept:"Module search (<code>sys.path</code>) and the name-privacy convention.",
+    steps:"The current script's folder is prepended to <code>sys.path</code>, so it is always searched (statement 4 true). By Python convention, names that start with underscores are treated as \"private\" within the module (statement 2 true).",
+    others:"Statement 1 is the opposite of statement 4 (false). Privacy concerns the <b>start</b> of the name, not its ending — so statement 3 is false."
   }
 },
 {
   n:4, type:"multi", verified:true,
-  prompt:"Θέλεις να διαπιστώσεις αν μια πλατφόρμα υλικού χρησιμοποιεί επεξεργαστή <i>x86</i> ή <i>arm</i>. Ποια συνάρτηση μπορείς να χρησιμοποιήσεις; (Διάλεξε δύο.)",
+  prompt:"You need to find out if a hardware platform utilizes the <i>x86</i> or <i>arm</i> CPU. Which function can you use? (Select <u>two</u> answers.)",
   options:["<code>hardware()</code>","<code>platform()</code>","<code>node()</code>","<code>processor()</code>"],
   correct:[1,3],
   expl:{
-    concept:"Συναρτήσεις του module <code>platform</code> για πληροφορίες υλικού/αρχιτεκτονικής.",
-    steps:"Η <code>platform.processor()</code> επιστρέφει το όνομα του επεξεργαστή (π.χ. <code>'x86_64'</code>). Η <code>platform.platform()</code> επιστρέφει συμβολοσειρά που περιέχει την αρχιτεκτονική (π.χ. <code>Linux-...-x86_64-...</code>). Και οι δύο αποκαλύπτουν αν είναι x86 ή arm.",
-    others:"Η <code>node()</code> δίνει το όνομα δικτύου του μηχανήματος, όχι τον επεξεργαστή. Η <code>hardware()</code> δεν υπάρχει στο module <code>platform</code>."
+    concept:"Functions of the <code>platform</code> module for hardware/architecture information.",
+    steps:"<code>platform.processor()</code> returns the processor name (e.g. <code>'x86_64'</code>). <code>platform.platform()</code> returns a string that includes the architecture (e.g. <code>Linux-...-x86_64-...</code>). Both reveal whether it is x86 or arm.",
+    others:"<code>node()</code> gives the machine's network name, not the processor. <code>hardware()</code> does not exist in the <code>platform</code> module."
   },
-  note:"Η πιο «καθαρή» συνάρτηση για την αρχιτεκτονική είναι η <code>platform.machine()</code>, αλλά εδώ δεν προσφέρεται ως επιλογή."
+  note:"The \"cleanest\" function for the architecture is <code>platform.machine()</code>, but it is not offered as an option here."
 },
 {
   n:5, type:"multi", verified:false,
-  prompt:"Το παρακάτω snippet χρησιμοποιείται για import και κλήση της συνάρτησης <code>showinfo()</code>. Ποια πρόταση είναι <b>πάντα αληθής</b> για τη συνάρτηση και το περιβάλλον της; (Διάλεξε δύο.)",
+  prompt:"The following code snippet is used to import and invoke the <code>showinfo()</code> function. Which statement is <b>always true</b> about the function and its environment? (Select <u>two</u> answers.)",
   code:"import tkinter.messagebox\n\nmessagebox.showinfo(\"Hello\")",
   options:[
-    "Η συνάρτηση <code>messagebox()</code> μπορεί να κληθεί και ως: <code>messagebox()</code>.",
-    "Η συνάρτηση <code>messagebox()</code> μπορεί να κληθεί και ως: <code>tkinter.messagebox()</code>.",
-    "Η συνάρτηση <code>showinfo()</code> περιέχεται στο module <code>messagebox</code>.",
-    "Το <code>messagebox</code> είναι module ή package."
+    "The <code>messagebox()</code> function can be also invoked using the following syntax: <code>messagebox()</code>.",
+    "The <code>messagebox()</code> function can be also invoked using the following syntax: <code>tkinter.messagebox()</code>.",
+    "The <code>showinfo()</code> function is contained in the <code>messagebox</code> module.",
+    "<code>messagebox</code> is a module or a package."
   ],
   correct:[2,3],
   expl:{
-    concept:"Δομή πακέτων (<code>tkinter.messagebox</code>) και πού ανήκει η <code>showinfo()</code>.",
-    steps:"Η <code>showinfo()</code> ορίζεται μέσα στο module <code>tkinter.messagebox</code> (3η αληθής). Το <code>messagebox</code> είναι υπο-module του πακέτου <code>tkinter</code> (4η αληθής).",
-    others:"Το <code>messagebox</code> δεν είναι συνάρτηση, οπότε οι δύο πρώτες (<code>messagebox()</code>, <code>tkinter.messagebox()</code>) δεν έχουν νόημα."
+    concept:"Package structure (<code>tkinter.messagebox</code>) and where <code>showinfo()</code> lives.",
+    steps:"<code>showinfo()</code> is defined inside the <code>tkinter.messagebox</code> module (statement 3 true). <code>messagebox</code> is a sub-module of the <code>tkinter</code> package (statement 4 true).",
+    others:"<code>messagebox</code> is not a function, so the first two options (<code>messagebox()</code>, <code>tkinter.messagebox()</code>) make no sense."
   },
-  note:"Προσοχή: ο κώδικας όπως δίνεται θα έδινε στην πράξη <code>NameError</code>, γιατί μετά το <code>import tkinter.messagebox</code> πρέπει να γράψεις <code>tkinter.messagebox.showinfo(...)</code> — το σκέτο <code>messagebox</code> δεν δεσμεύεται. Η ερώτηση όμως αξιολογεί τις εννοιολογικές προτάσεις."
+  note:"Note: the code as written would actually raise a <code>NameError</code>, because after <code>import tkinter.messagebox</code> you must write <code>tkinter.messagebox.showinfo(...)</code> — the bare name <code>messagebox</code> is not bound. The question, however, evaluates the conceptual statements."
 },
 {
   n:6, type:"single", verified:false,
-  prompt:"Ποια συνάρτηση θα χρησιμοποιήσεις για να αποκαλύψεις το περιεχόμενο ενός module;",
+  prompt:"Which function will you use to reveal a module's contents?",
   options:["<code>dir__()</code>","<code>dir()</code>","<code>__dir()</code>","<code>__dir__()</code>"],
   correct:[1],
   expl:{
-    concept:"Ενσωματωμένη συνάρτηση <code>dir()</code> για εξερεύνηση ονομάτων.",
-    steps:"Η <code>dir(module)</code> επιστρέφει λίστα με τα ονόματα (συναρτήσεις, μεταβλητές, κλάσεις) που ορίζει το module.",
-    others:"Οι υπόλοιπες (<code>dir__()</code>, <code>__dir()</code>, <code>__dir__()</code>) δεν είναι έγκυρα ονόματα ενσωματωμένων συναρτήσεων για αυτή τη χρήση."
+    concept:"The built-in <code>dir()</code> function for exploring names.",
+    steps:"<code>dir(module)</code> returns a list of the names (functions, variables, classes) the module defines.",
+    others:"The rest (<code>dir__()</code>, <code>__dir()</code>, <code>__dir__()</code>) are not valid names of built-in functions for this use."
   }
 },
 {
   n:7, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"def attic(x):\n    assert x != 0\n    return 1 / x\n\ndef floor(x):\n    try:\n        attic(x)\n    except:\n        raise\n\ntry:\n    x = attic(0)\nexcept RuntimeError:\n    x = -3\nexcept:\n    x = -2\nelse:\n    x = -1\nprint(x)",
-  options:["-3","-1","-2","Εμφανίζεται μήνυμα σφάλματος στην οθόνη."],
+  options:["-3","-1","-2","An error message appears on the screen."],
   correct:[2],
   expl:{
-    concept:"Σειρά αξιολόγησης πολλαπλών <code>except</code> και η <code>assert</code>.",
-    steps:"Το <code>attic(0)</code> εκτελεί <code>assert 0 != 0</code> → <code>AssertionError</code>. Αυτό <b>δεν</b> είναι <code>RuntimeError</code>, οπότε το πρώτο <code>except</code> προσπερνιέται και το «γυμνό» <code>except:</code> το πιάνει → <code>x = -2</code>. (Η <code>floor</code> δεν καλείται ποτέ.)",
-    others:"Το <code>-3</code> θα ίσχυε αν ήταν <code>RuntimeError</code>. Το <code>-1</code> (κλάδος <code>else</code>) ισχύει μόνο χωρίς εξαίρεση. Δεν εμφανίζεται σφάλμα γιατί η εξαίρεση πιάνεται."
+    concept:"Order of evaluation of multiple <code>except</code> clauses and <code>assert</code>.",
+    steps:"<code>attic(0)</code> runs <code>assert 0 != 0</code> → <code>AssertionError</code>. This is <b>not</b> a <code>RuntimeError</code>, so the first <code>except</code> is skipped and the bare <code>except:</code> catches it → <code>x = -2</code>. (<code>floor</code> is never called.)",
+    others:"<code>-3</code> would apply for a <code>RuntimeError</code>. <code>-1</code> (the <code>else</code> branch) only applies with no exception. No error is shown because the exception is caught."
   }
 },
 {
   n:8, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"s = 'three'\ne = 0\ntry:\n    e = int(s)\nexcept ArithmeticError:\n    e = 1\nexcept:\n    e = 2\nelse:\n    e = 3\nprint(e)",
   options:["0","3","2","1"],
   correct:[2],
   expl:{
-    concept:"Ποια εξαίρεση πετά η <code>int()</code> και ποιο <code>except</code> την πιάνει.",
-    steps:"Το <code>int('three')</code> πετά <code>ValueError</code>. Ο <code>ValueError</code> δεν είναι <code>ArithmeticError</code>, άρα τον πιάνει το γυμνό <code>except:</code> → <code>e = 2</code>.",
-    others:"<code>1</code> = αν ήταν <code>ArithmeticError</code>. <code>3</code> = κλάδος <code>else</code> (χωρίς εξαίρεση). <code>0</code> = αρχική τιμή που αλλάζει."
+    concept:"Which exception <code>int()</code> raises and which <code>except</code> catches it.",
+    steps:"<code>int('three')</code> raises <code>ValueError</code>. <code>ValueError</code> is not an <code>ArithmeticError</code>, so the bare <code>except:</code> catches it → <code>e = 2</code>.",
+    others:"<code>1</code> = if it were an <code>ArithmeticError</code>. <code>3</code> = the <code>else</code> branch (no exception). <code>0</code> = the initial value that gets changed."
   }
 },
 {
   n:9, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"data = [261, 321]\ntry:\n    print(data[-3])\nexcept Exception as exception:\n    print(exception.args)\nelse:\n    print(\"('success',)\")",
   options:["<code>('list index out of range',)</code>","<code>('success',)</code>","<code>321</code>","<code>261</code>"],
   correct:[0],
   expl:{
-    concept:"Αρνητική δεικτοδότηση εκτός ορίων και το χαρακτηριστικό <code>args</code> της εξαίρεσης.",
-    steps:"Η λίστα έχει 2 στοιχεία· το <code>data[-3]</code> είναι εκτός ορίων → <code>IndexError</code>. Το <code>exception.args</code> είναι η πλειάδα με το μήνυμα → <code>('list index out of range',)</code>.",
-    others:"Το <code>('success',)</code> θα τυπωνόταν μόνο χωρίς εξαίρεση (<code>else</code>). Τα <code>261/321</code> θα απαιτούσαν έγκυρο δείκτη."
+    concept:"Out-of-range negative indexing and the exception's <code>args</code> attribute.",
+    steps:"The list has 2 items; <code>data[-3]</code> is out of range → <code>IndexError</code>. <code>exception.args</code> is the tuple holding the message → <code>('list index out of range',)</code>.",
+    others:"<code>('success',)</code> would print only without an exception (<code>else</code>). <code>261/321</code> would require a valid index."
   }
 },
 {
   n:10, type:"multi", verified:true,
-  prompt:"Ποια μηνύματα θα εμφανιστούν στην οθόνη όταν εκτελεστεί ο κώδικας; (Διάλεξε δύο.)",
+  prompt:"Which of the following messages will appear on the screen when the code is run? (Select <u>two</u> answers.)",
   code:"class Failure(Exception):\n    def __init__(self, message):\n        self.message = message\n\n    def __str__(self):\n        return \"out of order\"\n\ntry:\n    print(\"turn on\")\n    raise Failure(\"crash\")\nexcept Failure as problem:\n    print(problem)\nelse:\n    print(\"success\")",
   options:["<code>crash</code>","<code>turn on</code>","<code>out of order</code>","<code>success</code>"],
   correct:[1,2],
   expl:{
-    concept:"Ρόλος της <code>__str__</code> όταν τυπώνεις ένα αντικείμενο εξαίρεσης.",
-    steps:"Πρώτα τυπώνεται <code>turn on</code>. Μετά η <code>raise Failure(\"crash\")</code> πιάνεται και το <code>print(problem)</code> καλεί την <code>__str__</code>, που επιστρέφει σταθερά <code>out of order</code>.",
-    others:"Το <code>crash</code> αποθηκεύεται στο <code>self.message</code> αλλά δεν τυπώνεται ποτέ (η <code>__str__</code> το αγνοεί). Το <code>success</code> (<code>else</code>) δεν εκτελείται λόγω εξαίρεσης."
+    concept:"The role of <code>__str__</code> when you print an exception object.",
+    steps:"First <code>turn on</code> is printed. Then <code>raise Failure(\"crash\")</code> is caught and <code>print(problem)</code> calls <code>__str__</code>, which always returns <code>out of order</code>.",
+    others:"<code>crash</code> is stored in <code>self.message</code> but never printed (<code>__str__</code> ignores it). <code>success</code> (<code>else</code>) does not run because of the exception."
   }
 },
 {
   n:11, type:"multi", verified:true,
-  prompt:"Ποιες από τις παρακάτω πράξεις <b>δεν</b> θα προκαλέσουν καμία εξαίρεση; (Διάλεξε δύο.)",
+  prompt:"Which of the following operations will <b>not</b> raise any exception? (Select <u>two</u> answers.)",
   options:[
-    "Κλήση της συνάρτησης <code>float()</code>.",
-    "Μείωση μιας ακέραιας μεταβλητής κατά ένα.",
-    "Δεικτοδότηση μιας πλειάδας (tuple).",
-    "Slicing μιας συμβολοσειράς."
+    "Invoking the <code>float()</code> function.",
+    "Decrementing an integer variable by one.",
+    "Indexing a tuple.",
+    "Slicing a string."
   ],
   correct:[1,3],
   expl:{
-    concept:"Ποιες πράξεις είναι εγγυημένα ασφαλείς από εξαιρέσεις.",
-    steps:"Η μείωση ενός ακεραίου κατά 1 δεν πετά ποτέ εξαίρεση. Το slicing string είναι πάντα ασφαλές — ακόμη και εκτός ορίων δίνει κενό string, χωρίς σφάλμα.",
-    others:"Η <code>float()</code> με ακατάλληλο όρισμα πετά <code>ValueError</code>. Η δεικτοδότηση tuple με δείκτη εκτός ορίων πετά <code>IndexError</code>. Άρα δεν είναι εγγυημένα ασφαλείς."
+    concept:"Which operations are guaranteed exception-safe.",
+    steps:"Decrementing an integer by 1 never raises an exception. Slicing a string is always safe — even out of bounds it returns an empty string, with no error.",
+    others:"<code>float()</code> with an unsuitable argument raises <code>ValueError</code>. Indexing a tuple with an out-of-range index raises <code>IndexError</code>. So they are not guaranteed safe."
   }
 },
 {
   n:12, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"strng = \"John,Doe,42\"\nstrng = \"\".join(strng.split(\",\"))\nprint(strng[-2])",
   options:["<code>2</code>","<code>4</code>","<code>e</code>","<code>;</code>"],
   correct:[1],
   expl:{
-    concept:"Συνδυασμός <code>split</code> + <code>join</code> και αρνητική δεικτοδότηση.",
-    steps:"<code>split(\",\")</code> → <code>['John','Doe','42']</code>. <code>\"\".join(...)</code> → <code>'JohnDoe42'</code>. Το <code>[-2]</code> είναι το προτελευταίο σύμβολο → <code>'4'</code>.",
-    others:"Το <code>2</code> είναι το <code>[-1]</code>. Τα <code>e</code> και <code>;</code> δεν υπάρχουν στο τελικό string."
+    concept:"Combining <code>split</code> + <code>join</code> and negative indexing.",
+    steps:"<code>split(\",\")</code> → <code>['John','Doe','42']</code>. <code>\"\".join(...)</code> → <code>'JohnDoe42'</code>. <code>[-2]</code> is the second-to-last character → <code>'4'</code>.",
+    others:"<code>2</code> is <code>[-1]</code>. <code>e</code> and <code>;</code> do not appear in the final string."
   }
 },
 {
   n:13, type:"multi", verified:true,
-  prompt:"Ποιες από τις παρακάτω εκφράσεις αξιολογούνται σε <code>True</code> και δεν προκαλούν εξαίρεση; (Διάλεξε δύο.)",
+  prompt:"Which of the following expressions evaluate to <code>True</code> and raise no exception? (Select <u>two</u> answers.)",
   options:[
     "<code>not 'xyz' in 'uvwxyz'</code>",
     "<code>'' in ''</code>",
@@ -472,30 +472,30 @@ const QUESTIONS = [
   ],
   correct:[1,3],
   expl:{
-    concept:"Ο τελεστής <code>in</code>/<code>not in</code> πάνω σε συμβολοσειρές (έλεγχος υπο-συμβολοσειράς).",
-    steps:"Το κενό string θεωρείται υπο-συμβολοσειρά κάθε string, άρα <code>'' in ''</code> → <code>True</code>. Το <code>'de'</code> δεν εμφανίζεται στο <code>'abc'</code>, άρα <code>'de' not in 'abc'</code> → <code>True</code>.",
-    others:"<code>'xyz' in 'uvwxyz'</code> είναι <code>True</code>, οπότε με το <code>not</code> γίνεται <code>False</code>. Το <code>'?' in ''</code> είναι <code>False</code> (το <code>'?'</code> δεν χωρά στο κενό string)."
+    concept:"The <code>in</code>/<code>not in</code> operator on strings (substring test).",
+    steps:"An empty string is considered a substring of every string, so <code>'' in ''</code> → <code>True</code>. <code>'de'</code> does not appear in <code>'abc'</code>, so <code>'de' not in 'abc'</code> → <code>True</code>.",
+    others:"<code>'xyz' in 'uvwxyz'</code> is <code>True</code>, so with <code>not</code> it becomes <code>False</code>. <code>'?' in ''</code> is <code>False</code> (a <code>'?'</code> cannot fit in the empty string)."
   }
 },
 {
   n:14, type:"multi", verified:false,
-  prompt:"Ποιες από τις παρακάτω προτάσεις είναι <b>αληθείς</b>; (Διάλεξε δύο.)",
+  prompt:"Which of the following statements are <b>true</b>? (Select <u>two</u> answers.)",
   options:[
-    "Το <code>\"/n\"</code> μπορεί να χρησιμοποιηθεί για κωδικοποίηση χαρακτήρα αλλαγής γραμμής.",
-    "Στον ASCII, τα codepoints των λατινικών κεφαλαίων είναι μεγαλύτερα από των αντίστοιχων πεζών.",
-    "Η Python δέχεται αρχεία πηγαίου κώδικα κωδικοποιημένα σε UTF-8.",
-    "Ο ASCII είναι υποσύνολο του UNICODE."
+    "<code>\"/n\"</code> can be used to encode a new-line character.",
+    "In ASCII, Latin upper-case letter codepoints are greater than their lower-case counterparts.",
+    "Python accepts UTF-8 encoded source files.",
+    "ASCII is a subset of UNICODE."
   ],
   correct:[2,3],
   expl:{
-    concept:"Κωδικοποιήσεις χαρακτήρων (ASCII, UNICODE, UTF-8) και escape sequences.",
-    steps:"Η Python δέχεται πηγαίο κώδικα σε UTF-8 (3η αληθής). Ο ASCII (0–127) είναι υποσύνολο του UNICODE (4η αληθής).",
-    others:"Η αλλαγή γραμμής γράφεται <code>\"\\n\"</code> (backslash), όχι <code>\"/n\"</code> → 1η ψευδής. Στον ASCII τα κεφαλαία (65–90) είναι <b>μικρότερα</b> από τα πεζά (97–122) → 2η ψευδής."
+    concept:"Character encodings (ASCII, UNICODE, UTF-8) and escape sequences.",
+    steps:"Python accepts source code in UTF-8 (statement 3 true). ASCII (0–127) is a subset of UNICODE (statement 4 true).",
+    others:"A newline is written <code>\"\\n\"</code> (backslash), not <code>\"/n\"</code> → statement 1 false. In ASCII the upper-case letters (65–90) are <b>smaller</b> than the lower-case (97–122) → statement 2 false."
   }
 },
 {
   n:15, type:"multi", verified:true,
-  prompt:"Ποια από τα παρακάτω <b>δεν</b> είναι έγκυρα string literals της Python; (Διάλεξε δύο.)",
+  prompt:"Which of the following are <b>not</b> valid Python string literals? (Select <u>two</u> answers.)",
   options:[
     "<code>'''To be, or not to be, that is the question\"\"\"</code>",
     "<code>\"\\\\\"</code>",
@@ -504,26 +504,26 @@ const QUESTIONS = [
   ],
   correct:[0,2],
   expl:{
-    concept:"Ταίριασμα οριοθετών (delimiters) και escaping σε string literals.",
-    steps:"Το 1ο ανοίγει με <code>'''</code> αλλά κλείνει με <code>\"\"\"</code> — ασύμβατοι οριοθέτες, άρα μη έγκυρο. Το 3ο: το string κλείνει στο <code>'</code> πριν το <code>tis</code>, οπότε το υπόλοιπο <code>tis nobler...</code> είναι συντακτικό σφάλμα.",
-    others:"Το <code>\"\\\\\"</code> είναι έγκυρο (ένα escaped backslash). Το <code>\"this is a quote: \\\"\"</code> είναι έγκυρο (escaped διπλό εισαγωγικό μέσα σε διπλά εισαγωγικά)."
+    concept:"Matching delimiters and escaping in string literals.",
+    steps:"The first opens with <code>'''</code> but closes with <code>\"\"\"</code> — mismatched delimiters, so invalid. The third: the string closes at the <code>'</code> before <code>tis</code>, so the rest <code>tis nobler...</code> is a syntax error.",
+    others:"<code>\"\\\\\"</code> is valid (one escaped backslash). <code>\"this is a quote: \\\"\"</code> is valid (an escaped double-quote inside double quotes)."
   }
 },
 {
   n:16, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"header = 2 * '+-' + '+'\nplus = 0\nfor x in header:\n    if not x in header:\n        plus += 1\nprint(plus)",
   options:["<code>5</code>","<code>0</code>","<code>2</code>","<code>3</code>"],
   correct:[1],
   expl:{
-    concept:"Λογική παγίδα: κάθε χαρακτήρας ανήκει εξ ορισμού στο string από το οποίο προέρχεται.",
-    steps:"<code>header = '+-+-+'</code>. Για κάθε χαρακτήρα <code>x</code> του <code>header</code>, το <code>x in header</code> είναι πάντα <code>True</code>, άρα το <code>not x in header</code> είναι πάντα <code>False</code>. Το <code>plus</code> δεν αυξάνεται ποτέ → <code>0</code>.",
-    others:"Τα <code>5/3/2</code> προϋποθέτουν ότι κάποιοι χαρακτήρες «λείπουν» από το <code>header</code>, κάτι αδύνατο εφόσον προέρχονται από αυτό."
+    concept:"Logical trap: every character belongs by definition to the string it came from.",
+    steps:"<code>header = '+-+-+'</code>. For every character <code>x</code> in <code>header</code>, <code>x in header</code> is always <code>True</code>, so <code>not x in header</code> is always <code>False</code>. <code>plus</code> is never incremented → <code>0</code>.",
+    others:"<code>5/3/2</code> assume some characters are \"missing\" from <code>header</code>, which is impossible since they come from it."
   }
 },
 {
   n:17, type:"single", verified:true,
-  prompt:"Ποια από τις παρακάτω εκφράσεις αξιολογείται σε <code>True</code> και δεν προκαλεί εξαίρεση;",
+  prompt:"Which of the following expressions evaluates to <code>True</code> and raises no exception?",
   options:[
     "<code>'9' * 1 < 1 * 2</code>",
     "<code>'9' * 3 > '9' * 9</code>",
@@ -532,14 +532,14 @@ const QUESTIONS = [
   ],
   correct:[3],
   expl:{
-    concept:"Διαφορά μεταξύ σύγκρισης (<code>&lt;</code>,<code>&gt;</code>) και ισότητας (<code>!=</code>) όταν εμπλέκονται διαφορετικοί τύποι.",
-    steps:"<code>'1'+'0' = '10'</code> (string). Το <code>10 != '10'</code> συγκρίνει int με str: είναι διαφορετικοί τύποι, άρα <b>άνισοι</b> → <code>True</code>, χωρίς εξαίρεση.",
-    others:"Το <code>'9' &lt; 2</code> συγκρίνει str με int → <code>TypeError</code>. Το <code>'999' &gt; '999999999'</code> είναι <code>False</code> (λεξικογραφικά). Το <code>'AlAl' != 'AlAl'</code> είναι <code>False</code>."
+    concept:"Difference between comparison (<code>&lt;</code>,<code>&gt;</code>) and equality (<code>!=</code>) when different types are involved.",
+    steps:"<code>'1'+'0' = '10'</code> (a string). <code>10 != '10'</code> compares int with str: they are different types and therefore <b>unequal</b> → <code>True</code>, with no exception.",
+    others:"<code>'9' &lt; 2</code> compares str with int → <code>TypeError</code>. <code>'999' &gt; '999999999'</code> is <code>False</code> (lexicographically). <code>'AlAl' != 'AlAl'</code> is <code>False</code>."
   }
 },
 {
   n:18, type:"multi", verified:true,
-  prompt:"Ποιες από τις παρακάτω αναθέσεις παράγουν επιτυχώς ένα <b>μη κενό string</b>; (Διάλεξε δύο.)",
+  prompt:"Which of the following assignments will successfully produce <b>a non-empty string</b>? (Select <u>two</u> answers.)",
   options:[
     "<code>s = 'rhyme'</code><br><code>s = s[9]</code>",
     "<code>s = \"12\"</code><br><code>s = s[1::2]</code>",
@@ -548,14 +548,14 @@ const QUESTIONS = [
   ],
   correct:[1,2],
   expl:{
-    concept:"Διαφορά μεταξύ δεικτοδότησης (μπορεί να πετάξει <code>IndexError</code>) και slicing (ποτέ σφάλμα).",
-    steps:"<code>'12'[1::2]</code> → <code>'2'</code> (μη κενό). <code>'12'[-1]</code> → <code>'2'</code> (μη κενό).",
-    others:"<code>'rhyme'[9]</code> → δείκτης εκτός ορίων → <code>IndexError</code> (αποτυγχάνει). <code>'12'[-3:-5]</code> → κενό string (το slice δεν περιέχει χαρακτήρες)."
+    concept:"Difference between indexing (can raise <code>IndexError</code>) and slicing (never errors).",
+    steps:"<code>'12'[1::2]</code> → <code>'2'</code> (non-empty). <code>'12'[-1]</code> → <code>'2'</code> (non-empty).",
+    others:"<code>'rhyme'[9]</code> → index out of range → <code>IndexError</code> (fails). <code>'12'[-3:-5]</code> → empty string (the slice contains no characters)."
   }
 },
 {
   n:19, type:"multi", verified:true,
-  prompt:"Ποια από τα παρακάτω snippets εμφανίζουν <code>123</code> στην οθόνη; (Διάλεξε δύο.)",
+  prompt:"Which of the following snippets output <code>123</code> to the screen? (Select <u>two</u> answers.)",
   options:[
     "<code>tmp = \"321\".sort()</code><br><code>print(str(tmp))</code>",
     "<code>tmp = list(\"321\")</code><br><code>tmp.sort()</code><br><code>print(''.join(tmp))</code>",
@@ -564,14 +564,14 @@ const QUESTIONS = [
   ],
   correct:[1,2],
   expl:{
-    concept:"Διαφορά <code>list.sort()</code> (in-place, σε λίστα) vs <code>sorted()</code> (επιστρέφει λίστα), και <code>join</code>.",
-    steps:"Στη 2η: <code>list(\"321\")</code> → <code>['3','2','1']</code>, μετά <code>.sort()</code> → <code>['1','2','3']</code>, και <code>''.join</code> → <code>'123'</code>. Στην 3η: <code>sorted(\"321\")</code> → <code>['1','2','3']</code> και το <code>join</code> τα ενώνει → <code>'123'</code>.",
-    others:"Στην 1η τα strings δεν έχουν μέθοδο <code>.sort()</code> → <code>AttributeError</code>. Στην 4η το <code>print(sorted(...))</code> τυπώνει τη λίστα <code>['1', '2', '3']</code>, όχι <code>123</code>."
+    concept:"Difference between <code>list.sort()</code> (in-place, on a list) and <code>sorted()</code> (returns a list), plus <code>join</code>.",
+    steps:"In option 2: <code>list(\"321\")</code> → <code>['3','2','1']</code>, then <code>.sort()</code> → <code>['1','2','3']</code>, and <code>''.join</code> → <code>'123'</code>. In option 3: <code>sorted(\"321\")</code> → <code>['1','2','3']</code> and <code>join</code> merges them → <code>'123'</code>.",
+    others:"In option 1 strings have no <code>.sort()</code> method → <code>AttributeError</code>. In option 4 <code>print(sorted(...))</code> prints the list <code>['1', '2', '3']</code>, not <code>123</code>."
   }
 },
 {
   n:20, type:"multi", verified:true,
-  prompt:"Υποθέτοντας ότι ο κώδικας εκτελέστηκε επιτυχώς, δείξε ποιες εκφράσεις αξιολογούνται σε <code>True</code> και δεν προκαλούν εξαίρεση. (Διάλεξε δύο.)",
+  prompt:"Assuming that the following code has been successfully executed, indicate the expressions which evaluate to <code>True</code> and don't raise any exception. (Select <u>two</u> answers.)",
   code:"class Volume:\n    chapter = 1\n\n    def __init__(self, paragraph):\n        self.paragraph = paragraph\n        Volume.chapter += 1\n\n    def remove(self):\n        del self.paragraph\n\nedition = Volume(1)\nedition.remove()",
   options:[
     "<code>'paragraph' in edition.__dict__</code>",
@@ -581,14 +581,14 @@ const QUESTIONS = [
   ],
   correct:[1,2],
   expl:{
-    concept:"Τα <code>__dict__</code> instance vs class, και η <code>del</code> σε attribute.",
-    steps:"Μετά τη <code>remove()</code>, το <code>edition.__dict__</code> είναι κενό (το <code>paragraph</code> διαγράφηκε). Το <code>Volume.chapter</code> έγινε <code>2</code> από τον constructor, άρα <code>Volume.__dict__['chapter'] != None</code> → <code>True</code>. Το <code>len(edition.__dict__)=0</code> ενώ το <code>len(Volume.__dict__)</code> είναι μεγαλύτερο, άρα <code>!=</code> → <code>True</code>.",
-    others:"Το <code>paragraph</code> διαγράφηκε από το instance → η 1η είναι <code>False</code>. Το <code>paragraph</code> δεν ήταν ποτέ class attribute → η 4η είναι <code>False</code>."
+    concept:"The instance vs class <code>__dict__</code>, and <code>del</code> on an attribute.",
+    steps:"After <code>remove()</code>, <code>edition.__dict__</code> is empty (<code>paragraph</code> was deleted). <code>Volume.chapter</code> became <code>2</code> via the constructor, so <code>Volume.__dict__['chapter'] != None</code> → <code>True</code>. <code>len(edition.__dict__)=0</code> while <code>len(Volume.__dict__)</code> is larger, so <code>!=</code> → <code>True</code>.",
+    others:"<code>paragraph</code> was deleted from the instance → statement 1 is <code>False</code>. <code>paragraph</code> was never a class attribute → statement 4 is <code>False</code>."
   }
 },
 {
   n:21, type:"multi", verified:true,
-  prompt:"Δοθέντος του παρακάτω κώδικα, δείξε τις γραμμές που μειώνουν σωστά τη μεταβλητή <code>__b</code> κατά ένα. (Διάλεξε δύο.)",
+  prompt:"Given the code below, indicate the code lines correctly decrementing the <code>__b</code> variable by one. (Select <u>two</u> answers.)",
   code:"class A:\n    __b = 1\n\n    def __init__(self):\n        self.c = 1\n\n    def __action(self):\n        pass\n\nobject = A()",
   options:[
     "<code>object._A__b -= 1</code>",
@@ -598,15 +598,15 @@ const QUESTIONS = [
   ],
   correct:[0,1],
   expl:{
-    concept:"Name mangling: ένα όνομα <code>__b</code> μέσα σε κλάση μετονομάζεται εσωτερικά σε <code>_A__b</code>.",
-    steps:"Εκτός της κλάσης, η μεταβλητή είναι προσβάσιμη μόνο με το mangled όνομα <code>_A__b</code>. Άρα <code>A._A__b -= 1</code> και <code>object._A__b -= 1</code> δουλεύουν χωρίς σφάλμα.",
-    others:"Τα <code>object.__b</code> και <code>A.b</code> δεν υπάρχουν ως ονόματα → <code>AttributeError</code>."
+    concept:"Name mangling: a name <code>__b</code> inside a class is internally renamed to <code>_A__b</code>.",
+    steps:"Outside the class, the variable is only reachable via the mangled name <code>_A__b</code>. So <code>A._A__b -= 1</code> and <code>object._A__b -= 1</code> work without error.",
+    others:"<code>object.__b</code> and <code>A.b</code> do not exist as names → <code>AttributeError</code>."
   },
-  note:"Διαφορά: το <code>A._A__b -= 1</code> αλλάζει την ίδια την class-μεταβλητή, ενώ το <code>object._A__b -= 1</code> διαβάζει την τιμή της κλάσης και δημιουργεί ένα <i>νέο</i> instance attribute ίσο με τιμή-1 (δεν αγγίζει την class-μεταβλητή)."
+  note:"Difference: <code>A._A__b -= 1</code> changes the class variable itself, whereas <code>object._A__b -= 1</code> reads the class value and creates a <i>new</i> instance attribute equal to value-1 (it does not touch the class variable)."
 },
 {
   n:22, type:"multi", verified:true,
-  prompt:"Ποιες από τις παρακάτω κλάσεις περιέχουν έναν <b>χρησιμοποιήσιμο</b> constructor; (Διάλεξε δύο.)",
+  prompt:"Which of the following classes contain a <b>usable</b> constructor? (Select <u>two</u> answers.)",
   options:[
     "<code>class Middle:</code><br><code>&nbsp;&nbsp;def __init__():</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;self.color = None</code>",
     "<code>class Upper:</code><br><code>&nbsp;&nbsp;def __init__(self):</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;return False</code>",
@@ -615,14 +615,14 @@ const QUESTIONS = [
   ],
   correct:[2,3],
   expl:{
-    concept:"Έγκυρη υπογραφή του <code>__init__</code>: πρέπει να δέχεται <code>self</code> και να μην επιστρέφει τιμή ≠ <code>None</code>.",
-    steps:"Η <code>Lower</code> έχει σωστό <code>__init__(self)</code> που θέτει attribute — χρησιμοποιήσιμη. Η <code>Working</code> έχει επίσης σωστά διαμορφωμένο <code>__init__(self)</code>· πετά <code>KeyError</code> στην κλήση, αλλά ο constructor ως δομή είναι έγκυρος.",
-    others:"Η <code>Middle</code> ορίζει <code>__init__()</code> χωρίς <code>self</code> → <code>TypeError</code> στην κλήση. Η <code>Upper</code> κάνει <code>return False</code>· ο <code>__init__</code> δεν επιτρέπεται να επιστρέφει τιμή ≠ <code>None</code> → <code>TypeError</code>."
+    concept:"A valid <code>__init__</code> signature: it must accept <code>self</code> and must not return a value other than <code>None</code>.",
+    steps:"<code>Lower</code> has a correct <code>__init__(self)</code> that sets an attribute — usable. <code>Working</code> also has a correctly-formed <code>__init__(self)</code>; it raises <code>KeyError</code> when called, but the constructor as a structure is valid.",
+    others:"<code>Middle</code> defines <code>__init__()</code> without <code>self</code> → <code>TypeError</code> on call. <code>Upper</code> does <code>return False</code>; <code>__init__</code> is not allowed to return a value other than <code>None</code> → <code>TypeError</code>."
   }
 },
 {
   n:23, type:"multi", verified:true,
-  prompt:"Δοθείσας της ιεραρχίας κλάσεων, δείξε ποιες από τις δηλώσεις κλάσεων είναι <b>μη επιτρεπτές</b>. (Διάλεξε δύο.)",
+  prompt:"Given the class hierarchy presented below, indicate which of the following class declarations are <b>impermissible</b>. (Select <u>two</u> answers.)",
   code:"class Diamond:\n    pass\n\nclass Adamant(Diamond):\n    pass\n\nclass Gem(Diamond):\n    pass",
   options:[
     "<code>class Jewel(Adamant, Diamond):</code><br><code>&nbsp;&nbsp;pass</code>",
@@ -632,15 +632,15 @@ const QUESTIONS = [
   ],
   correct:[1,2],
   expl:{
-    concept:"Για να οριστεί κλάση, οι βάσεις της πρέπει να είναι ήδη ορισμένα ονόματα.",
-    steps:"Τα <code>Top</code>, <code>Right</code> και <code>Left</code> δεν ορίζονται πουθενά στην ιεραρχία, άρα οι δύο δηλώσεις <code>Bottom(...)</code> πετούν <code>NameError</code> — είναι μη επιτρεπτές.",
-    others:"Η <code>Jewel(Adamant, Diamond)</code> έχει έγκυρο MRO (<code>Jewel→Adamant→Diamond→object</code>), αφού η σειρά «υποκλάση πριν τη βάση» είναι συνεπής. Η <code>Jewel(Adamant, Gem)</code> είναι κλασική διαμαντένια κληρονομικότητα, επίσης έγκυρη."
+    concept:"To define a class, its bases must already be defined names.",
+    steps:"<code>Top</code>, <code>Right</code> and <code>Left</code> are not defined anywhere in the hierarchy, so the two <code>Bottom(...)</code> declarations raise <code>NameError</code> — they are impermissible.",
+    others:"<code>Jewel(Adamant, Diamond)</code> has a valid MRO (<code>Jewel→Adamant→Diamond→object</code>), since the \"subclass before base\" order is consistent. <code>Jewel(Adamant, Gem)</code> is classic diamond inheritance, also valid."
   },
-  note:"Αν τα <code>Top/Right/Left</code> ήταν ορισμένα, η ερώτηση θα αφορούσε ασυνέπεια MRO. Όπως δίνεται, αποτυγχάνουν λόγω αόριστων ονομάτων."
+  note:"If <code>Top/Right/Left</code> were defined, the question would be about MRO inconsistency. As given, they fail because of undefined names."
 },
 {
   n:24, type:"single", verified:true,
-  prompt:"Δοθείσας της κλάσης, δείξε τη μέθοδο που θα δώσει σωστά την τιμή της μεταβλητής <code>rack</code>.",
+  prompt:"Given the class below, indicate the method which will correctly provide the value of the <code>rack</code> variable.",
   code:"class Storage:\n    def __init__(self):\n        self.rack = 1\n\n    # Insert the method here.\n\nstuff = Storage()\nprint(stuff.get())",
   options:[
     "<code>def get(self):</code><br><code>&nbsp;&nbsp;return rack</code>",
@@ -650,38 +650,38 @@ const QUESTIONS = [
   ],
   correct:[2],
   expl:{
-    concept:"Πρόσβαση σε instance attribute μέσω <code>self</code>.",
-    steps:"Το <code>rack</code> είναι instance attribute, άρα προσπελαύνεται ως <code>self.rack</code>. Η μέθοδος χρειάζεται και την παράμετρο <code>self</code>: <code>def get(self): return self.rack</code>.",
-    others:"Το σκέτο <code>return rack</code> δίνει <code>NameError</code> (δεν υπάρχει global <code>rack</code>). Οι <code>def get():</code> χωρίς <code>self</code> πετούν <code>TypeError</code> στην κλήση <code>stuff.get()</code>."
+    concept:"Accessing an instance attribute via <code>self</code>.",
+    steps:"<code>rack</code> is an instance attribute, so it is reached as <code>self.rack</code>. The method also needs the <code>self</code> parameter: <code>def get(self): return self.rack</code>.",
+    others:"A bare <code>return rack</code> gives <code>NameError</code> (no global <code>rack</code> exists). The <code>def get():</code> versions without <code>self</code> raise <code>TypeError</code> on the call <code>stuff.get()</code>."
   }
 },
 {
   n:25, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"class Cat:\n    Species = 1\n    def get_species(self):\n        return 'kitty'\n\nclass Tiger(Cat):\n    def get_species(self):\n        return 'tiggy'\n    def set_species(self):\n        pass\n\ncreature = Tiger()\nprint(hasattr(creature, \"Species\"), hasattr(Cat, \"set_species\"))",
   options:["<code>False True</code>","<code>True True</code>","<code>True False</code>","<code>False False</code>"],
   correct:[2],
   expl:{
-    concept:"Η <code>hasattr</code> λαμβάνει υπόψη την κληρονομικότητα.",
-    steps:"<code>hasattr(creature, \"Species\")</code>: το <code>Tiger</code> κληρονομεί το <code>Species</code> από το <code>Cat</code> → <code>True</code>. <code>hasattr(Cat, \"set_species\")</code>: η <code>set_species</code> ορίζεται μόνο στο <code>Tiger</code>, όχι στο <code>Cat</code> → <code>False</code>.",
-    others:"Οι άλλοι συνδυασμοί αγνοούν είτε την κληρονομικότητα του <code>Species</code> είτε ότι η <code>set_species</code> δεν ανεβαίνει στη γονική κλάση."
+    concept:"<code>hasattr</code> takes inheritance into account.",
+    steps:"<code>hasattr(creature, \"Species\")</code>: <code>Tiger</code> inherits <code>Species</code> from <code>Cat</code> → <code>True</code>. <code>hasattr(Cat, \"set_species\")</code>: <code>set_species</code> is defined only in <code>Tiger</code>, not in <code>Cat</code> → <code>False</code>.",
+    others:"The other combinations ignore either the inheritance of <code>Species</code> or the fact that <code>set_species</code> does not move up to the parent class."
   }
 },
 {
   n:26, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"class Example:\n    def __str__(self):\n        return __name__\n\nthing = Example()\nprint(thing)",
   options:["<code>Example</code>","<code>None</code>","<code>__main__</code>","<code>thing</code>"],
   correct:[2],
   expl:{
-    concept:"Η μεταβλητή <code>__name__</code> του module και η <code>__str__</code>.",
-    steps:"Το <code>print(thing)</code> καλεί την <code>__str__</code>, που επιστρέφει το <code>__name__</code>. Όταν το πρόγραμμα τρέχει ως κύριο script, το <code>__name__</code> είναι <code>'__main__'</code>.",
-    others:"Το <code>Example</code> είναι το όνομα της κλάσης (όχι του module). Το <code>thing</code> είναι όνομα μεταβλητής. Το <code>None</code> θα ίσχυε αν η <code>__str__</code> δεν επέστρεφε string."
+    concept:"The module's <code>__name__</code> variable and <code>__str__</code>.",
+    steps:"<code>print(thing)</code> calls <code>__str__</code>, which returns <code>__name__</code>. When the program runs as the main script, <code>__name__</code> is <code>'__main__'</code>.",
+    others:"<code>Example</code> is the class name (not the module's). <code>thing</code> is a variable name. <code>None</code> would apply if <code>__str__</code> did not return a string."
   }
 },
 {
   n:27, type:"multi", verified:true,
-  prompt:"Δοθέντος του κώδικα, ποιες εκφράσεις αξιολογούνται σε <code>True</code>; (Διάλεξε δύο.)",
+  prompt:"Given the code below, which of the expressions will evaluate to <code>True</code>? (Select <u>two</u> answers.)",
   code:"class Control:\n    my_ID = 1\n    def say(self):\n        return self.my_ID\n\nclass Button(Control):\n    my_ID = 2\n\nclass Radio(Button):\n    def say(self):\n        return -self.my_ID\n\nselection = Radio()\nelement = Control()\nstart = Button()",
   options:[
     "<code>selection.my_ID == 2</code>",
@@ -691,14 +691,14 @@ const QUESTIONS = [
   ],
   correct:[0,2],
   expl:{
-    concept:"Κληρονομικότητα class attributes και <code>isinstance</code>.",
-    steps:"Το <code>Radio</code> δεν ορίζει <code>my_ID</code>, οπότε το κληρονομεί από το <code>Button</code> (=2) → <code>selection.my_ID == 2</code> είναι <code>True</code>. Το <code>start = Button()</code> είναι όντως <code>Button</code> → <code>isinstance(start, Button)</code> είναι <code>True</code>.",
-    others:"Το <code>selection is element</code> είναι <code>False</code> (διαφορετικά αντικείμενα). Το <code>start.my_ID</code> είναι <code>2</code> (όχι <code>-2</code>· το πρόσημο μπαίνει μόνο στη <code>say()</code> του <code>Radio</code>)."
+    concept:"Inheritance of class attributes and <code>isinstance</code>.",
+    steps:"<code>Radio</code> does not define <code>my_ID</code>, so it inherits it from <code>Button</code> (=2) → <code>selection.my_ID == 2</code> is <code>True</code>. <code>start = Button()</code> really is a <code>Button</code> → <code>isinstance(start, Button)</code> is <code>True</code>.",
+    others:"<code>selection is element</code> is <code>False</code> (different objects). <code>start.my_ID</code> is <code>2</code> (not <code>-2</code>; the sign appears only in <code>Radio</code>'s <code>say()</code>)."
   }
 },
 {
   n:28, type:"multi", verified:true,
-  prompt:"Δοθέντος του κώδικα, ποιες από τις παρακάτω εκφράσεις αξιολογούνται σε <code>True</code>; (Διάλεξε δύο.)",
+  prompt:"Given the code below, which of the following expressions will evaluate to <code>True</code>? (Select <u>two</u> answers.)",
   code:"class Un:\n    value = \"Ein\"\n    def say(self):\n        return self.value.lower()\n\nclass Deux(Un):\n    value = \"Zwei\"\n\nclass Troi(Un):\n    def say(self):\n        return self.value.upper()\n\nclass Quatre(Troi, Deux):\n    pass\n\nd = Quatre()\nb = Deux()",
   options:[
     "<code>Troi in Quatre.__bases__</code>",
@@ -708,66 +708,66 @@ const QUESTIONS = [
   ],
   correct:[0,1],
   expl:{
-    concept:"Άμεσες βάσεις (<code>__bases__</code>), <code>isinstance</code> και επίλυση μέσω MRO.",
-    steps:"Οι άμεσες βάσεις του <code>Quatre</code> είναι <code>(Troi, Deux)</code>, άρα <code>Troi in Quatre.__bases__</code> → <code>True</code>. Το <code>d</code> είναι <code>Quatre</code> που τελικά κληρονομεί <code>Un</code> → <code>isinstance(d, Un)</code> → <code>True</code>.",
-    others:"Το <code>q</code> δεν ορίζεται πουθενά → <code>NameError</code> (όχι <code>True</code>)."
+    concept:"Direct bases (<code>__bases__</code>), <code>isinstance</code> and resolution via the MRO.",
+    steps:"The direct bases of <code>Quatre</code> are <code>(Troi, Deux)</code>, so <code>Troi in Quatre.__bases__</code> → <code>True</code>. <code>d</code> is a <code>Quatre</code> which ultimately inherits <code>Un</code> → <code>isinstance(d, Un)</code> → <code>True</code>.",
+    others:"<code>q</code> is not defined anywhere → <code>NameError</code> (not <code>True</code>)."
   },
-  note:"Προσοχή — η εκτέλεση δείχνει ότι και το <code>d.say() == \"ZWEI\"</code> είναι <b>True</b>! Το MRO του <code>Quatre</code> είναι <code>Quatre→Troi→Deux→Un</code>: η <code>say()</code> βρίσκεται στο <code>Troi</code> (<code>self.value.upper()</code>) και το <code>value</code> βρίσκεται στο <code>Deux</code> (<code>\"Zwei\"</code>), οπότε δίνει <code>\"ZWEI\"</code>. Άρα τρεις προτάσεις είναι αληθείς και η επίσημη ερώτηση είναι ουσιαστικά ελαττωματική· εδώ μετρώνται ως σωστές οι δύο «επίσημες»."
+  note:"Note — execution shows that <code>d.say() == \"ZWEI\"</code> is also <b>True</b>! The MRO of <code>Quatre</code> is <code>Quatre→Troi→Deux→Un</code>: <code>say()</code> is found in <code>Troi</code> (<code>self.value.upper()</code>) and <code>value</code> is found in <code>Deux</code> (<code>\"Zwei\"</code>), giving <code>\"ZWEI\"</code>. So three statements are true and the official question is effectively flawed; here the two \"official\" answers are counted as correct."
 },
 {
   n:29, type:"single", verified:true,
-  prompt:"Ποια είναι η αναμενόμενη συμπεριφορά του παρακάτω snippet;",
+  prompt:"What is the expected behavior of the following snippet?",
   code:"class Taxi:\n    def print_number(self):\n        print(self.get_number())\n    def get_number(self):\n        return \"unknown\"\n\nclass Yellow(Taxi):\n    def get_number(self):\n        return \"261\"\n\ncab = Yellow()\ncab.print_number()",
-  options:["Εμφανίζει <code>None</code>.","Προκαλεί εξαίρεση.","Εμφανίζει <code>unknown</code>.","Εμφανίζει <code>261</code>."],
+  options:["It outputs <code>None</code>.","It raises an exception.","It outputs <code>unknown</code>.","It outputs <code>261</code>."],
   correct:[3],
   expl:{
-    concept:"Πολυμορφισμός: η <code>self.get_number()</code> αναλύεται δυναμικά στον πραγματικό τύπο του αντικειμένου.",
-    steps:"Το <code>cab</code> είναι <code>Yellow</code>. Η <code>print_number()</code> (κληρονομημένη από <code>Taxi</code>) καλεί <code>self.get_number()</code>, που λόγω overriding δίνει την έκδοση του <code>Yellow</code> → <code>261</code>.",
-    others:"Το <code>unknown</code> θα τυπωνόταν μόνο αν το <code>Yellow</code> δεν έκανε override. Δεν υπάρχει εξαίρεση ούτε <code>None</code>."
+    concept:"Polymorphism: <code>self.get_number()</code> resolves dynamically to the object's actual type.",
+    steps:"<code>cab</code> is a <code>Yellow</code>. <code>print_number()</code> (inherited from <code>Taxi</code>) calls <code>self.get_number()</code>, which due to overriding gives <code>Yellow</code>'s version → <code>261</code>.",
+    others:"<code>unknown</code> would be printed only if <code>Yellow</code> did not override. There is no exception and no <code>None</code>."
   }
 },
 {
   n:30, type:"single", verified:true,
-  prompt:"Ποια είναι η αναμενόμενη συμπεριφορά του παρακάτω κώδικα;",
+  prompt:"What is the expected behavior of the following code?",
   code:"class Content:\n    title = \"None\"\n    def __init__(self, this):\n        self.name = this + \" than \" + Content.title\n\ntext_1 = Content(\"Paper\")\ntext_2 = Content(\"Article\")\nprint(text_1.title == text_2.name)",
-  options:["Ο κώδικας είναι λανθασμένος και πετά εξαίρεση.","Εμφανίζει <code>True</code>.","Εμφανίζει <code>False</code>.","Εμφανίζει <code>None</code>."],
+  options:["The code is erroneous and will raise an exception.","It outputs <code>True</code>.","It outputs <code>False</code>.","It outputs <code>None</code>."],
   correct:[2],
   expl:{
     concept:"Class attribute (<code>title</code>) vs instance attribute (<code>name</code>).",
-    steps:"Το <code>text_1.title</code> δεν υπάρχει ως instance attribute, οπότε διαβάζεται το class attribute → το string <code>\"None\"</code>. Το <code>text_2.name</code> είναι <code>\"Article than None\"</code>. Τα δύο strings είναι άνισα → <code>False</code>.",
-    others:"Δεν υπάρχει σφάλμα (όλα είναι strings). Το <code>True</code> θα απαιτούσε ίδια strings. Το <code>None</code> εδώ είναι απλώς το <i>περιεχόμενο</i> του string, όχι η τιμή της σύγκρισης."
+    steps:"<code>text_1.title</code> does not exist as an instance attribute, so the class attribute is read → the string <code>\"None\"</code>. <code>text_2.name</code> is <code>\"Article than None\"</code>. The two strings are unequal → <code>False</code>.",
+    others:"There is no error (everything is strings). <code>True</code> would require identical strings. <code>None</code> here is merely the <i>content</i> of the string, not the result of the comparison."
   }
 },
 {
   n:31, type:"multi", verified:false,
-  prompt:"Ποιες προτάσεις είναι <b>αληθείς</b> για τον αντικειμενοστραφή προγραμματισμό; (Διάλεξε δύο.)",
+  prompt:"Which statements are <b>true</b> about object-oriented programming? (Select <u>two</u> answers.)",
   options:[
-    "Η ενθυλάκωση (encapsulation) είναι το φαινόμενο που σου επιτρέπει να κρύβεις κάποια χαρακτηριστικά μιας κλάσης από τον έξω κόσμο.",
-    "Στο διάγραμμα ιεραρχίας, η υπερκλάση μιας κλάσης βρίσκεται κάτω από την κλάση.",
-    "Ο πολυμορφισμός είναι το φαινόμενο που σου επιτρέπει να έχεις πολλές κλάσεις με το ίδιο όνομα.",
-    "Μια κλάση μπορεί να υπάρχει χωρίς τα αντικείμενά της, αλλά ένα αντικείμενο δεν μπορεί να υπάρξει χωρίς την κλάση του."
+    "Encapsulation is a phenomenon which allows you to hide some class traits from the outer world.",
+    "In the hierarchy diagram, a superclass of a class is located below the class.",
+    "Polymorphism is a phenomenon allowing you to have many classes of the same name.",
+    "A class may exist without its objects, but an object cannot exist without its class."
   ],
   correct:[0,3],
   expl:{
-    concept:"Βασικές έννοιες ΟΟΠ: ενθυλάκωση, ιεραρχία, πολυμορφισμός, σχέση κλάσης–αντικειμένου.",
-    steps:"Η ενθυλάκωση όντως κρύβει εσωτερικά χαρακτηριστικά (1η αληθής). Μια κλάση είναι αυτόνομη οντότητα, ενώ κάθε αντικείμενο χρειάζεται την κλάση του ως «καλούπι» (4η αληθής).",
-    others:"Στα διαγράμματα η υπερκλάση σχεδιάζεται <b>πάνω</b>, όχι κάτω (2η ψευδής). Ο πολυμορφισμός είναι η ικανότητα διαφορετικών κλάσεων να ανταποκρίνονται στην ίδια μέθοδο με δικό τους τρόπο — όχι «ίδια ονόματα κλάσεων» (3η ψευδής)."
+    concept:"Core OOP concepts: encapsulation, hierarchy, polymorphism, the class–object relationship.",
+    steps:"Encapsulation does hide internal traits (statement 1 true). A class is a self-standing entity, while every object needs its class as a \"mold\" (statement 4 true).",
+    others:"In diagrams the superclass is drawn <b>above</b>, not below (statement 2 false). Polymorphism is the ability of different classes to respond to the same method in their own way — not \"same class names\" (statement 3 false)."
   }
 },
 {
   n:32, type:"single", verified:false,
-  prompt:"Το σύμβολο <code>errno.ENOENT</code> αναφέρεται σε σφάλμα που περιγράφεται ως:",
+  prompt:"The <code>errno.ENOENT</code> symbol refers to an error described as:",
   options:["No such file or directory","No child processes","Operation not permitted","Permission denied"],
   correct:[0],
   expl:{
-    concept:"Σταθερές σφαλμάτων του module <code>errno</code>.",
-    steps:"Το <code>ENOENT</code> σημαίνει «Error NO ENTry» → «No such file or directory» (το αρχείο/φάκελος δεν υπάρχει).",
-    others:"<code>ECHILD</code> = No child processes· <code>EPERM</code> = Operation not permitted· <code>EACCES</code> = Permission denied."
+    concept:"Error constants of the <code>errno</code> module.",
+    steps:"<code>ENOENT</code> means \"Error NO ENTry\" → \"No such file or directory\" (the file/folder does not exist).",
+    others:"<code>ECHILD</code> = No child processes; <code>EPERM</code> = Operation not permitted; <code>EACCES</code> = Permission denied."
   }
 },
 {
   n:33, type:"multi", verified:true,
-  prompt:"Ποιες από τις παρακάτω γραμμές περιέχουν έγκυρο κώδικα Python; (Διάλεξε δύο.)",
+  prompt:"Which of the following lines contain valid Python code? (Select <u>two</u> answers.)",
   options:[
     "<code>lambda a,b: a if a &lt; b else b</code>",
     "<code>lambda a,b: True</code>",
@@ -776,96 +776,96 @@ const QUESTIONS = [
   ],
   correct:[0,1],
   expl:{
-    concept:"Σύνταξη lambda: <code>lambda params: expression</code> (μόνο έκφραση, χωρίs <code>return</code>).",
-    steps:"Η 1η και η 2η είναι έγκυρες lambdas — το σώμα είναι μια έκφραση (conditional expression ή σταθερά).",
-    others:"Η 3η (<code>lambda a,b = ...</code>) είναι συντακτικό σφάλμα. Η 4η έχει δύο σφάλματα: οι παράμετροι της lambda δεν μπαίνουν σε παρενθέσεις και δεν επιτρέπεται <code>return</code> μέσα σε lambda."
+    concept:"lambda syntax: <code>lambda params: expression</code> (an expression only, no <code>return</code>).",
+    steps:"The 1st and 2nd are valid lambdas — the body is a single expression (a conditional expression or a constant).",
+    others:"The 3rd (<code>lambda a,b = ...</code>) is a syntax error. The 4th has two errors: a lambda's parameters are not put in parentheses and <code>return</code> is not allowed inside a lambda."
   }
 },
 {
   n:34, type:"multi", verified:false,
-  prompt:"Ποιες από τις παρακάτω προτάσεις είναι <b>αληθείς</b>; (Διάλεξε δύο.)",
+  prompt:"Which of the following statements are <b>true</b>? (Select <u>two</u> answers.)",
   options:[
-    "Η συνάρτηση <code>input()</code> διαβάζει δεδομένα από το stream <i>stdin</i>.",
-    "Το πρώτο όρισμα της συνάρτησης <code>open()</code> είναι ακέραια τιμή.",
-    "Η συνάρτηση <code>readlines()</code> επιστρέφει ένα string.",
-    "Υπάρχουν τρία προ-ανοιγμένα streams αρχείων."
+    "The <code>input()</code> function reads data from the <i>stdin</i> stream.",
+    "The first argument of the <code>open()</code> function is an integer value.",
+    "The <code>readlines()</code> function returns a string.",
+    "There are three pre-opened file streams."
   ],
   correct:[0,3],
   expl:{
-    concept:"Είσοδος/έξοδος: <code>input</code>, <code>open</code>, <code>readlines</code> και τα προκαθορισμένα streams.",
-    steps:"Η <code>input()</code> διαβάζει από το <i>stdin</i> (1η αληθής). Κατά την εκκίνηση υπάρχουν τρία ανοιχτά streams: <i>stdin</i>, <i>stdout</i>, <i>stderr</i> (4η αληθής).",
-    others:"Το πρώτο όρισμα της <code>open()</code> είναι συνήθως το όνομα/διαδρομή αρχείου (string), όχι ακέραιος (2η ψευδής). Η <code>readlines()</code> επιστρέφει <b>λίστα</b> από strings, όχι ένα string (3η ψευδής)."
+    concept:"Input/output: <code>input</code>, <code>open</code>, <code>readlines</code> and the predefined streams.",
+    steps:"<code>input()</code> reads from <i>stdin</i> (statement 1 true). At startup there are three open streams: <i>stdin</i>, <i>stdout</i>, <i>stderr</i> (statement 4 true).",
+    others:"The first argument of <code>open()</code> is usually the file name/path (a string), not an integer (statement 2 false). <code>readlines()</code> returns a <b>list</b> of strings, not a single string (statement 3 false)."
   }
 },
 {
   n:35, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"def f(a,b):\n    return b(b)\n\nprint(f(lambda x: x + 1, 0))",
-  options:["<code>0</code>","<code>None</code>","Εμφανίζεται μήνυμα σφάλματος στην οθόνη.","<code>1</code>"],
+  options:["<code>0</code>","<code>None</code>","An error message will appear on the screen.","<code>1</code>"],
   correct:[2],
   expl:{
-    concept:"Παγίδα ονομάτων παραμέτρων: το σώμα χρησιμοποιεί <code>b</code>, όχι <code>a</code>.",
-    steps:"Στην κλήση, <code>a</code> = η lambda και <code>b</code> = <code>0</code>. Το <code>return b(b)</code> προσπαθεί να καλέσει <code>0(0)</code> → <code>TypeError: 'int' object is not callable</code>. Η lambda δεν χρησιμοποιείται ποτέ.",
-    others:"Τα <code>0/1/None</code> προϋποθέτουν ότι το <code>b</code> είναι η lambda — αλλά το <code>b</code> είναι το <code>0</code>."
+    concept:"Parameter-name trap: the body uses <code>b</code>, not <code>a</code>.",
+    steps:"On the call, <code>a</code> = the lambda and <code>b</code> = <code>0</code>. <code>return b(b)</code> tries to call <code>0(0)</code> → <code>TypeError: 'int' object is not callable</code>. The lambda is never used.",
+    others:"<code>0/1/None</code> assume <code>b</code> is the lambda — but <code>b</code> is <code>0</code>."
   }
 },
 {
   n:36, type:"single", verified:false,
-  prompt:"Ποια συνάρτηση θα χρησιμοποιήσεις για να διαβάσεις μία γραμμή από ένα αρχείο κειμένου;",
+  prompt:"Which function will you use to read one line from a text file?",
   options:["<code>readline()</code>","<code>readstr()</code>","<code>readlines()</code>","<code>readln()</code>"],
   correct:[0],
   expl:{
-    concept:"Μέθοδοι ανάγνωσης αρχείων.",
-    steps:"Η <code>readline()</code> διαβάζει <b>μία</b> γραμμή κάθε φορά.",
-    others:"Η <code>readlines()</code> (με <code>s</code>) διαβάζει <b>όλες</b> τις γραμμές σε λίστα. Οι <code>readstr()</code> και <code>readln()</code> δεν υπάρχουν."
+    concept:"File-reading methods.",
+    steps:"<code>readline()</code> reads <b>one</b> line at a time.",
+    others:"<code>readlines()</code> (with an <code>s</code>) reads <b>all</b> lines into a list. <code>readstr()</code> and <code>readln()</code> do not exist."
   }
 },
 {
   n:37, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"def boolean(op):\n    return op(False, True)\n\nprint(boolean(lambda x,y: x if x else y))",
   options:["<code>0</code>","<code>True</code>","<code>1</code>","<code>False</code>"],
   correct:[1],
   expl:{
-    concept:"Πέρασμα lambda ως όρισμα και conditional expression.",
-    steps:"Η <code>boolean</code> καλεί <code>op(False, True)</code>, δηλαδή <code>x=False, y=True</code>. Η lambda επιστρέφει <code>x if x else y</code>: αφού το <code>x</code> (=<code>False</code>) είναι «ψευδές», επιστρέφει το <code>y</code> → <code>True</code>.",
-    others:"Το <code>False</code> θα ίσχυε αν επιστρεφόταν το <code>x</code>. Τα <code>0/1</code> δεν τυπώνονται (η lambda επιστρέφει boolean)."
+    concept:"Passing a lambda as an argument and a conditional expression.",
+    steps:"<code>boolean</code> calls <code>op(False, True)</code>, i.e. <code>x=False, y=True</code>. The lambda returns <code>x if x else y</code>: since <code>x</code> (=<code>False</code>) is \"falsy\", it returns <code>y</code> → <code>True</code>.",
+    others:"<code>False</code> would apply if <code>x</code> were returned. <code>0/1</code> are not printed (the lambda returns a boolean)."
   }
 },
 {
   n:38, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"pairs = [[2, 1], [-2, -1]]\nnew_pairs = map(lambda p: sorted(p), pairs)\nprint(list(new_pairs)[0][0])",
   options:["<code>-1</code>","<code>1</code>","<code>-2</code>","<code>2</code>"],
   correct:[1],
   expl:{
-    concept:"Η <code>map</code> με <code>sorted</code> πάνω σε ένθετες λίστες και διπλή δεικτοδότηση.",
-    steps:"Η <code>map</code> ταξινομεί κάθε υπολίστα: <code>sorted([2,1])=[1,2]</code>, <code>sorted([-2,-1])=[-2,-1]</code>. Άρα <code>[[1,2],[-2,-1]]</code>. Το <code>[0][0]</code> είναι το πρώτο στοιχείο της πρώτης λίστας → <code>1</code>.",
-    others:"Το <code>2</code> είναι το <code>[0][1]</code>. Τα <code>-2/-1</code> ανήκουν στη δεύτερη υπολίστα <code>[1]</code>."
+    concept:"<code>map</code> with <code>sorted</code> over nested lists and double indexing.",
+    steps:"<code>map</code> sorts each sub-list: <code>sorted([2,1])=[1,2]</code>, <code>sorted([-2,-1])=[-2,-1]</code>. So <code>[[1,2],[-2,-1]]</code>. <code>[0][0]</code> is the first element of the first list → <code>1</code>.",
+    others:"<code>2</code> is <code>[0][1]</code>. <code>-2/-1</code> belong to the second sub-list <code>[1]</code>."
   }
 },
 {
   n:39, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"def power(a):\n\n    def internal(x):\n        return x ** a\n\n    return internal\n\ncube = power(3)\nprint(cube(2))",
   options:["<code>4</code>","<code>8</code>","<code>2</code>","<code>1</code>"],
   correct:[1],
   expl:{
-    concept:"Closures: η εσωτερική συνάρτηση «θυμάται» το <code>a</code> της εξωτερικής.",
-    steps:"Το <code>power(3)</code> επιστρέφει την <code>internal</code> με <code>a=3</code> «παγιδευμένο». Το <code>cube(2)</code> υπολογίζει <code>2 ** 3 = 8</code>.",
-    others:"Το <code>4</code> = <code>2**2</code>, το <code>2</code> = <code>2**1</code>, το <code>1</code> = <code>x**0</code> — όλα λάθος εκθέτης."
+    concept:"Closures: the inner function \"remembers\" the outer function's <code>a</code>.",
+    steps:"<code>power(3)</code> returns <code>internal</code> with <code>a=3</code> \"captured\". <code>cube(2)</code> computes <code>2 ** 3 = 8</code>.",
+    others:"<code>4</code> = <code>2**2</code>, <code>2</code> = <code>2**1</code>, <code>1</code> = <code>x**0</code> — all wrong exponents."
   }
 },
 {
   n:40, type:"single", verified:true,
-  prompt:"Ποιο είναι το αναμενόμενο αποτέλεσμα του παρακάτω κώδικα;",
+  prompt:"What is the expected output of the following code?",
   code:"source = [1, 2, 4, 8, 16]\ntarget = [x // 2 for x in source if x < 10]\nprint(target[1])",
   options:["<code>2</code>","<code>1</code>","<code>8</code>","<code>4</code>"],
   correct:[1],
   expl:{
-    concept:"List comprehension με φίλτρο (<code>if</code>) και ακέραια διαίρεση (<code>//</code>).",
-    steps:"Το φίλτρο <code>x &lt; 10</code> κρατά τα <code>1,2,4,8</code>. Η <code>// 2</code> δίνει <code>[0, 1, 2, 4]</code>. Το <code>target[1]</code> είναι <code>1</code>.",
-    others:"Το <code>2</code> είναι το <code>target[2]</code>, το <code>4</code> είναι το <code>target[3]</code>. Το <code>8</code> φιλτράρεται αλλά το <code>8//2=4</code> δεν είναι στη θέση 1."
+    concept:"List comprehension with a filter (<code>if</code>) and integer division (<code>//</code>).",
+    steps:"The filter <code>x &lt; 10</code> keeps <code>1,2,4,8</code> (<code>16</code> is dropped). <code>// 2</code> gives <code>[0, 1, 2, 4]</code>. <code>target[1]</code> is <code>1</code>.",
+    others:"<code>2</code> is <code>target[2]</code> and <code>4</code> is <code>target[3]</code>. <code>8</code> stays (it is &lt; 10) and becomes <code>4</code>, but that lands at <code>target[3]</code>, not position 1."
   }
 }
 ];
