@@ -919,15 +919,17 @@ function sendResults(payload){
   const el = $("res-send");
   if(!RESULTS_ENDPOINT){ if(el) el.innerHTML=""; return; }
   if(el) el.innerHTML = '<span style="color:var(--muted)">⏳ Αποστολή αποτελέσματος…</span>';
-  // Χρησιμοποιούμε text/plain ώστε να μην ενεργοποιείται CORS preflight προς το Apps Script.
+  // mode:'no-cors' + text/plain: το Apps Script δέχεται το POST χωρίς CORS preflight.
+  // Η απόκριση είναι "opaque" (δεν διαβάζεται), γι' αυτό θεωρούμε επιτυχία την ολοκλήρωση χωρίς σφάλμα δικτύου.
   fetch(RESULTS_ENDPOINT, {
     method:"POST",
+    mode:"no-cors",
     headers:{ "Content-Type":"text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   }).then(()=>{
-    if(el) el.innerHTML = '<span style="color:var(--good)">✓ Το αποτέλεσμα στάλθηκε στον/στην καθηγητή/τρια.</span>';
+    if(el) el.innerHTML = '<span style="color:var(--good)">✓ Το αποτέλεσμα καταχωρήθηκε.</span>';
   }).catch(()=>{
-    if(el) el.innerHTML = '<span style="color:var(--bad)">⚠️ Δεν στάλθηκε το αποτέλεσμα (έλεγξε τη σύνδεση). Το σκορ σου φαίνεται κανονικά εδώ.</span>';
+    if(el) el.innerHTML = '<span style="color:var(--bad)">⚠️ Πρόβλημα σύνδεσης — το αποτέλεσμα ίσως δεν καταχωρήθηκε. Το σκορ σου φαίνεται κανονικά εδώ.</span>';
   });
 }
 
