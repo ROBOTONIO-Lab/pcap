@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCAP · Επαναληπτικό Module 1 — Modules &amp; Packages</title>
+<style>
+  :root{
+    --navy:#11294b; --navy-2:#1d3b66; --navy-soft:#2c4f80;
+    --gold:#c8a233; --gold-soft:#e6cd84; --gold-bg:#fbf4dd;
+    --bg:#f6f3ec; --surface:#ffffff; --ink:#1c2128; --ink-soft:#52606d;
+    --line:#e3ddcd; --ok:#1e7a45; --ok-bg:#e6f3ea; --no:#b5392b; --no-bg:#fbe9e7;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 20px 80px;}
+
+  /* ---------- Header ---------- */
+  header.hero{
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#fff; padding:34px 0 30px; border-bottom:4px solid var(--gold);
+  }
+  .hero .wrap{padding-bottom:0}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold-soft); font-weight:700; margin:0 0 6px;
+  }
+  .hero h1{margin:0; font-size:1.9rem; font-weight:800; letter-spacing:-.01em;}
+  .hero h1 span{color:var(--gold-soft);}
+  .hero p.sub{margin:10px 0 0; color:#d9e2ef; max-width:62ch; font-size:.98rem;}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;}
+  .badge{
+    background:rgba(255,255,255,.10); border:1px solid rgba(230,205,132,.35);
+    color:#fff; font-size:.78rem; padding:5px 11px; border-radius:999px; font-weight:600;
+  }
+  .badge b{color:var(--gold-soft);}
+
+  /* ---------- Sticky nav ---------- */
+  nav.jump{
+    position:sticky; top:0; z-index:20; background:rgba(246,243,236,.92);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+  }
+  nav.jump .wrap{display:flex; gap:6px; padding:10px 20px;}
+  nav.jump a{
+    flex:1; text-align:center; text-decoration:none; color:var(--navy);
+    font-weight:700; font-size:.86rem; padding:8px 6px; border-radius:8px;
+    border:1px solid transparent;
+  }
+  nav.jump a:hover{background:#fff; border-color:var(--line);}
+
+  /* ---------- Sections ---------- */
+  section{margin-top:42px; scroll-margin-top:64px;}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:4px;}
+  .sec-num{font-family:var(--mono); color:var(--gold); font-weight:700; font-size:.9rem;}
+  h2{margin:0; font-size:1.4rem; color:var(--navy); font-weight:800;}
+  .sec-sub{margin:4px 0 18px; color:var(--ink-soft); font-size:.92rem;}
+  h3{margin:24px 0 8px; font-size:1.02rem; color:var(--navy-2); font-weight:700;}
+
+  code{font-family:var(--mono); font-size:.86em; background:#eef0e8;
+    padding:1px 5px; border-radius:4px; color:#243a5e;}
+  pre{font-family:var(--mono); background:var(--navy); color:#e8eef7;
+    padding:13px 15px; border-radius:9px; overflow-x:auto; font-size:.84rem;
+    margin:10px 0; line-height:1.5;}
+  pre .kw{color:#8fd3ff;} pre .fn{color:var(--gold-soft);} pre .cm{color:#90a4bf;}
+
+  /* ---------- Tables (memory map) ---------- */
+  .tbl{width:100%; border-collapse:collapse; background:var(--surface);
+    border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:.9rem;}
+  .tbl caption{caption-side:top; text-align:left; font-weight:700; color:var(--navy-2);
+    padding:0 0 7px; font-size:1rem;}
+  .tbl th{background:var(--navy); color:#fff; text-align:left; padding:9px 12px; font-weight:600;}
+  .tbl td{padding:8px 12px; border-top:1px solid var(--line); vertical-align:top;}
+  .tbl tr:nth-child(even) td{background:#faf8f2;}
+  .tbl td:first-child{white-space:nowrap; font-family:var(--mono); font-size:.82rem; color:#243a5e;}
+  .map-block{margin-bottom:22px;}
+
+  /* ---------- Trap cards ---------- */
+  .trap{background:var(--surface); border:1px solid var(--line);
+    border-left:5px solid var(--gold); border-radius:9px; padding:14px 16px; margin:12px 0;}
+  .trap h4{margin:0 0 6px; font-size:1rem; color:var(--navy); display:flex; gap:8px; align-items:center;}
+  .trap h4 .pin{font-size:1rem;}
+  .trap p{margin:6px 0; font-size:.92rem;}
+  .trap .key{background:var(--gold-bg); border:1px solid var(--gold-soft);
+    border-radius:7px; padding:8px 11px; margin-top:8px; font-size:.88rem;}
+  .trap .key b{color:#8a6d12;}
+
+  /* ---------- Drill ---------- */
+  .drill-bar{position:sticky; top:52px; z-index:15; display:flex; justify-content:space-between;
+    align-items:center; background:var(--navy); color:#fff; padding:10px 16px;
+    border-radius:10px; margin:8px 0 18px;}
+  .drill-bar .score{font-weight:700;}
+  .drill-bar .score b{color:var(--gold-soft); font-size:1.15rem;}
+  .drill-bar button{background:var(--gold); color:var(--navy); border:none;
+    font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer; font-size:.85rem;}
+  .drill-bar button:hover{background:var(--gold-soft);}
+
+  .q{background:var(--surface); border:1px solid var(--line); border-radius:11px;
+    padding:18px 18px 16px; margin:14px 0;}
+  .q .qhead{display:flex; gap:10px; align-items:flex-start; margin-bottom:4px;}
+  .q .qn{font-family:var(--mono); font-weight:700; color:var(--gold); font-size:.85rem;
+    background:var(--navy); padding:2px 8px; border-radius:6px; flex:none;}
+  .q .qtype{font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-soft); border:1px solid var(--line); padding:2px 7px; border-radius:6px; flex:none;}
+  .q .qtype.multi{color:#8a6d12; border-color:var(--gold-soft); background:var(--gold-bg);}
+  .q .stem{font-size:.96rem; margin:8px 0 4px;}
+  .opts{list-style:none; margin:10px 0 0; padding:0;}
+  .opts li{margin:7px 0;}
+  .opt{display:flex; gap:10px; align-items:flex-start; width:100%; text-align:left;
+    background:#fbfaf6; border:1.5px solid var(--line); border-radius:9px;
+    padding:10px 12px; cursor:pointer; font-size:.9rem; color:var(--ink); transition:.12s;}
+  .opt:hover{border-color:var(--navy-soft);}
+  .opt .mark{flex:none; width:18px; height:18px; border:2px solid var(--navy-soft);
+    border-radius:50%; margin-top:1px;}
+  .opt[data-multi="1"] .mark{border-radius:5px;}
+  .opt.sel{border-color:var(--navy-2); background:#eef3fa;}
+  .opt.sel .mark{background:var(--navy-2); box-shadow:inset 0 0 0 3px #fff;}
+  .opt code{background:#e4e7df;}
+  .opt.correct{border-color:var(--ok); background:var(--ok-bg);}
+  .opt.correct .mark{background:var(--ok); border-color:var(--ok);}
+  .opt.wrong{border-color:var(--no); background:var(--no-bg);}
+  .opt.wrong .mark{background:var(--no); border-color:var(--no);}
+  .opt .tag{margin-left:auto; font-size:.75rem; font-weight:700; align-self:center; flex:none;}
+  .opt.correct .tag{color:var(--ok);}
+  .opt.wrong .tag{color:var(--no);}
+
+  .checkbtn{margin-top:12px; background:var(--navy); color:#fff; border:none;
+    font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; font-size:.86rem;}
+  .checkbtn:hover{background:var(--navy-2);}
+  .checkbtn:disabled{opacity:.5; cursor:default;}
+
+  .explain{display:none; margin-top:13px; border-top:1px dashed var(--line); padding-top:12px;}
+  .explain.show{display:block;}
+  .explain .verdict{font-weight:700; margin-bottom:8px;}
+  .explain .verdict.ok{color:var(--ok);} .explain .verdict.no{color:var(--no);}
+  .explain h5{margin:10px 0 3px; font-size:.82rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--navy-2);}
+  .explain p{margin:3px 0; font-size:.9rem;}
+  .explain .note{background:var(--gold-bg); border-left:4px solid var(--gold);
+    border-radius:0 7px 7px 0; padding:8px 11px; margin-top:10px; font-size:.86rem;}
+
+  footer{margin-top:50px; padding-top:18px; border-top:1px solid var(--line);
+    color:var(--ink-soft); font-size:.82rem; text-align:center;}
+
+  @media (max-width:560px){
+    .hero h1{font-size:1.5rem;} h2{font-size:1.2rem;}
+    nav.jump a{font-size:.78rem;}
+  }
+  @media print{
+    nav.jump,.drill-bar,.checkbtn,#drill{display:none;}
+    body{background:#fff;} .trap,.q,.tbl{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">PCAP-31-03 · Επαναληπτικό</p>
+    <h1>Block #1 — <span>Modules &amp; Packages</span></h1>
+    <p class="sub">Σύντομη, στοχευμένη επανάληψη για την τελική ευθεία. Διάβασε τον Χάρτη μνήμης,
+       σάρωσε τις Παγίδες, και κλείσε με το Drill. Στόχος: σίγουροι πόντοι, όχι θεωρία.</p>
+    <div class="badges">
+      <span class="badge"><b>12%</b> του exam</span>
+      <span class="badge"><b>6</b> ερωτήσεις στο πραγματικό test</span>
+      <span class="badge"><b>1+1</b> / <b>2</b> πόντοι ανά ερώτηση</span>
+      <span class="badge">single &amp; multiple-choice</span>
+    </div>
+  </div>
+</header>
+
+<nav class="jump">
+  <div class="wrap">
+    <a href="#map">📋 Χάρτης μνήμης</a>
+    <a href="#traps">⚠️ Παγίδες</a>
+    <a href="#drill">🎯 Drill</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============== A. MEMORY MAP ============== -->
+<section id="map">
+  <div class="sec-head"><span class="sec-num">A</span><h2>Χάρτης μνήμης</h2></div>
+  <p class="sec-sub">Μόνο ό,τι θέλει ακριβή ανάκληση στο exam. Αν θυμάσαι αυτούς τους πίνακες, καλύπτεις το μεγαλύτερο μέρος του block.</p>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>module <code>math</code> — υπολογισμοί</caption>
+    <thead><tr><th>Συνάρτηση</th><th>Τι επιστρέφει</th></tr></thead>
+    <tbody>
+      <tr><td>ceil(x)</td><td>Μικρότερος ακέραιος ≥ x (στρογγυλοποίηση <b>προς τα πάνω</b>)</td></tr>
+      <tr><td>floor(x)</td><td>Μεγαλύτερος ακέραιος ≤ x (στρογγυλοποίηση <b>προς τα κάτω</b>)</td></tr>
+      <tr><td>trunc(x)</td><td>Κόβει τα δεκαδικά (<b>προς το 0</b>) — διαφέρει από floor στους αρνητικούς</td></tr>
+      <tr><td>factorial(x)</td><td>x! &nbsp;(π.χ. <code>factorial(0)==1</code>)</td></tr>
+      <tr><td>sqrt(x)</td><td>Τετραγωνική ρίζα (float)</td></tr>
+      <tr><td>hypot(x,y)</td><td>√(x²+y²) — μήκος υποτείνουσας</td></tr>
+      <tr><td>pi&nbsp;/&nbsp;e</td><td>Σταθερές π και e</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>module <code>random</code> — ψευδοτυχαίοι αριθμοί</caption>
+    <thead><tr><th>Συνάρτηση</th><th>Τι κάνει</th></tr></thead>
+    <tbody>
+      <tr><td>seed()&nbsp;/&nbsp;seed(n)</td><td>Ορίζει τον «σπόρο». Ίδιος σπόρος → <b>ίδια ακολουθία</b> αριθμών</td></tr>
+      <tr><td>random()</td><td>float x, όπου <code>0.0 ≤ x &lt; 1.0</code></td></tr>
+      <tr><td>randrange(a,b,s)</td><td>ακέραιος στο <code>[a, b)</code> — το <b>b ΔΕΝ συμπεριλαμβάνεται</b>. start=0, step=1 default</td></tr>
+      <tr><td>randint(a,b)</td><td>ακέραιος στο <code>[a, b]</code> — το <b>b συμπεριλαμβάνεται</b>. = <code>randrange(a, b+1)</code></td></tr>
+      <tr><td>choice(seq)</td><td>Ένα τυχαίο στοιχείο από το seq</td></tr>
+      <tr><td>sample(seq,k)</td><td>Λίστα με k στοιχεία από το seq</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>module <code>platform</code> — στοιχεία συστήματος</caption>
+    <thead><tr><th>Συνάρτηση</th><th>Τι επιστρέφει</th></tr></thead>
+    <tbody>
+      <tr><td>platform()</td><td>string με OS + αρχιτεκτονική</td></tr>
+      <tr><td>machine()</td><td>γενικό όνομα επεξεργαστή (π.χ. <code>x86_64</code>)</td></tr>
+      <tr><td>processor()</td><td>πραγματικό όνομα επεξεργαστή</td></tr>
+      <tr><td>system()</td><td>γενικό όνομα OS (π.χ. <code>Linux</code>)</td></tr>
+      <tr><td>version()</td><td>έκδοση του OS</td></tr>
+      <tr><td>python_implementation()</td><td>υλοποίηση Python (συνήθως <code>CPython</code>)</td></tr>
+      <tr><td>python_version_tuple()</td><td><b>tuple 3 στοιχείων</b>: major, minor, patch (ως strings)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>Imports &amp; δομή πακέτων</caption>
+    <thead><tr><th>Έννοια</th><th>Σημείωση</th></tr></thead>
+    <tbody>
+      <tr><td>import mod</td><td>Κλήση με <b>qualified</b> όνομα: <code>mod.fun()</code></td></tr>
+      <tr><td>from mod import fun</td><td>Κλήση <b>χωρίς</b> qualification: <code>fun()</code></td></tr>
+      <tr><td>from mod import *</td><td>Εισάγει όλες τις οντότητες· κλήση χωρίς qualification (κίνδυνος συγκρούσεων ονομάτων)</td></tr>
+      <tr><td>import a.b</td><td>Το <code>a</code> είναι package/module, το <code>b</code> module/submodule· κλήση <code>a.b.c()</code></td></tr>
+      <tr><td>__init__.py</td><td>Ορίζει/αρχικοποιεί ένα <b>package</b>· αν δεν είναι κενό, εκτελείται στο import</td></tr>
+      <tr><td>__pycache__</td><td>Δημιουργείται <b>αυτόματα</b>· περιέχει <code>.pyc</code> (semi-compiled, version-tagged: <code>mod.cpython-XY.pyc</code>)</td></tr>
+      <tr><td>__name__</td><td><code>'__main__'</code> μόνο σε άμεση εκτέλεση· αλλιώς το όνομα του module</td></tr>
+      <tr><td>sys.path</td><td>Λίστα από strings με τους φακέλους αναζήτησης· <code>path[0]</code> = φάκελος του script· ο χρήστης μπορεί να την τροποποιήσει</td></tr>
+      <tr><td>dir(mod)</td><td><b>Συνάρτηση</b> που επιστρέφει <b>αλφαβητικά ταξινομημένη λίστα</b> με τα ονόματα του module</td></tr>
+      <tr><td>_x&nbsp;/&nbsp;__x</td><td>Ονόματα που ξεκινούν με <code>_</code> ή <code>__</code> θεωρούνται <b>private</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============== B. TRAPS ============== -->
+<section id="traps">
+  <div class="sec-head"><span class="sec-num">B</span><h2>Παγίδες &amp; Προσοχή</h2></div>
+  <p class="sec-sub">Οι λεπτομέρειες που τρώνε πόντους από οριακούς μαθητές. Αυτές είναι που χωρίζουν το «το ξέρω περίπου» από το «το πετυχαίνω σίγουρα».</p>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> floor vs ceil vs trunc στους αρνητικούς</h4>
+    <p>Σε θετικούς, <code>floor</code> και <code>trunc</code> δίνουν το ίδιο. Σε <b>αρνητικούς, διαφέρουν</b>: το <code>trunc</code> πάει προς το 0, το <code>floor</code> προς το −∞.</p>
+    <div class="key"><b>−2.5 →</b> floor = <b>−3</b>, ceil = <b>−2</b>, trunc = <b>−2</b></div>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> randrange αποκλείει το πάνω όριο — το randint όχι</h4>
+    <p><code>randrange(1, 10)</code> δίνει 1…9 (το <b>10 ΠΟΤΕ</b>). Αντίθετα, <code>randint(1, 10)</code> δίνει 1…10 (το <b>10 ΝΑΙ</b>).</p>
+    <div class="key"><b>Μνημονικό:</b> <code>randint(a,b)</code> = <code>randrange(a, b+1)</code></div>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Ίδιος seed → ίδια αποτελέσματα</h4>
+    <p>Ο γεννήτορας είναι <i>ψευδο</i>τυχαίος. Αν ξανα-ορίσεις τον ίδιο σπόρο, οι επόμενες κλήσεις δίνουν τα <b>ίδια</b> νούμερα — οπότε η διαφορά τους είναι 0.</p>
+    <pre><span class="kw">import</span> random
+random.<span class="fn">seed</span>(0); x = random.<span class="fn">choice</span>([1, 2])
+random.<span class="fn">seed</span>(0); y = random.<span class="fn">choice</span>([1, 2])
+<span class="fn">print</span>(x - y)   <span class="cm"># πάντα 0</span></pre>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> qualified vs unqualified όνομα</h4>
+    <p>Το ποια μορφή κλήσης ισχύει <b>εξαρτάται από το πώς έκανες import</b>:</p>
+    <p>• Μετά από <code>import a.b</code> → υποχρεωτικά <code>a.b.c()</code> (όχι <code>b.c()</code>, όχι <code>c()</code>).<br>
+       • Μετά από <code>from a.b import c</code> → σκέτο <code>c()</code>.</p>
+    <div class="key"><b>Παγίδα:</b> μετά τη λέξη <code>import</code> σε ένα <code>from … import</code> μπαίνουν <b>ονόματα οντοτήτων</b>, όχι <code>module.function</code>.</div>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Δεν «εισάγεις πακέτο» για να καλέσεις συνάρτηση κατευθείαν</h4>
+    <p>Το <code>import p</code> από μόνο του <b>δεν</b> σου δίνει πρόσβαση στο <code>p.m.f()</code>. Πρέπει να φτάσεις μέχρι το module: <code>import p.m</code> ή <code>from p.m import f</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>__name__</code> δεν είναι πάντα <code>'__main__'</code></h4>
+    <p>Είναι <code>'__main__'</code> <b>μόνο</b> όταν το αρχείο τρέχει ως κύριο πρόγραμμα. Όταν γίνεται <b>import</b> ως module, παίρνει το <b>όνομα του module</b>.</p>
+    <div class="key"><b>Γι' αυτό</b> γράφουμε <code>if __name__ == "__main__":</code> για κώδικα που τρέχει μόνο standalone.</div>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>__pycache__</code> &amp; <code>.pyc</code></h4>
+    <p>Ο φάκελος <code>__pycache__</code> δημιουργείται <b>αυτόματα</b> από την Python — ποτέ με το χέρι. Ο semi-compiled κώδικας αποθηκεύεται σε αρχεία <code>.pyc</code> (όχι <code>.pby</code>, όχι <code>.pyo</code>), με όνομα που περιέχει την έκδοση: <code>mod.cpython-XY.pyc</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Multi-select: ΜΗΔΕΝ partial credit</h4>
+    <p>Στις ερωτήσεις «Select two», αν διαλέξεις 1 σωστή + 1 λάθος, ή 2 σωστές + 1 παραπάνω, παίρνεις <b>0 πόντους</b> — όχι μισούς. Διάλεξε <b>ακριβώς</b> όσες ζητάει, ούτε μία παραπάνω/λιγότερη.</p>
+    <div class="key"><b>Τακτική:</b> πρώτα αποκλείεις τις σίγουρα λάθος, μετά επιλέγεις ανάμεσα στις υπόλοιπες.</div>
+  </div>
+</section>
+
+<!-- ============== C. DRILL ============== -->
+<section id="drill">
+  <div class="sec-head"><span class="sec-num">C</span><h2>Drill — γρήγορη εξάσκηση</h2></div>
+  <p class="sec-sub">12 ερωτήσεις στο ύφος του exam. Απάντησε, πάτησε «Έλεγχος», δες την εξήγηση. Όλος ο κώδικας επαληθεύτηκε με εκτέλεση.</p>
+
+  <div class="drill-bar">
+    <span class="score">Σκορ: <b id="scoreNow">0</b> / <span id="scoreMax">12</span></span>
+    <button id="resetBtn">Επανεκκίνηση</button>
+  </div>
+
+  <div id="questions"></div>
+</section>
+
+<footer>
+  PCAP-31-03 · Block #1 — Modules &amp; Packages · Επαναληπτικό υλικό ·
+  <span style="color:var(--ok)">✓ Επαληθεύτηκε με εκτέλεση</span>
+</footer>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`import math\nx = -2.5\nprint(math.floor(x), math.ceil(x), math.trunc(x))`,
+    options:[
+      {t:`<code>-3 -2 -2</code>`, ok:true},
+      {t:`<code>-2 -3 -2</code>`, ok:false},
+      {t:`<code>-3 -3 -3</code>`, ok:false},
+      {t:`<code>-2 -2 -2</code>`, ok:false},
+    ],
+    concept:`floor, ceil και trunc στρογγυλοποιούν με διαφορετικό τρόπο — και η διαφορά φαίνεται στους αρνητικούς αριθμούς.`,
+    steps:[`floor(-2.5) → προς τα κάτω (−∞) → -3`,`ceil(-2.5) → προς τα πάνω → -2`,`trunc(-2.5) → κόβει τα δεκαδικά, προς το 0 → -2`],
+    why:`trunc και floor συμπίπτουν μόνο σε θετικούς· εδώ trunc=-2 ενώ floor=-3.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`import math\nprint(math.factorial(0) + math.factorial(1))`,
+    options:[
+      {t:`<code>2</code>`, ok:true},
+      {t:`<code>0</code>`, ok:false},
+      {t:`<code>1</code>`, ok:false},
+      {t:`The code raises an error`, ok:false},
+    ],
+    concept:`Το παραγοντικό ορίζεται και για το 0.`,
+    steps:[`factorial(0) → 1 (εξ ορισμού 0! = 1)`,`factorial(1) → 1`,`1 + 1 → 2`],
+    why:`Συχνό λάθος: να θεωρήσει κανείς ότι factorial(0)==0. Είναι 1.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`import math\nprint(math.hypot(3, 4))`,
+    options:[
+      {t:`<code>5.0</code>`, ok:true},
+      {t:`<code>7</code>`, ok:false},
+      {t:`<code>5</code>`, ok:false},
+      {t:`<code>25.0</code>`, ok:false},
+    ],
+    concept:`hypot(x, y) = √(x²+y²) — το μήκος της υποτείνουσας.`,
+    steps:[`3² + 4² = 9 + 16 = 25`,`√25 = 5.0 (επιστρέφει float)`],
+    why:`Δίνει float (5.0), όχι int (5)· και δεν είναι το άθροισμα 3+4=7.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Which of the following functions come from the <code>random</code> module? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`<code>sqrt()</code>`, ok:false},
+      {t:`<code>choice()</code>`, ok:true},
+      {t:`<code>machine()</code>`, ok:false},
+      {t:`<code>sample()</code>`, ok:true},
+    ],
+    concept:`Κάθε συνάρτηση ανήκει σε συγκεκριμένο module — πρέπει να ξεχωρίζεις ποια από πού.`,
+    steps:[`choice() → random (επιστρέφει ένα τυχαίο στοιχείο)`,`sample() → random (επιστρέφει λίστα k στοιχείων)`],
+    why:`sqrt() ανήκει στο math, machine() στο platform.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`import random\nrandom.seed(1)\nx = random.randrange(10)\nrandom.seed(1)\ny = random.randrange(10)\nprint(x == y)`,
+    options:[
+      {t:`<code>True</code>`, ok:true},
+      {t:`<code>False</code>`, ok:false},
+      {t:`Διαφέρει σε κάθε εκτέλεση`, ok:false},
+      {t:`The code raises an error`, ok:false},
+    ],
+    concept:`Ο γεννήτορας είναι ψευδοτυχαίος: ίδιος seed → ίδια ακολουθία.`,
+    steps:[`seed(1) → ορίζει την κατάσταση`,`randrange(10) → δίνει κάποιο x`,`seed(1) ξανά → ίδια ακριβώς κατάσταση`,`randrange(10) → δίνει το ίδιο y → x == y → True`],
+    why:`Επειδή ο σπόρος είναι ίδιος και στις δύο φορές, το αποτέλεσμα είναι ντετερμινιστικό.`
+  },
+  {
+    type:"single",
+    stem:`What is <b>true</b> about <code>random.randrange(1, 10)</code>?`,
+    options:[
+      {t:`It returns an integer from 1 to 9 (10 is excluded)`, ok:true},
+      {t:`It returns an integer from 1 to 10 (10 included)`, ok:false},
+      {t:`It returns a float between 1.0 and 10.0`, ok:false},
+      {t:`It returns an integer from 0 to 9`, ok:false},
+    ],
+    concept:`Το randrange ακολουθεί τη λογική του range: το πάνω όριο αποκλείεται.`,
+    steps:[`start = 1 (συμπεριλαμβάνεται)`,`stop = 10 (ΔΕΝ συμπεριλαμβάνεται)`,`άρα δυνατές τιμές: 1…9`],
+    why:`Το randint(1,10) θα συμπεριλάμβανε το 10· το randrange όχι. Επίσης επιστρέφει int, όχι float.`
+  },
+  {
+    type:"single",
+    stem:`What does <code>platform.python_version_tuple()</code> return?`,
+    options:[
+      {t:`A 3-element tuple (major, minor, patch)`, ok:true},
+      {t:`A single string like <code>"3.12.3"</code>`, ok:false},
+      {t:`A list of two integers`, ok:false},
+      {t:`A float like <code>3.12</code>`, ok:false},
+    ],
+    concept:`Επιστρέφει την έκδοση της Python σπασμένη σε μέρη.`,
+    steps:[`tuple 3 στοιχείων: το major, το minor και το patch level`,`τα στοιχεία είναι strings, π.χ. ('3', '12', '3')`],
+    why:`Το σκέτο string "3.12.3" το δίνει το platform.python_version(), όχι το _tuple().`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`A function named <code>f()</code> is included in a module named <code>m</code>, and the module is part of a package named <code>p</code>. Which snippets correctly invoke the function? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`<code>import p.m</code><br><code>p.m.f()</code>`, ok:true},
+      {t:`<code>from p.m import f</code><br><code>f()</code>`, ok:true},
+      {t:`<code>import p.m.f</code><br><code>f()</code>`, ok:false},
+      {t:`<code>import p</code><br><code>m.f()</code>`, ok:false},
+    ],
+    concept:`Ο τρόπος κλήσης εξαρτάται από τη μορφή του import.`,
+    steps:[`import p.m → καλείς με πλήρες qualified όνομα: p.m.f()`,`from p.m import f → φέρνεις την f στο namespace, καλείς f()`],
+    why:`import p.m.f δεν επιτρέπεται (μετά το import μπαίνει module, όχι function). import p μόνο του δεν δίνει πρόσβαση στο m.f().`
+  },
+  {
+    type:"single",
+    stem:`After the statement <code>import a.b</code>, how do you correctly call a function <code>c()</code> defined in <code>b</code>?`,
+    options:[
+      {t:`<code>a.b.c()</code>`, ok:true},
+      {t:`<code>b.c()</code>`, ok:false},
+      {t:`<code>c()</code>`, ok:false},
+      {t:`<code>a.c()</code>`, ok:false},
+    ],
+    concept:`Το import a.b δεν φέρνει ονόματα στο τρέχον namespace — χρειάζεται πλήρες qualification.`,
+    steps:[`το a.b φορτώνεται, αλλά το c δεν είναι «ορατό» σκέτο`,`πρέπει να γράψεις ολόκληρη τη διαδρομή: a.b.c()`],
+    why:`b.c() και c() θα δούλευαν μόνο με διαφορετική μορφή import (π.χ. from a.b import c).`
+  },
+  {
+    type:"single",
+    stem:`A file is run <b>directly</b> as a standalone program. What does <code>print(__name__)</code> display?`,
+    options:[
+      {t:`<code>__main__</code>`, ok:true},
+      {t:`the file's name without <code>.py</code>`, ok:false},
+      {t:`<code>None</code>`, ok:false},
+      {t:`the full path of the file`, ok:false},
+    ],
+    concept:`Η μεταβλητή __name__ δείχνει σε ποιο πλαίσιο τρέχει το αρχείο.`,
+    steps:[`όταν το αρχείο τρέχει ως κύριο πρόγραμμα → __name__ == '__main__'`,`όταν γίνεται import ως module → __name__ == το όνομα του module`],
+    why:`Το όνομα του αρχείου (χωρίς .py) θα εμφανιζόταν μόνο αν το αρχείο γινόταν import, όχι όταν τρέχει standalone.`,
+    note:`Προσοχή: μέσω exec() ο κώδικας τρέχει στο τρέχον namespace, οπότε βλέπει κι εκεί '__main__'.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Which of the following statements are <b>true</b> about <code>__pycache__</code> and the semi-compiled files? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`The <code>__pycache__</code> folder is created automatically by Python`, ok:true},
+      {t:`The semi-compiled byte-code is stored in <code>.pyc</code> files`, ok:true},
+      {t:`The programmer must create <code>__pycache__</code> manually`, ok:false},
+      {t:`The byte-code is stored in <code>.pby</code> files`, ok:false},
+    ],
+    concept:`Η Python διαχειρίζεται μόνη της την «ημι-μεταγλώττιση» των modules.`,
+    steps:[`το __pycache__ δημιουργείται αυτόματα κατά το import — χωρίς παρέμβαση του προγραμματιστή`,`ο byte-code αποθηκεύεται σε .pyc αρχεία (version-tagged: mod.cpython-XY.pyc)`],
+    why:`Δεν το φτιάχνει ο προγραμματιστής με το χέρι· και η επέκταση είναι .pyc, όχι .pby.`
+  },
+  {
+    type:"single",
+    stem:`What is <b>true</b> about the built-in <code>dir()</code> when called on a module?`,
+    options:[
+      {t:`It is a function returning an alphabetically sorted list of the module's names`, ok:true},
+      {t:`It is a method returning a dictionary of the module's contents`, ok:false},
+      {t:`It is a variable containing the module's path`, ok:false},
+      {t:`It returns an unsorted tuple of the module's names`, ok:false},
+    ],
+    concept:`Το dir() είναι εργαλείο introspection για το περιεχόμενο ενός module.`,
+    steps:[`είναι built-in συνάρτηση (όχι method, όχι μεταβλητή)`,`επιστρέφει list — αλφαβητικά ταξινομημένη — με τα ονόματα του module`],
+    why:`Δεν επιστρέφει dictionary ούτε tuple, και η λίστα είναι ταξινομημένη.`
+  },
+];
+
+const qBox = document.getElementById('questions');
+document.getElementById('scoreMax').textContent = QUESTIONS.length;
+let answered = {};
+
+function render(){
+  qBox.innerHTML = '';
+  answered = {};
+  updateScore();
+  QUESTIONS.forEach((q, i) => {
+    const isMulti = q.type === 'multi';
+    const card = document.createElement('div');
+    card.className = 'q';
+    card.dataset.i = i;
+    card.innerHTML = `
+      <div class="qhead">
+        <span class="qn">Q${i+1}</span>
+        <span class="qtype ${isMulti?'multi':''}">${isMulti?'Διάλεξε ΑΚΡΙΒΩΣ '+q.pick:'Μία απάντηση'}</span>
+      </div>
+      <div class="stem">${q.stem}</div>
+      ${q.code ? `<pre>${escapeCode(q.code)}</pre>` : ''}
+      <ul class="opts"></ul>
+      <button class="checkbtn">Έλεγχος</button>
+      <div class="explain"></div>`;
+    const ul = card.querySelector('.opts');
+    q.options.forEach((opt, j) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<div class="opt" data-multi="${isMulti?1:0}" data-j="${j}">
+          <span class="mark"></span><span class="otext">${opt.t}</span>
+          <span class="tag"></span></div>`;
+      ul.appendChild(li);
+    });
+    card.querySelectorAll('.opt').forEach(el => el.addEventListener('click', () => selectOpt(card, el, isMulti)));
+    card.querySelector('.checkbtn').addEventListener('click', () => checkQ(card, i));
+    qBox.appendChild(card);
+  });
+}
+
+function selectOpt(card, el, isMulti){
+  if(card.dataset.locked) return;
+  if(isMulti){ el.classList.toggle('sel'); }
+  else { card.querySelectorAll('.opt').forEach(o => o.classList.remove('sel')); el.classList.add('sel'); }
+}
+
+function checkQ(card, i){
+  if(card.dataset.locked) return;
+  const q = QUESTIONS[i];
+  const opts = [...card.querySelectorAll('.opt')];
+  const chosen = opts.filter(o => o.classList.contains('sel')).map(o => +o.dataset.j);
+  if(chosen.length === 0){ flash(card.querySelector('.checkbtn'), 'Διάλεξε πρώτα'); return; }
+  if(q.type === 'multi' && chosen.length !== q.pick){
+    flash(card.querySelector('.checkbtn'), `Διάλεξε ακριβώς ${q.pick}`); return;
+  }
+  card.dataset.locked = '1';
+  const correctSet = q.options.map((o,j)=>o.ok?j:-1).filter(j=>j>=0);
+  let allRight = true;
+  opts.forEach((o,j) => {
+    const isCorrect = q.options[j].ok;
+    const isChosen = chosen.includes(j);
+    if(isCorrect){ o.classList.add('correct'); o.querySelector('.tag').textContent = 'Σωστό'; }
+    if(isChosen && !isCorrect){ o.classList.add('wrong'); o.querySelector('.tag').textContent = 'Η επιλογή σου'; allRight = false; }
+    if(!isChosen && isCorrect){ allRight = false; }
+  });
+  answered[i] = allRight ? 1 : 0;
+  updateScore();
+  card.querySelector('.checkbtn').disabled = true;
+  showExplain(card, q, allRight);
+}
+
+function showExplain(card, q, allRight){
+  const ex = card.querySelector('.explain');
+  let html = `<div class="verdict ${allRight?'ok':'no'}">${allRight?'✓ Σωστά!':'✗ Όχι ακριβώς — δες γιατί:'}</div>`;
+  html += `<h5>Έννοια</h5><p>${q.concept}</p>`;
+  if(q.steps && q.steps.length){
+    html += `<h5>Ανάλυση βήμα-βήμα</h5>`;
+    q.steps.forEach(s => html += `<p>• ${s}</p>`);
+  }
+  html += `<h5>Γιατί όχι τα άλλα</h5><p>${q.why}</p>`;
+  if(q.note) html += `<div class="note">📌 ${q.note}</div>`;
+  if(q.type === 'multi') html += `<div class="note">⚠️ Multi-select: χωρίς partial credit. Μόνο η ακριβώς σωστή ομάδα μετράει.</div>`;
+  ex.innerHTML = html;
+  ex.classList.add('show');
+}
+
+function updateScore(){
+  const s = Object.values(answered).reduce((a,b)=>a+b,0);
+  document.getElementById('scoreNow').textContent = s;
+}
+function flash(btn, msg){
+  const old = btn.textContent; btn.textContent = msg;
+  setTimeout(()=>btn.textContent = old, 1100);
+}
+function escapeCode(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+document.getElementById('resetBtn').addEventListener('click', render);
+render();
+</script>
+</body>
+</html>
