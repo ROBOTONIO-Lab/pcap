@@ -44,7 +44,12 @@
   .intro h2{margin:.2em 0 .35em;font-size:1.5rem}
   .intro p{color:var(--muted);font-size:.98rem;margin:0}
 
-  .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:24px}
+  /* Section eyebrow label */
+  .eyebrow{display:flex;align-items:center;gap:10px;margin:40px 2px 0;
+    font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:18px}
   a.choice{
     display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);
     border-radius:18px;box-shadow:var(--shadow);padding:24px 22px;transition:transform .12s ease,box-shadow .2s,border-color .2s}
@@ -57,6 +62,18 @@
     box-shadow:0 6px 16px rgba(31,111,235,.32)}
   a.choice.gr .go{background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#3a2e00;
     box-shadow:0 6px 16px rgba(230,184,0,.4)}
+
+  /* Module (revision) cards */
+  .choice.mod{display:flex;flex-direction:column}
+  .modnum{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;
+    font-weight:800;font-size:1.3rem;color:#3a2e00;margin-bottom:10px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-dk));box-shadow:0 6px 16px rgba(230,184,0,.35)}
+  .choice.mod .tagrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .choice.mod .tag{font-size:.72rem;font-weight:600;color:var(--steel);background:#eef3fa;
+    border:1px solid #dde7f3;border-radius:999px;padding:3px 9px}
+  .choice.soon{opacity:.6;pointer-events:none;border-style:dashed}
+  .choice.soon .modnum{background:#e7edf5;color:#90a2ba;box-shadow:none}
+  .choice.soon .go{background:#aebfd4;box-shadow:none}
 
   .meta{margin-top:26px;font-size:.86rem;color:#37475c;background:var(--paper);border:1px solid var(--line);
     border-radius:12px;padding:14px 18px}
@@ -71,14 +88,15 @@
     <div class="logo">&lt;<span>/</span>&gt;</div>
     <div>
       <h1>PCAP — Certified Associate in Python Programming</h1>
-      <p>Διαγωνίσματα εξάσκησης · Mock Test 2 · 40 ερωτήσεις</p>
+      <p>Διαγωνίσματα εξάσκησης &amp; επαναληπτικό υλικό ανά module</p>
     </div>
     <span class="badge-py">Python</span>
   </header>
 
+  <!-- ============ ΔΙΑΓΩΝΙΣΜΑΤΑ ============ -->
   <div class="intro">
     <h2>Διάλεξε έκδοση διαγωνίσματος 👇</h2>
-    <p>Ίδιες 40 ερωτήσεις και στις δύο εκδόσεις. Διαφέρει μόνο η γλώσσα στις επεξηγήσεις.</p>
+    <p>Mock Test 2 · 40 ερωτήσεις. Ίδιες ερωτήσεις και στις δύο εκδόσεις — διαφέρει μόνο η γλώσσα στις επεξηγήσεις.</p>
   </div>
 
   <div class="choices">
@@ -94,6 +112,35 @@
       <h3>Ελληνικά</h3>
       <div class="sub">Ερωτήσεις και επιλογές στα αγγλικά, αλλά αναλυτικές επεξηγήσεις στα ελληνικά.</div>
       <span class="go">Ξεκίνα →</span>
+    </a>
+  </div>
+
+  <!-- ============ ΕΠΑΝΑΛΗΠΤΙΚΟ ΥΛΙΚΟ ============ -->
+  <div class="eyebrow">Επαναληπτικό υλικό ανά module</div>
+  <div class="intro" style="margin-top:6px">
+    <p>Σύντομη, στοχευμένη επανάληψη για την τελική ευθεία: χάρτης μνήμης, παγίδες και drill για κάθε ενότητα.</p>
+  </div>
+
+  <div class="choices">
+    <!-- ΠΡΟΤΥΠΟ MODULE — αντίγραψε αυτή την κάρτα για τα επόμενα modules -->
+    <a class="choice mod" href="module1-revision.html">
+      <div class="modnum">1</div>
+      <h3>Modules &amp; Packages</h3>
+      <div class="sub">Χάρτης μνήμης, 8 παγίδες &amp; 12 ερωτήσεις drill με άμεσες επεξηγήσεις.</div>
+      <div class="tagrow">
+        <span class="tag">12% του exam</span>
+        <span class="tag">math · random · platform</span>
+      </div>
+      <span class="go">Άνοιγμα →</span>
+    </a>
+
+    <!-- Παράδειγμα μελλοντικού module (αφαίρεσε το "soon" και βάλε το σωστό href όταν είναι έτοιμο) -->
+    <a class="choice mod soon" href="#">
+      <div class="modnum">2</div>
+      <h3>Exceptions</h3>
+      <div class="sub">Σύντομα διαθέσιμο.</div>
+      <div class="tagrow"><span class="tag">14% του exam</span></div>
+      <span class="go">Σύντομα →</span>
     </a>
   </div>
 
