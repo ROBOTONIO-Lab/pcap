@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCAP · Επαναληπτικό Module 5 — Miscellaneous</title>
+<style>
+  :root{
+    --navy:#11294b; --navy-2:#1d3b66; --navy-soft:#2c4f80;
+    --gold:#c8a233; --gold-soft:#e6cd84; --gold-bg:#fbf4dd;
+    --bg:#f6f3ec; --surface:#ffffff; --ink:#1c2128; --ink-soft:#52606d;
+    --line:#e3ddcd; --ok:#1e7a45; --ok-bg:#e6f3ea; --no:#b5392b; --no-bg:#fbe9e7;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 20px 80px;}
+
+  /* ---------- Header ---------- */
+  header.hero{
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#fff; padding:34px 0 30px; border-bottom:4px solid var(--gold);
+  }
+  .hero .wrap{padding-bottom:0}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold-soft); font-weight:700; margin:0 0 6px;
+  }
+  .hero h1{margin:0; font-size:1.9rem; font-weight:800; letter-spacing:-.01em;}
+  .hero h1 span{color:var(--gold-soft);}
+  .hero p.sub{margin:10px 0 0; color:#d9e2ef; max-width:62ch; font-size:.98rem;}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;}
+  .badge{
+    background:rgba(255,255,255,.10); border:1px solid rgba(230,205,132,.35);
+    color:#fff; font-size:.78rem; padding:5px 11px; border-radius:999px; font-weight:600;
+  }
+  .badge b{color:var(--gold-soft);}
+
+  /* ---------- Sticky nav ---------- */
+  nav.jump{
+    position:sticky; top:0; z-index:20; background:rgba(246,243,236,.92);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+  }
+  nav.jump .wrap{display:flex; gap:6px; padding:10px 20px;}
+  nav.jump a{
+    flex:1; text-align:center; text-decoration:none; color:var(--navy);
+    font-weight:700; font-size:.86rem; padding:8px 6px; border-radius:8px;
+    border:1px solid transparent;
+  }
+  nav.jump a:hover{background:#fff; border-color:var(--line);}
+
+  /* ---------- Sections ---------- */
+  section{margin-top:42px; scroll-margin-top:64px;}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:4px;}
+  .sec-num{font-family:var(--mono); color:var(--gold); font-weight:700; font-size:.9rem;}
+  h2{margin:0; font-size:1.4rem; color:var(--navy); font-weight:800;}
+  .sec-sub{margin:4px 0 18px; color:var(--ink-soft); font-size:.92rem;}
+  h3{margin:24px 0 8px; font-size:1.02rem; color:var(--navy-2); font-weight:700;}
+
+  code{font-family:var(--mono); font-size:.86em; background:#eef0e8;
+    padding:1px 5px; border-radius:4px; color:#243a5e;}
+  pre{font-family:var(--mono); background:var(--navy); color:#e8eef7;
+    padding:13px 15px; border-radius:9px; overflow-x:auto; font-size:.84rem;
+    margin:10px 0; line-height:1.5;}
+  pre .kw{color:#8fd3ff;} pre .fn{color:var(--gold-soft);} pre .cm{color:#90a4bf;}
+
+  /* ---------- Tables (memory map) ---------- */
+  .tbl{width:100%; border-collapse:collapse; background:var(--surface);
+    border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:.9rem;}
+  .tbl caption{caption-side:top; text-align:left; font-weight:700; color:var(--navy-2);
+    padding:0 0 7px; font-size:1rem;}
+  .tbl th{background:var(--navy); color:#fff; text-align:left; padding:9px 12px; font-weight:600;}
+  .tbl td{padding:8px 12px; border-top:1px solid var(--line); vertical-align:top;}
+  .tbl tr:nth-child(even) td{background:#faf8f2;}
+  .tbl td:first-child{white-space:nowrap; font-family:var(--mono); font-size:.82rem; color:#243a5e;}
+  .map-block{margin-bottom:22px;}
+
+  /* ---------- Trap cards ---------- */
+  .trap{background:var(--surface); border:1px solid var(--line);
+    border-left:5px solid var(--gold); border-radius:9px; padding:14px 16px; margin:12px 0;}
+  .trap h4{margin:0 0 6px; font-size:1rem; color:var(--navy); display:flex; gap:8px; align-items:center;}
+  .trap h4 .pin{font-size:1rem;}
+  .trap p{margin:6px 0; font-size:.92rem;}
+  .trap .key{background:var(--gold-bg); border:1px solid var(--gold-soft);
+    border-radius:7px; padding:8px 11px; margin-top:8px; font-size:.88rem;}
+  .trap .key b{color:#8a6d12;}
+
+  /* ---------- Drill ---------- */
+  .drill-bar{position:sticky; top:52px; z-index:15; display:flex; justify-content:space-between;
+    align-items:center; background:var(--navy); color:#fff; padding:10px 16px;
+    border-radius:10px; margin:8px 0 18px;}
+  .drill-bar .score{font-weight:700;}
+  .drill-bar .score b{color:var(--gold-soft); font-size:1.15rem;}
+  .drill-bar button{background:var(--gold); color:var(--navy); border:none;
+    font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer; font-size:.85rem;}
+  .drill-bar button:hover{background:var(--gold-soft);}
+
+  .q{background:var(--surface); border:1px solid var(--line); border-radius:11px;
+    padding:18px 18px 16px; margin:14px 0;}
+  .q .qhead{display:flex; gap:10px; align-items:flex-start; margin-bottom:4px;}
+  .q .qn{font-family:var(--mono); font-weight:700; color:var(--gold); font-size:.85rem;
+    background:var(--navy); padding:2px 8px; border-radius:6px; flex:none;}
+  .q .qtype{font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-soft); border:1px solid var(--line); padding:2px 7px; border-radius:6px; flex:none;}
+  .q .qtype.multi{color:#8a6d12; border-color:var(--gold-soft); background:var(--gold-bg);}
+  .q .stem{font-size:.96rem; margin:8px 0 4px;}
+  .opts{list-style:none; margin:10px 0 0; padding:0;}
+  .opts li{margin:7px 0;}
+  .opt{display:flex; gap:10px; align-items:flex-start; width:100%; text-align:left;
+    background:#fbfaf6; border:1.5px solid var(--line); border-radius:9px;
+    padding:10px 12px; cursor:pointer; font-size:.9rem; color:var(--ink); transition:.12s;}
+  .opt:hover{border-color:var(--navy-soft);}
+  .opt .mark{flex:none; width:18px; height:18px; border:2px solid var(--navy-soft);
+    border-radius:50%; margin-top:1px;}
+  .opt[data-multi="1"] .mark{border-radius:5px;}
+  .opt.sel{border-color:var(--navy-2); background:#eef3fa;}
+  .opt.sel .mark{background:var(--navy-2); box-shadow:inset 0 0 0 3px #fff;}
+  .opt code{background:#e4e7df;}
+  .opt.correct{border-color:var(--ok); background:var(--ok-bg);}
+  .opt.correct .mark{background:var(--ok); border-color:var(--ok);}
+  .opt.wrong{border-color:var(--no); background:var(--no-bg);}
+  .opt.wrong .mark{background:var(--no); border-color:var(--no);}
+  .opt .tag{margin-left:auto; font-size:.75rem; font-weight:700; align-self:center; flex:none;}
+  .opt.correct .tag{color:var(--ok);}
+  .opt.wrong .tag{color:var(--no);}
+
+  .checkbtn{margin-top:12px; background:var(--navy); color:#fff; border:none;
+    font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; font-size:.86rem;}
+  .checkbtn:hover{background:var(--navy-2);}
+  .checkbtn:disabled{opacity:.5; cursor:default;}
+
+  .explain{display:none; margin-top:13px; border-top:1px dashed var(--line); padding-top:12px;}
+  .explain.show{display:block;}
+  .explain .verdict{font-weight:700; margin-bottom:8px;}
+  .explain .verdict.ok{color:var(--ok);} .explain .verdict.no{color:var(--no);}
+  .explain h5{margin:10px 0 3px; font-size:.82rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--navy-2);}
+  .explain p{margin:3px 0; font-size:.9rem;}
+  .explain .note{background:var(--gold-bg); border-left:4px solid var(--gold);
+    border-radius:0 7px 7px 0; padding:8px 11px; margin-top:10px; font-size:.86rem;}
+
+  footer{margin-top:50px; padding-top:18px; border-top:1px solid var(--line);
+    color:var(--ink-soft); font-size:.82rem; text-align:center;}
+
+  @media (max-width:560px){
+    .hero h1{font-size:1.5rem;} h2{font-size:1.2rem;}
+    nav.jump a{font-size:.78rem;}
+  }
+  @media print{
+    nav.jump,.drill-bar,.checkbtn,#drill{display:none;}
+    body{background:#fff;} .trap,.q,.tbl{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">PCAP-31-03 · Επαναληπτικό</p>
+    <h1>Block #5 — <span>Miscellaneous</span></h1>
+    <p class="sub">Σύντομη, στοχευμένη επανάληψη για την τελική ευθεία. Διάβασε τον Χάρτη μνήμης,
+       σάρωσε τις Παγίδες, και κλείσε με το Drill. Στόχος: σίγουροι πόντοι, όχι θεωρία.</p>
+    <div class="badges">
+      <span class="badge"><b>22%</b> του exam</span>
+      <span class="badge"><b>9</b> ερωτήσεις στο πραγματικό test</span>
+      <span class="badge"><b>1/2/4</b> πόντοι ανά ερώτηση</span>
+      <span class="badge">single &amp; multiple-choice</span>
+    </div>
+  </div>
+</header>
+
+<nav class="jump">
+  <div class="wrap">
+    <a href="#map">📋 Χάρτης μνήμης</a>
+    <a href="#traps">⚠️ Παγίδες</a>
+    <a href="#drill">🎯 Drill</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============== A. MEMORY MAP ============== -->
+<section id="map">
+  <div class="sec-head"><span class="sec-num">A</span><h2>Χάρτης μνήμης</h2></div>
+  <p class="sec-sub">Το τελευταίο block (22%): comprehensions, lambdas, closures, generators, I/O. Μόνο ό,τι θέλει ακριβή ανάκληση.</p>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>List comprehensions &amp; <code>lambda</code></caption>
+    <thead><tr><th>Μορφή</th><th>Σημείωση</th></tr></thead>
+    <tbody>
+      <tr><td>[expr for x in iter]</td><td><code>[10**e for e in range(3)]</code> → <code>[1, 10, 100]</code></td></tr>
+      <tr><td>[expr for x in iter if cond]</td><td>Το <code>if</code> ως <b>φίλτρο</b> — κρατά μόνο όσα περνούν</td></tr>
+      <tr><td>[a if cond else b for x in …]</td><td>Conditional expression· <b>η τιμή-αν-αληθές μπαίνει ΠΡΩΤΗ</b></td></tr>
+      <tr><td>lambda params: expr</td><td>Ανώνυμη συνάρτηση· επιστρέφει την τιμή του expr· τα params μπορεί να λείπουν</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption><code>map</code> · <code>filter</code> · closures</caption>
+    <thead><tr><th>Στοιχείο</th><th>Τι κάνει</th></tr></thead>
+    <tbody>
+      <tr><td>map(fn, seq)</td><td>Εφαρμόζει την fn σε κάθε στοιχείο· επιστρέφει <b>iterator</b> (όχι λίστα — τύλιξε σε <code>list()</code>)</td></tr>
+      <tr><td>filter(fn, seq)</td><td>Κρατά τα στοιχεία για τα οποία η fn επιστρέφει <b>True</b>· επιστρέφει iterator</td></tr>
+      <tr><td>closure</td><td>Εσωτερική συνάρτηση που «θυμάται» τιμές του περιβάλλοντος, ακόμη κι αφού η εξωτερική τελειώσει</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>Generators &amp; iterators (<code>yield</code>)</caption>
+    <thead><tr><th>Στοιχείο</th><th>Σημείωση</th></tr></thead>
+    <tbody>
+      <tr><td>yield</td><td>Κάνει τη συνάρτηση <b>generator</b>· «παγώνει» την κατάσταση μεταξύ τιμών</td></tr>
+      <tr><td>κλήση generator</td><td>Επιστρέφει <b>generator object</b> — όχι τις τιμές· πάρε τις με <code>list()</code> ή βρόχο</td></tr>
+      <tr><td>iterator protocol</td><td>Δύο μέθοδοι: <code>__iter__()</code> και <code>__next__()</code></td></tr>
+      <tr><td>StopIteration</td><td>Την πετάει το <code>__next__()</code> όταν δεν υπάρχουν άλλες τιμές</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>File I/O</caption>
+    <thead><tr><th>Στοιχείο</th><th>Σημείωση</th></tr></thead>
+    <tbody>
+      <tr><td>open(file, mode)</td><td>Το <b>mode είναι string</b>· επιστρέφει file object· σε αποτυχία → εξαίρεση (π.χ. <code>FileNotFoundError</code>), <b>όχι</b> False</td></tr>
+      <tr><td>'r'</td><td>Read· το αρχείο <b>πρέπει να υπάρχει</b></td></tr>
+      <tr><td>'w'</td><td>Write· <b>δημιουργεί/μηδενίζει</b> (truncate)</td></tr>
+      <tr><td>'a'</td><td>Append· γράφει στο τέλος, κρατά τα παλιά περιεχόμενα</td></tr>
+      <tr><td>'r+' / 'w+'</td><td>Read+write· το <code>r+</code> θέλει υπαρκτό αρχείο, το <code>w+</code> δημιουργεί/μηδενίζει</td></tr>
+      <tr><td>+'b' / +'t'</td><td>Binary / text· text είναι το <b>default</b></td></tr>
+      <tr><td>.read([n]) / .readline() / .readlines()</td><td>χαρακτήρες / μία γραμμή / λίστα γραμμών</td></tr>
+      <tr><td>.write(s) / .close()</td><td>Γράψιμο string / κλείσιμο stream</td></tr>
+      <tr><td>stdin / stdout / stderr</td><td>Προ-ανοιγμένα streams· το <code>print()</code> γράφει στο <b>stdout</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============== B. TRAPS ============== -->
+<section id="traps">
+  <div class="sec-head"><span class="sec-num">B</span><h2>Παγίδες &amp; Προσοχή</h2></div>
+  <p class="sec-sub">Οι λεπτομέρειες που τρώνε πόντους από οριακούς μαθητές. Αυτές χωρίζουν το «το ξέρω περίπου» από το «το πετυχαίνω σίγουρα».</p>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Conditional expression: τιμή-αν-αληθές ΠΡΩΤΑ</h4>
+    <p>Η σύνταξη είναι <code>a if cond else b</code> — δηλαδή η τιμή για το αληθές μπαίνει <b>πρώτη</b>, μετά το <code>if</code>, μετά το <code>else</code>. Π.χ. <code>[1 if x%2==0 else 0 for x in range(5)]</code> → <code>[1,0,1,0,1]</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Σύνταξη lambda — τι ΔΕΝ επιτρέπεται</h4>
+    <p><code>lambda x: x+1</code> ✓ και <code>lambda: 2</code> ✓ (χωρίς παραμέτρους). Αλλά: <b>όχι</b> <code>return</code> μέσα (<code>lambda x: return x+1</code> → SyntaxError), <b>όχι</b> παρενθέσεις γύρω από τις παραμέτρους, <b>όχι</b> <code>=</code> στη θέση του <code>:</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>map</code> &amp; <code>filter</code> επιστρέφουν iterator</h4>
+    <p>Δεν επιστρέφουν λίστα! Για να δεις τις τιμές, τύλιξέ τα σε <code>list()</code>. Επίσης διατρέχονται <b>μία φορά</b> — μετά «αδειάζουν».</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>filter</code>: κρατά τα <code>True</code></h4>
+    <p>Το <code>filter(fn, seq)</code> κρατά τα στοιχεία για τα οποία η <code>fn</code> επιστρέφει <b>True</b> και απορρίπτει τα υπόλοιπα. Π.χ. <code>filter(lambda x: x>0, [-1,0,1,2])</code> → <code>[1, 2]</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Το generator function δεν επιστρέφει τις τιμές</h4>
+    <p>Η <b>κλήση</b> μιας συνάρτησης με <code>yield</code> επιστρέφει ένα <b>generator object</b>, όχι τη σειρά τιμών. Για τις τιμές: <code>list(gen())</code> ή βρόχος <code>for</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Iterator protocol = <code>__iter__</code> + <code>__next__</code></h4>
+    <p>Ένας iterator υλοποιεί <b>δύο</b> μεθόδους: <code>__iter__()</code> (επιστρέφει τον εαυτό του) και <code>__next__()</code> (επόμενη τιμή· πετάει <code>StopIteration</code> στο τέλος).</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Closures «θυμούνται» το περιβάλλον</h4>
+    <p>Μια εσωτερική συνάρτηση κρατά πρόσβαση στις μεταβλητές της εξωτερικής <b>ακόμη κι αφού</b> η εξωτερική έχει επιστρέψει. Αυτό είναι το closure.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Το 2ο όρισμα του <code>open()</code> είναι <b>string</b></h4>
+    <p>Το mode είναι string (π.χ. <code>"r"</code>, <code>"wt"</code>, <code>"rb"</code>) — όχι ακέραιος. Λάθος τύπος → <b>TypeError</b>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Τι κάνει κάθε mode (κλασική παγίδα)</h4>
+    <p><code>'r'</code> → πρέπει να υπάρχει. <code>'w'</code> → <b>μηδενίζει/δημιουργεί</b>. <code>'a'</code> → append. <code>'r+'</code> → read/write αλλά <b>πρέπει να υπάρχει</b>. <code>'w+'</code> → read/write αλλά <b>μηδενίζει</b>. Το <code>'b'</code> κάνει binary, το <code>'t'</code> (default) text.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>open()</code> δεν επιστρέφει <code>False</code> σε αποτυχία</h4>
+    <p>Επιστρέφει <b>file object</b>· αν αποτύχει (π.χ. ανύπαρκτο αρχείο σε mode <code>"r"</code>), <b>πετάει εξαίρεση</b> (<code>FileNotFoundError</code> / <code>IOError</code>), δεν επιστρέφει False.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Standard streams &amp; <code>close()</code></h4>
+    <p>Τα <code>stdin</code>, <code>stdout</code>, <code>stderr</code> είναι προ-ανοιγμένα streams· το <code>print()</code> γράφει στο <b>stdout</b>. Για να κλείσεις τη σύνδεση handle–αρχείου χρησιμοποιείς <code>.close()</code>.</p>
+    <div class="key"><b>Multi-select:</b> ΜΗΔΕΝ partial credit — διάλεξε ακριβώς όσες ζητάει η ερώτηση.</div>
+  </div>
+</section>
+
+<!-- ============== C. DRILL ============== -->
+<section id="drill">
+  <div class="sec-head"><span class="sec-num">C</span><h2>Drill — γρήγορη εξάσκηση</h2></div>
+  <p class="sec-sub">18 ερωτήσεις στο ύφος του exam. Απάντησε, πάτησε «Έλεγχος», δες την εξήγηση. Όλος ο κώδικας επαληθεύτηκε με εκτέλεση.</p>
+
+  <div class="drill-bar">
+    <span class="score">Σκορ: <b id="scoreNow">0</b> / <span id="scoreMax">18</span></span>
+    <button id="resetBtn">Επανεκκίνηση</button>
+  </div>
+
+  <div id="questions"></div>
+</section>
+
+<footer>
+  PCAP-31-03 · Block #5 — Miscellaneous (Comprehensions · Lambdas · Closures · I/O) · Επαναληπτικό υλικό ·
+  <span style="color:var(--ok)">✓ Επαληθεύτηκε με εκτέλεση</span>
+</footer>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`def f(l):\n    return l(-3, 3)\n\nprint(f(lambda x, y: x if x > y else y))`,
+    options:[
+      {t:`<code>3</code>`, ok:true},
+      {t:`<code>-3</code>`, ok:false},
+      {t:`<code>0</code>`, ok:false},
+      {t:`<code>None</code>`, ok:false},
+    ],
+    concept:`Μια lambda περνά ως όρισμα και καλείται μέσα στη συνάρτηση.`,
+    steps:[`η f καλεί l(-3, 3) → την lambda με x=-3, y=3`,`x if x > y else y → -3 > 3; ψευδές → επιστρέφει y = 3`],
+    why:`Η lambda εδώ βρίσκει το μεγαλύτερο των δύο· max(-3, 3) = 3.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`print([10 ** ex for ex in range(3)])`,
+    options:[
+      {t:`<code>[1, 10, 100]</code>`, ok:true},
+      {t:`<code>[10, 100, 1000]</code>`, ok:false},
+      {t:`<code>[0, 10, 20]</code>`, ok:false},
+      {t:`<code>[1, 10, 100, 1000]</code>`, ok:false},
+    ],
+    concept:`List comprehension που υπολογίζει δυνάμεις του 10.`,
+    steps:[`range(3) → 0, 1, 2`,`10**0=1, 10**1=10, 10**2=100`],
+    why:`Το range(3) δίνει 0,1,2 (όχι 1,2,3), και ξεκινά από 10**0 = 1.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`print([x for x in range(10) if x % 2 == 0])`,
+    options:[
+      {t:`<code>[0, 2, 4, 6, 8]</code>`, ok:true},
+      {t:`<code>[1, 3, 5, 7, 9]</code>`, ok:false},
+      {t:`<code>[0, 1, 2, 3, 4]</code>`, ok:false},
+      {t:`<code>[2, 4, 6, 8]</code>`, ok:false},
+    ],
+    concept:`Το if μέσα στο comprehension λειτουργεί ως φίλτρο.`,
+    steps:[`από το range(10) κρατά μόνο τα x με x % 2 == 0`,`δηλαδή τους άρτιους: 0, 2, 4, 6, 8`],
+    why:`Το if φιλτράρει — δεν μετασχηματίζει· κρατά μόνο τους άρτιους, συμπεριλαμβανομένου του 0.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`print([1 if x % 2 == 0 else 0 for x in range(5)])`,
+    options:[
+      {t:`<code>[1, 0, 1, 0, 1]</code>`, ok:true},
+      {t:`<code>[0, 1, 0, 1, 0]</code>`, ok:false},
+      {t:`<code>[1, 1, 1]</code>`, ok:false},
+      {t:`<code>[0, 0, 0, 0, 0]</code>`, ok:false},
+    ],
+    concept:`Conditional expression: η τιμή-αν-αληθές μπαίνει πρώτη.`,
+    steps:[`για x = 0,1,2,3,4`,`x άρτιο → 1, αλλιώς 0`,`0→1, 1→0, 2→1, 3→0, 4→1`],
+    why:`Το x=0 είναι άρτιο, οπότε το πρώτο στοιχείο είναι 1 (όχι 0).`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Which of the following lines contain <b>valid</b> Python code? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`<code>lambda x: None</code>`, ok:true},
+      {t:`<code>lambda x = x + 1</code>`, ok:false},
+      {t:`<code>lambda(x): return x + 1</code>`, ok:false},
+      {t:`<code>lambda x: x + 1</code>`, ok:true},
+    ],
+    concept:`Η σύνταξη lambda είναι: lambda παράμετροι: έκφραση.`,
+    steps:[`lambda x: None → έγκυρο (επιστρέφει πάντα None)`,`lambda x: x + 1 → έγκυρο (επιστρέφει x+1)`],
+    why:`Το "lambda x = x+1" χρησιμοποιεί = αντί για : (SyntaxError). Το "lambda(x): return x+1" έχει παρενθέσεις και return (SyntaxError).`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`print(list(map(lambda x: x * x, [1, 2, 3])))`,
+    options:[
+      {t:`<code>[1, 4, 9]</code>`, ok:true},
+      {t:`<code>[1, 2, 3]</code>`, ok:false},
+      {t:`<code>[2, 4, 6]</code>`, ok:false},
+      {t:`<code>&lt;map object&gt;</code>`, ok:false},
+    ],
+    concept:`Το map εφαρμόζει την lambda σε κάθε στοιχείο· το list() υλοποιεί το αποτέλεσμα.`,
+    steps:[`1→1, 2→4, 3→9`,`list(...) → [1, 4, 9]`],
+    why:`Χωρίς το list() θα τυπωνόταν ένα map object· εδώ όμως τυλίγεται σε list, οπότε βλέπουμε τις τιμές.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`print(list(filter(lambda x: x > 0, [-2, -1, 0, 1, 2])))`,
+    options:[
+      {t:`<code>[1, 2]</code>`, ok:true},
+      {t:`<code>[-2, -1]</code>`, ok:false},
+      {t:`<code>[0, 1, 2]</code>`, ok:false},
+      {t:`<code>[-2, -1, 0, 1, 2]</code>`, ok:false},
+    ],
+    concept:`Το filter κρατά τα στοιχεία για τα οποία η lambda επιστρέφει True.`,
+    steps:[`x > 0 αληθεύει μόνο για 1 και 2`,`τα -2, -1, 0 απορρίπτονται`],
+    why:`Το 0 ΔΕΝ είναι > 0, άρα δεν περνά το φίλτρο.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`v = [1, 2, 3]\n\ndef g(a, b, m):\n    return m(a, b)\n\nprint(g(1, 1, lambda x, y: v[x:y+1]))`,
+    options:[
+      {t:`<code>[2]</code>`, ok:true},
+      {t:`<code>[1]</code>`, ok:false},
+      {t:`<code>[2, 3]</code>`, ok:false},
+      {t:`<code>[]</code>`, ok:false},
+    ],
+    concept:`Η lambda χρησιμοποιεί τα ορίσματα ως όρια slicing.`,
+    steps:[`g(1, 1, lambda) → m(1, 1)`,`v[1:1+1] = v[1:2] → [2]`],
+    why:`Το slice v[1:2] περιέχει μόνο το στοιχείο στη θέση 1, δηλαδή το 2.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`vect = ["alpha", "bravo", "charlie"]\nnew_vect = map(lambda x: x[0].upper(), vect)\nprint(list(new_vect)[1])`,
+    options:[
+      {t:`<code>B</code>`, ok:true},
+      {t:`<code>A</code>`, ok:false},
+      {t:`<code>C</code>`, ok:false},
+      {t:`<code>ABC</code>`, ok:false},
+    ],
+    concept:`Το map παίρνει το πρώτο γράμμα κάθε λέξης σε κεφαλαίο.`,
+    steps:[`"alpha"→"A", "bravo"→"B", "charlie"→"C"`,`list(...) → ["A", "B", "C"]`,`[1] → "B"`],
+    why:`Ο δείκτης 1 δίνει το δεύτερο στοιχείο, "B".`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`def outer(p):\n    def inner():\n        return p\n    return inner\n\nprint(outer(7)())`,
+    options:[
+      {t:`<code>7</code>`, ok:true},
+      {t:`<code>None</code>`, ok:false},
+      {t:`κάτι σαν <code>&lt;function inner&gt;</code>`, ok:false},
+      {t:`Ο κώδικας πετάει εξαίρεση`, ok:false},
+    ],
+    concept:`Closure: η inner «θυμάται» το p ακόμη κι αφού η outer τελειώσει.`,
+    steps:[`outer(7) → επιστρέφει την inner (που κρατά p=7)`,`()  → καλεί την inner → επιστρέφει 7`],
+    why:`Το διπλό () καλεί και τις δύο: πρώτα outer(7), μετά την επιστρεφόμενη inner.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`def make_adder(n):\n    def add(x):\n        return x + n\n    return add\n\nprint(make_adder(5)(10))`,
+    options:[
+      {t:`<code>15</code>`, ok:true},
+      {t:`<code>5</code>`, ok:false},
+      {t:`<code>10</code>`, ok:false},
+      {t:`Ο κώδικας πετάει εξαίρεση`, ok:false},
+    ],
+    concept:`Closure που «κλειδώνει» το n και το χρησιμοποιεί αργότερα.`,
+    steps:[`make_adder(5) → add που θυμάται n=5`,`add(10) → 10 + 5 → 15`],
+    why:`Το n=5 παραμένει διαθέσιμο στην add μέσω του closure.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`def gen(n):\n    for i in range(n):\n        yield i * 2\n\nprint(list(gen(4)))`,
+    options:[
+      {t:`<code>[0, 2, 4, 6]</code>`, ok:true},
+      {t:`<code>[0, 1, 2, 3]</code>`, ok:false},
+      {t:`<code>[2, 4, 6, 8]</code>`, ok:false},
+      {t:`κάτι σαν <code>&lt;generator object&gt;</code>`, ok:false},
+    ],
+    concept:`Το yield κάνει τη συνάρτηση generator· το list() μαζεύει τις τιμές.`,
+    steps:[`i = 0,1,2,3 → yield 0, 2, 4, 6`,`list(gen(4)) → [0, 2, 4, 6]`],
+    why:`Επειδή τυλίγεται σε list(), βλέπουμε τις τιμές — όχι το generator object.`
+  },
+  {
+    type:"single",
+    stem:`A function that contains a <code>yield</code> statement is <b>called</b>. What does the call return?`,
+    options:[
+      {t:`A generator object`, ok:true},
+      {t:`A list with all the values`, ok:false},
+      {t:`The first yielded value`, ok:false},
+      {t:`<code>None</code>`, ok:false},
+    ],
+    concept:`Η κλήση generator function δεν εκτελεί αμέσως τον κώδικα.`,
+    steps:[`η παρουσία yield κάνει τη συνάρτηση generator`,`η κλήση επιστρέφει generator object· οι τιμές παράγονται όταν το διατρέξεις`],
+    why:`Δεν επιστρέφει λίστα ούτε μεμονωμένη τιμή — επιστρέφει το generator object που μετά μπορείς να διατρέξεις/μετατρέψεις σε list.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Which two methods must an object provide to conform to the <b>iterator protocol</b>? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`<code>__iter__()</code>`, ok:true},
+      {t:`<code>__next__()</code>`, ok:true},
+      {t:`<code>__init__()</code>`, ok:false},
+      {t:`<code>__str__()</code>`, ok:false},
+    ],
+    concept:`Το iterator protocol απαιτεί δύο συγκεκριμένες μεθόδους.`,
+    steps:[`__iter__() → επιστρέφει τον iterator (συνήθως self)`,`__next__() → επόμενη τιμή· πετάει StopIteration στο τέλος`],
+    why:`Το __init__ είναι constructor και το __str__ για string αναπαράσταση — άσχετα με το iterator protocol.`
+  },
+  {
+    type:"single",
+    stem:`What happens when the following code runs?`,
+    code:`stream = open("data.txt", 2)`,
+    options:[
+      {t:`Raises <code>TypeError</code>`, ok:true},
+      {t:`Opens the file in binary mode`, ok:false},
+      {t:`Opens the file for reading 2 bytes`, ok:false},
+      {t:`Returns <code>False</code>`, ok:false},
+    ],
+    concept:`Το δεύτερο όρισμα του open() (το mode) είναι string, όχι ακέραιος.`,
+    steps:[`το open() περιμένει mode ως string (π.χ. "r", "wb")`,`δίνοντας ακέραιο 2 → TypeError`],
+    why:`Το mode δεν είναι αριθμός· λάθος τύπος δίνει TypeError, όχι "binary mode" ούτε False.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Which of the following statements are <b>true</b>? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`<code>stdin</code>, <code>stdout</code>, <code>stderr</code> are names of pre-opened streams`, ok:true},
+      {t:`The <code>print()</code> function writes its output to the <code>stdout</code> stream`, ok:true},
+      {t:`The second argument of <code>open()</code> is an integer value`, ok:false},
+      {t:`<code>open()</code> returns <code>False</code> when it fails`, ok:false},
+    ],
+    concept:`Βασικές αλήθειες για τα streams και τη συνάρτηση open().`,
+    steps:[`stdin/stdout/stderr → προ-ανοιγμένα standard streams`,`το print() γράφει στο stdout`],
+    why:`Το mode του open() είναι string (όχι int), και σε αποτυχία το open() πετάει εξαίρεση — δεν επιστρέφει False.`
+  },
+  {
+    type:"single",
+    stem:`Which method is used to break the connection between a file handle and a physical file?`,
+    options:[
+      {t:`<code>close()</code>`, ok:true},
+      {t:`<code>shutup()</code>`, ok:false},
+      {t:`<code>disconnect()</code>`, ok:false},
+      {t:`<code>lock()</code>`, ok:false},
+    ],
+    concept:`Ένα ανοιγμένο αρχείο πρέπει να κλείνει με close().`,
+    steps:[`η .close() απελευθερώνει το stream και «σπάει» τη σύνδεση με το αρχείο`],
+    why:`Δεν υπάρχουν μέθοδοι shutup/disconnect/lock για αυτό· το σωστό είναι close().`
+  },
+  {
+    type:"single",
+    stem:`Which open mode requires the file to <b>already exist</b> while allowing both reading and writing?`,
+    options:[
+      {t:`<code>"r+"</code>`, ok:true},
+      {t:`<code>"w+"</code>`, ok:false},
+      {t:`<code>"a"</code>`, ok:false},
+      {t:`<code>"w"</code>`, ok:false},
+    ],
+    concept:`Διάκριση των modes ως προς ύπαρξη αρχείου και read/write.`,
+    steps:[`"r+" → read & write, αλλά το αρχείο ΠΡΕΠΕΙ να υπάρχει`,`"w+" → read & write αλλά δημιουργεί/μηδενίζει`],
+    why:`Το "w+" μηδενίζει/δημιουργεί (δεν απαιτεί ύπαρξη)· τα "a" και "w" δεν είναι read+write με απαίτηση ύπαρξης.`
+  },
+];
+
+const qBox = document.getElementById('questions');
+document.getElementById('scoreMax').textContent = QUESTIONS.length;
+let answered = {};
+
+function render(){
+  qBox.innerHTML = '';
+  answered = {};
+  updateScore();
+  QUESTIONS.forEach((q, i) => {
+    const isMulti = q.type === 'multi';
+    const card = document.createElement('div');
+    card.className = 'q';
+    card.dataset.i = i;
+    card.innerHTML = `
+      <div class="qhead">
+        <span class="qn">Q${i+1}</span>
+        <span class="qtype ${isMulti?'multi':''}">${isMulti?'Διάλεξε ΑΚΡΙΒΩΣ '+q.pick:'Μία απάντηση'}</span>
+      </div>
+      <div class="stem">${q.stem}</div>
+      ${q.code ? `<pre>${escapeCode(q.code)}</pre>` : ''}
+      <ul class="opts"></ul>
+      <button class="checkbtn">Έλεγχος</button>
+      <div class="explain"></div>`;
+    const ul = card.querySelector('.opts');
+    q.options.forEach((opt, j) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<div class="opt" data-multi="${isMulti?1:0}" data-j="${j}">
+          <span class="mark"></span><span class="otext">${opt.t}</span>
+          <span class="tag"></span></div>`;
+      ul.appendChild(li);
+    });
+    card.querySelectorAll('.opt').forEach(el => el.addEventListener('click', () => selectOpt(card, el, isMulti)));
+    card.querySelector('.checkbtn').addEventListener('click', () => checkQ(card, i));
+    qBox.appendChild(card);
+  });
+}
+
+function selectOpt(card, el, isMulti){
+  if(card.dataset.locked) return;
+  if(isMulti){ el.classList.toggle('sel'); }
+  else { card.querySelectorAll('.opt').forEach(o => o.classList.remove('sel')); el.classList.add('sel'); }
+}
+
+function checkQ(card, i){
+  if(card.dataset.locked) return;
+  const q = QUESTIONS[i];
+  const opts = [...card.querySelectorAll('.opt')];
+  const chosen = opts.filter(o => o.classList.contains('sel')).map(o => +o.dataset.j);
+  if(chosen.length === 0){ flash(card.querySelector('.checkbtn'), 'Διάλεξε πρώτα'); return; }
+  if(q.type === 'multi' && chosen.length !== q.pick){
+    flash(card.querySelector('.checkbtn'), `Διάλεξε ακριβώς ${q.pick}`); return;
+  }
+  card.dataset.locked = '1';
+  const correctSet = q.options.map((o,j)=>o.ok?j:-1).filter(j=>j>=0);
+  let allRight = true;
+  opts.forEach((o,j) => {
+    const isCorrect = q.options[j].ok;
+    const isChosen = chosen.includes(j);
+    if(isCorrect){ o.classList.add('correct'); o.querySelector('.tag').textContent = 'Σωστό'; }
+    if(isChosen && !isCorrect){ o.classList.add('wrong'); o.querySelector('.tag').textContent = 'Η επιλογή σου'; allRight = false; }
+    if(!isChosen && isCorrect){ allRight = false; }
+  });
+  answered[i] = allRight ? 1 : 0;
+  updateScore();
+  card.querySelector('.checkbtn').disabled = true;
+  showExplain(card, q, allRight);
+}
+
+function showExplain(card, q, allRight){
+  const ex = card.querySelector('.explain');
+  let html = `<div class="verdict ${allRight?'ok':'no'}">${allRight?'✓ Σωστά!':'✗ Όχι ακριβώς — δες γιατί:'}</div>`;
+  html += `<h5>Έννοια</h5><p>${q.concept}</p>`;
+  if(q.steps && q.steps.length){
+    html += `<h5>Ανάλυση βήμα-βήμα</h5>`;
+    q.steps.forEach(s => html += `<p>• ${s}</p>`);
+  }
+  html += `<h5>Γιατί όχι τα άλλα</h5><p>${q.why}</p>`;
+  if(q.note) html += `<div class="note">📌 ${q.note}</div>`;
+  if(q.type === 'multi') html += `<div class="note">⚠️ Multi-select: χωρίς partial credit. Μόνο η ακριβώς σωστή ομάδα μετράει.</div>`;
+  ex.innerHTML = html;
+  ex.classList.add('show');
+}
+
+function updateScore(){
+  const s = Object.values(answered).reduce((a,b)=>a+b,0);
+  document.getElementById('scoreNow').textContent = s;
+}
+function flash(btn, msg){
+  const old = btn.textContent; btn.textContent = msg;
+  setTimeout(()=>btn.textContent = old, 1100);
+}
+function escapeCode(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+document.getElementById('resetBtn').addEventListener('click', render);
+render();
+</script>
+</body>
+</html>
