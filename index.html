@@ -44,7 +44,6 @@
   .intro h2{margin:.2em 0 .35em;font-size:1.5rem}
   .intro p{color:var(--muted);font-size:.98rem;margin:0}
 
-  /* Section eyebrow label */
   .eyebrow{display:flex;align-items:center;gap:10px;margin:40px 2px 0;
     font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
   .eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -63,7 +62,6 @@
   a.choice.gr .go{background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#3a2e00;
     box-shadow:0 6px 16px rgba(230,184,0,.4)}
 
-  /* Module (revision) cards */
   .choice.mod{display:flex;flex-direction:column}
   .modnum{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;
     font-weight:800;font-size:1.3rem;color:#3a2e00;margin-bottom:10px;
@@ -71,9 +69,6 @@
   .choice.mod .tagrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
   .choice.mod .tag{font-size:.72rem;font-weight:600;color:var(--steel);background:#eef3fa;
     border:1px solid #dde7f3;border-radius:999px;padding:3px 9px}
-  .choice.soon{opacity:.6;pointer-events:none;border-style:dashed}
-  .choice.soon .modnum{background:#e7edf5;color:#90a2ba;box-shadow:none}
-  .choice.soon .go{background:#aebfd4;box-shadow:none}
 
   .meta{margin-top:26px;font-size:.86rem;color:#37475c;background:var(--paper);border:1px solid var(--line);
     border-radius:12px;padding:14px 18px}
@@ -122,11 +117,10 @@
   </div>
 
   <div class="choices">
-    <!-- ΠΡΟΤΥΠΟ MODULE — αντίγραψε αυτή την κάρτα για τα επόμενα modules -->
     <a class="choice mod" href="pcap_module1_revision.html">
       <div class="modnum">1</div>
       <h3>Modules &amp; Packages</h3>
-      <div class="sub">Χάρτης μνήμης, 8 παγίδες &amp; 12 ερωτήσεις drill με άμεσες επεξηγήσεις.</div>
+      <div class="sub">Χάρτης μνήμης, 8 παγίδες &amp; 12 ερωτήσεις drill.</div>
       <div class="tagrow">
         <span class="tag">12% του exam</span>
         <span class="tag">math · random · platform</span>
@@ -134,18 +128,54 @@
       <span class="go">Άνοιγμα →</span>
     </a>
 
-    <!-- Παράδειγμα μελλοντικού module (αφαίρεσε το "soon" και βάλε το σωστό href όταν είναι έτοιμο) -->
-    <a class="choice mod soon" href="#">
+    <a class="choice mod" href="pcap_module2_revision.html">
       <div class="modnum">2</div>
       <h3>Exceptions</h3>
-      <div class="sub">Σύντομα διαθέσιμο.</div>
-      <div class="tagrow"><span class="tag">14% του exam</span></div>
-      <span class="go">Σύντομα →</span>
+      <div class="sub">Χάρτης μνήμης, 8 παγίδες &amp; 12 ερωτήσεις drill.</div>
+      <div class="tagrow">
+        <span class="tag">14% του exam</span>
+        <span class="tag">try · except · raise · assert</span>
+      </div>
+      <span class="go">Άνοιγμα →</span>
+    </a>
+
+    <a class="choice mod" href="pcap_module3_revision.html">
+      <div class="modnum">3</div>
+      <h3>Strings</h3>
+      <div class="sub">Χάρτης μνήμης, 9 παγίδες &amp; 15 ερωτήσεις drill.</div>
+      <div class="tagrow">
+        <span class="tag">18% του exam</span>
+        <span class="tag">slicing · μέθοδοι · ord/chr</span>
+      </div>
+      <span class="go">Άνοιγμα →</span>
+    </a>
+
+    <a class="choice mod" href="pcap_module4_revision.html">
+      <div class="modnum">4</div>
+      <h3>OOP</h3>
+      <div class="sub">Χάρτης μνήμης, 13 παγίδες &amp; 20 ερωτήσεις drill.</div>
+      <div class="tagrow">
+        <span class="tag">34% του exam</span>
+        <span class="tag">inheritance · MRO · super</span>
+      </div>
+      <span class="go">Άνοιγμα →</span>
+    </a>
+
+    <a class="choice mod" href="pcap_module5_revision.html">
+      <div class="modnum">5</div>
+      <h3>Miscellaneous</h3>
+      <div class="sub">Χάρτης μνήμης, 11 παγίδες &amp; 18 ερωτήσεις drill.</div>
+      <div class="tagrow">
+        <span class="tag">22% του exam</span>
+        <span class="tag">comprehensions · lambda · I/O</span>
+      </div>
+      <span class="go">Άνοιγμα →</span>
     </a>
   </div>
 
   <div class="meta">
     📌 <b>Βάση επιτυχίας 70%.</b> Στις ερωτήσεις «διάλεξε δύο» πρέπει να είναι σωστές και οι δύο επιλογές.
+    Όλες οι λύσεις κώδικα έχουν επαληθευτεί με εκτέλεση στην Python.
   </div>
 
   <footer>Διαγωνίσματα εξάσκησης PCAP · robotonio-lab</footer>
