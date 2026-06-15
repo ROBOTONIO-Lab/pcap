@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCAP · Επαναληπτικό Module 4 — OOP</title>
+<style>
+  :root{
+    --navy:#11294b; --navy-2:#1d3b66; --navy-soft:#2c4f80;
+    --gold:#c8a233; --gold-soft:#e6cd84; --gold-bg:#fbf4dd;
+    --bg:#f6f3ec; --surface:#ffffff; --ink:#1c2128; --ink-soft:#52606d;
+    --line:#e3ddcd; --ok:#1e7a45; --ok-bg:#e6f3ea; --no:#b5392b; --no-bg:#fbe9e7;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 20px 80px;}
+
+  /* ---------- Header ---------- */
+  header.hero{
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#fff; padding:34px 0 30px; border-bottom:4px solid var(--gold);
+  }
+  .hero .wrap{padding-bottom:0}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold-soft); font-weight:700; margin:0 0 6px;
+  }
+  .hero h1{margin:0; font-size:1.9rem; font-weight:800; letter-spacing:-.01em;}
+  .hero h1 span{color:var(--gold-soft);}
+  .hero p.sub{margin:10px 0 0; color:#d9e2ef; max-width:62ch; font-size:.98rem;}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;}
+  .badge{
+    background:rgba(255,255,255,.10); border:1px solid rgba(230,205,132,.35);
+    color:#fff; font-size:.78rem; padding:5px 11px; border-radius:999px; font-weight:600;
+  }
+  .badge b{color:var(--gold-soft);}
+
+  /* ---------- Sticky nav ---------- */
+  nav.jump{
+    position:sticky; top:0; z-index:20; background:rgba(246,243,236,.92);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+  }
+  nav.jump .wrap{display:flex; gap:6px; padding:10px 20px;}
+  nav.jump a{
+    flex:1; text-align:center; text-decoration:none; color:var(--navy);
+    font-weight:700; font-size:.86rem; padding:8px 6px; border-radius:8px;
+    border:1px solid transparent;
+  }
+  nav.jump a:hover{background:#fff; border-color:var(--line);}
+
+  /* ---------- Sections ---------- */
+  section{margin-top:42px; scroll-margin-top:64px;}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:4px;}
+  .sec-num{font-family:var(--mono); color:var(--gold); font-weight:700; font-size:.9rem;}
+  h2{margin:0; font-size:1.4rem; color:var(--navy); font-weight:800;}
+  .sec-sub{margin:4px 0 18px; color:var(--ink-soft); font-size:.92rem;}
+  h3{margin:24px 0 8px; font-size:1.02rem; color:var(--navy-2); font-weight:700;}
+
+  code{font-family:var(--mono); font-size:.86em; background:#eef0e8;
+    padding:1px 5px; border-radius:4px; color:#243a5e;}
+  pre{font-family:var(--mono); background:var(--navy); color:#e8eef7;
+    padding:13px 15px; border-radius:9px; overflow-x:auto; font-size:.84rem;
+    margin:10px 0; line-height:1.5;}
+  pre .kw{color:#8fd3ff;} pre .fn{color:var(--gold-soft);} pre .cm{color:#90a4bf;}
+
+  /* ---------- Tables (memory map) ---------- */
+  .tbl{width:100%; border-collapse:collapse; background:var(--surface);
+    border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:.9rem;}
+  .tbl caption{caption-side:top; text-align:left; font-weight:700; color:var(--navy-2);
+    padding:0 0 7px; font-size:1rem;}
+  .tbl th{background:var(--navy); color:#fff; text-align:left; padding:9px 12px; font-weight:600;}
+  .tbl td{padding:8px 12px; border-top:1px solid var(--line); vertical-align:top;}
+  .tbl tr:nth-child(even) td{background:#faf8f2;}
+  .tbl td:first-child{white-space:nowrap; font-family:var(--mono); font-size:.82rem; color:#243a5e;}
+  .map-block{margin-bottom:22px;}
+
+  /* ---------- Trap cards ---------- */
+  .trap{background:var(--surface); border:1px solid var(--line);
+    border-left:5px solid var(--gold); border-radius:9px; padding:14px 16px; margin:12px 0;}
+  .trap h4{margin:0 0 6px; font-size:1rem; color:var(--navy); display:flex; gap:8px; align-items:center;}
+  .trap h4 .pin{font-size:1rem;}
+  .trap p{margin:6px 0; font-size:.92rem;}
+  .trap .key{background:var(--gold-bg); border:1px solid var(--gold-soft);
+    border-radius:7px; padding:8px 11px; margin-top:8px; font-size:.88rem;}
+  .trap .key b{color:#8a6d12;}
+
+  /* ---------- Drill ---------- */
+  .drill-bar{position:sticky; top:52px; z-index:15; display:flex; justify-content:space-between;
+    align-items:center; background:var(--navy); color:#fff; padding:10px 16px;
+    border-radius:10px; margin:8px 0 18px;}
+  .drill-bar .score{font-weight:700;}
+  .drill-bar .score b{color:var(--gold-soft); font-size:1.15rem;}
+  .drill-bar button{background:var(--gold); color:var(--navy); border:none;
+    font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer; font-size:.85rem;}
+  .drill-bar button:hover{background:var(--gold-soft);}
+
+  .q{background:var(--surface); border:1px solid var(--line); border-radius:11px;
+    padding:18px 18px 16px; margin:14px 0;}
+  .q .qhead{display:flex; gap:10px; align-items:flex-start; margin-bottom:4px;}
+  .q .qn{font-family:var(--mono); font-weight:700; color:var(--gold); font-size:.85rem;
+    background:var(--navy); padding:2px 8px; border-radius:6px; flex:none;}
+  .q .qtype{font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-soft); border:1px solid var(--line); padding:2px 7px; border-radius:6px; flex:none;}
+  .q .qtype.multi{color:#8a6d12; border-color:var(--gold-soft); background:var(--gold-bg);}
+  .q .stem{font-size:.96rem; margin:8px 0 4px;}
+  .opts{list-style:none; margin:10px 0 0; padding:0;}
+  .opts li{margin:7px 0;}
+  .opt{display:flex; gap:10px; align-items:flex-start; width:100%; text-align:left;
+    background:#fbfaf6; border:1.5px solid var(--line); border-radius:9px;
+    padding:10px 12px; cursor:pointer; font-size:.9rem; color:var(--ink); transition:.12s;}
+  .opt:hover{border-color:var(--navy-soft);}
+  .opt .mark{flex:none; width:18px; height:18px; border:2px solid var(--navy-soft);
+    border-radius:50%; margin-top:1px;}
+  .opt[data-multi="1"] .mark{border-radius:5px;}
+  .opt.sel{border-color:var(--navy-2); background:#eef3fa;}
+  .opt.sel .mark{background:var(--navy-2); box-shadow:inset 0 0 0 3px #fff;}
+  .opt code{background:#e4e7df;}
+  .opt.correct{border-color:var(--ok); background:var(--ok-bg);}
+  .opt.correct .mark{background:var(--ok); border-color:var(--ok);}
+  .opt.wrong{border-color:var(--no); background:var(--no-bg);}
+  .opt.wrong .mark{background:var(--no); border-color:var(--no);}
+  .opt .tag{margin-left:auto; font-size:.75rem; font-weight:700; align-self:center; flex:none;}
+  .opt.correct .tag{color:var(--ok);}
+  .opt.wrong .tag{color:var(--no);}
+
+  .checkbtn{margin-top:12px; background:var(--navy); color:#fff; border:none;
+    font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; font-size:.86rem;}
+  .checkbtn:hover{background:var(--navy-2);}
+  .checkbtn:disabled{opacity:.5; cursor:default;}
+
+  .explain{display:none; margin-top:13px; border-top:1px dashed var(--line); padding-top:12px;}
+  .explain.show{display:block;}
+  .explain .verdict{font-weight:700; margin-bottom:8px;}
+  .explain .verdict.ok{color:var(--ok);} .explain .verdict.no{color:var(--no);}
+  .explain h5{margin:10px 0 3px; font-size:.82rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--navy-2);}
+  .explain p{margin:3px 0; font-size:.9rem;}
+  .explain .note{background:var(--gold-bg); border-left:4px solid var(--gold);
+    border-radius:0 7px 7px 0; padding:8px 11px; margin-top:10px; font-size:.86rem;}
+
+  footer{margin-top:50px; padding-top:18px; border-top:1px solid var(--line);
+    color:var(--ink-soft); font-size:.82rem; text-align:center;}
+
+  @media (max-width:560px){
+    .hero h1{font-size:1.5rem;} h2{font-size:1.2rem;}
+    nav.jump a{font-size:.78rem;}
+  }
+  @media print{
+    nav.jump,.drill-bar,.checkbtn,#drill{display:none;}
+    body{background:#fff;} .trap,.q,.tbl{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">PCAP-31-03 · Επαναληπτικό</p>
+    <h1>Block #4 — <span>Object-Oriented Programming</span></h1>
+    <p class="sub">Σύντομη, στοχευμένη επανάληψη για την τελική ευθεία. Διάβασε τον Χάρτη μνήμης,
+       σάρωσε τις Παγίδες, και κλείσε με το Drill. Στόχος: σίγουροι πόντοι, όχι θεωρία.</p>
+    <div class="badges">
+      <span class="badge"><b>34%</b> του exam</span>
+      <span class="badge"><b>12</b> ερωτήσεις στο πραγματικό test</span>
+      <span class="badge"><b>1/2/4</b> πόντοι ανά ερώτηση</span>
+      <span class="badge">single &amp; multiple-choice</span>
+    </div>
+  </div>
+</header>
+
+<nav class="jump">
+  <div class="wrap">
+    <a href="#map">📋 Χάρτης μνήμης</a>
+    <a href="#traps">⚠️ Παγίδες</a>
+    <a href="#drill">🎯 Drill</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============== A. MEMORY MAP ============== -->
+<section id="map">
+  <div class="sec-head"><span class="sec-num">A</span><h2>Χάρτης μνήμης</h2></div>
+  <p class="sec-sub">Το βαρύτερο block (34%). Μόνο ό,τι θέλει ακριβή ανάκληση — αν θυμάσαι αυτούς τους πίνακες, καλύπτεις το μεγαλύτερο μέρος.</p>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>Έννοιες-κλειδιά</caption>
+    <thead><tr><th>Όρος</th><th>Σημασία</th></tr></thead>
+    <tbody>
+      <tr><td>class</td><td>«Καλούπι» / συνταγή· περιγράφει δεδομένα + κώδικα</td></tr>
+      <tr><td>object</td><td>Στιγμιότυπο (instance) μιας class</td></tr>
+      <tr><td>encapsulation</td><td>Δεδομένα + μέθοδοι μαζί, με περιορισμό άμεσης πρόσβασης</td></tr>
+      <tr><td>inheritance</td><td>Μια class «χτίζεται πάνω» σε άλλη (subclass ← superclass)</td></tr>
+      <tr><td>single / multiple</td><td>Ένας / πάνω από έναν άμεσος superclass</td></tr>
+      <tr><td>polymorphism</td><td>Αλλαγή συμπεριφοράς μεθόδων superclass χωρίς να τις πειράξεις</td></tr>
+      <tr><td>introspection</td><td>Εξέταση τύπου/ιδιοτήτων αντικειμένου στο runtime</td></tr>
+      <tr><td>reflection</td><td>Χειρισμός τιμών/ιδιοτήτων/μεθόδων στο runtime</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>Ανατομία class</caption>
+    <thead><tr><th>Στοιχείο</th><th>Σημείωση</th></tr></thead>
+    <tbody>
+      <tr><td>class variable</td><td><b>Μία</b> κοινή τιμή για όλα τα instances· εκτός κάθε αντικειμένου</td></tr>
+      <tr><td>instance variable</td><td>Ξεχωριστή ανά αντικείμενο· συνήθως στο <code>__init__</code></td></tr>
+      <tr><td>method</td><td>Συνάρτηση μέσα σε class· <b>πάντα ≥1 παράμετρος</b> (το <code>self</code>)</td></tr>
+      <tr><td>self</td><td>Αναφορά στο τρέχον αντικείμενο· τίθεται αυτόματα στην κλήση <code>obj.m()</code></td></tr>
+      <tr><td>__init__</td><td>Constructor· <b>υποχρεωτικά</b> έχει <code>self</code>· <b>δεν</b> επιστρέφει τιμή</td></tr>
+      <tr><td>__str__</td><td>Επιστρέφει string αναπαράσταση· καλείται από <code>print(obj)</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>Ειδικές ιδιότητες &amp; name mangling</caption>
+    <thead><tr><th>Στοιχείο</th><th>Περιεχόμενο</th></tr></thead>
+    <tbody>
+      <tr><td>__dict__</td><td>Dictionary με ιδιότητες (instance ή class)· τα class vars δεν είναι στο __dict__ του instance</td></tr>
+      <tr><td>__name__</td><td>Το όνομα της <b>class</b> (string)</td></tr>
+      <tr><td>__bases__</td><td><b>tuple</b> με τους άμεσους superclasses</td></tr>
+      <tr><td>__module__</td><td>Το module όπου ορίστηκε η class</td></tr>
+      <tr><td>__x (private)</td><td>Name mangling → γίνεται <code>_ClassName__x</code>· πρόσβαση μέσω <code>obj._ClassName__x</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>Κληρονομικότητα &amp; introspection</caption>
+    <thead><tr><th>Εργαλείο</th><th>Τι κάνει</th></tr></thead>
+    <tbody>
+      <tr><td>super()</td><td>Πρόσβαση στον superclass χωρίς το όνομά του (π.χ. <code>super().__init__()</code>)</td></tr>
+      <tr><td>issubclass(A, B)</td><td>True αν A υποκλάση του B· <b>issubclass(B, B) → True</b></td></tr>
+      <tr><td>isinstance(o, C)</td><td>True αν το o είναι instance της C (ή υποκλάσης)· επιστρέφει True/False</td></tr>
+      <tr><td>x is y</td><td>Ταυτότητα — <b>ίδιο αντικείμενο</b> (όχι ίδια τιμή)</td></tr>
+      <tr><td>hasattr(o, "n")</td><td>True/False αν υπάρχει η ιδιότητα· αλλιώς πρόσβαση → <b>AttributeError</b></td></tr>
+      <tr><td>MRO</td><td>Σειρά αναζήτησης μεθόδου: <b>από κάτω προς τα πάνω, αριστερά → δεξιά</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============== B. TRAPS ============== -->
+<section id="traps">
+  <div class="sec-head"><span class="sec-num">B</span><h2>Παγίδες &amp; Προσοχή</h2></div>
+  <p class="sec-sub">Οι λεπτομέρειες που τρώνε πόντους από οριακούς μαθητές. Εδώ, στο 34% του exam, παίζεται η επιτυχία.</p>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Το <code>self</code> είναι υποχρεωτικό στις μεθόδους</h4>
+    <p>Κάθε μέθοδος (και το <code>__init__</code>) έχει <b>τουλάχιστον</b> την παράμετρο <code>self</code>. Αν την παραλείψεις (<code>def __init__():</code>) και δημιουργήσεις αντικείμενο → <b>TypeError</b>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>Class.method(obj)</code> vs <code>obj.method()</code></h4>
+    <p>Με <code>obj.method()</code> το <code>self</code> περνά αυτόματα. Αν καλέσεις από την class (<code>Storage.get(stuff)</code>), πρέπει να δώσεις <b>ρητά</b> το αντικείμενο ως πρώτο όρισμα.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Ανάθεση μέσω instance δημιουργεί instance variable</h4>
+    <p>Η <code>a.v = 5</code> <b>δεν</b> αλλάζει το class variable — φτιάχνει νέο instance variable που «σκιάζει» το class. Τα άλλα instances και το <code>A.v</code> μένουν ανέπαφα.</p>
+    <div class="key"><b>Π.χ.</b> μετά από <code>a.v = 5</code>: <code>a.v → 5</code> αλλά <code>b.v → 1</code> και <code>A.v → 1</code>.</div>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Class variable = κοινό για όλους</h4>
+    <p>Αν τροποποιήσεις το class variable <b>μέσω της class</b> (π.χ. <code>Package.spam += ...</code>), η αλλαγή φαίνεται σε <b>όλα</b> τα instances — μοιράζονται την ίδια τιμή.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Name mangling: <code>__x</code> → <code>_Class__x</code></h4>
+    <p>Ένα όνομα με δύο leading underscores «μπερδεύεται» (mangling). Πρόσβαση απ' έξω μόνο ως <code>obj._ClassName__x</code> ή <code>ClassName._ClassName__x</code>. Σκέτο <code>obj.__x</code> ή <code>obj.x</code> → <b>AttributeError</b>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>issubclass(B, B)</code> είναι <code>True</code></h4>
+    <p>Κάθε class θεωρείται υποκλάση του εαυτού της. Προσοχή στη σειρά ορισμάτων: <code>issubclass(parent, child)</code> → False, <code>issubclass(child, parent)</code> → True.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>isinstance</code>: γονέας ΔΕΝ είναι instance του παιδιού</h4>
+    <p>Αν το <code>o</code> είναι instance του superclass, τότε <code>isinstance(o, Subclass)</code> → <b>False</b>. Το αντικείμενο δεν μπορεί να είναι instance μιας πιο εξειδικευμένης class.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Αναζήτηση ιδιότητας: instance → class → superclasses</h4>
+    <p>Αν δεν βρεθεί στο instance, η Python ψάχνει στην class και μετά στους superclasses (κατά MRO). Γι' αυτό ένα <code>Bottom()</code> «βλέπει» το <code>value</code> που ορίστηκε στον <code>Middle</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> MRO: αριστερά → δεξιά, κάτω → πάνω</h4>
+    <p>Σε <code>class C(BR, BL)</code>, αν και οι δύο έχουν <code>do()</code>, κερδίζει το <b>αριστερό</b> (<code>BR</code>). Η αναζήτηση ξεκινά από το αντικείμενο και ανεβαίνει.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Παράνομο MRO → <code>TypeError</code></h4>
+    <p>Ένας superclass <b>δεν</b> μπορεί να προηγείται μιας υποκλάσης του στη λίστα βάσεων. Π.χ. με <code>Left(Top)</code>, το <code>class Bottom(Top, Left)</code> → TypeError, ενώ <code>class Bottom(Left, Top)</code> είναι νόμιμο.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>super()</code> &amp; σιωπηρός constructor</h4>
+    <p>Αν μια subclass <b>δεν</b> ορίζει δικό της <code>__init__</code>, καλείται αυτόματα ο constructor του superclass. Αν ορίζει, ο superclass constructor καλείται <b>μόνο</b> αν τον καλέσεις ρητά (<code>super().__init__()</code>).</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> String αναπαράσταση → <code>__str__</code></h4>
+    <p>Για να εμφανίζεται «ωραία» ένα αντικείμενο με <code>print()</code>, ορίζεις <code>__str__()</code> — όχι <code>__string__</code>, ούτε <code>string()</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>is</code> (ταυτότητα) ≠ <code>==</code> (τιμή)</h4>
+    <p>Το <code>is</code> ελέγχει αν δύο μεταβλητές δείχνουν στο <b>ίδιο</b> αντικείμενο. <code>o2 = o1</code> → <code>o1 is o2</code> True· δύο ξεχωριστά <code>A()</code> → False.</p>
+    <div class="key"><b>Multi-select:</b> ΜΗΔΕΝ partial credit — διάλεξε ακριβώς όσες ζητάει η ερώτηση.</div>
+  </div>
+</section>
+
+<!-- ============== C. DRILL ============== -->
+<section id="drill">
+  <div class="sec-head"><span class="sec-num">C</span><h2>Drill — γρήγορη εξάσκηση</h2></div>
+  <p class="sec-sub">20 ερωτήσεις στο ύφος του exam. Απάντησε, πάτησε «Έλεγχος», δες την εξήγηση. Όλος ο κώδικας επαληθεύτηκε με εκτέλεση.</p>
+
+  <div class="drill-bar">
+    <span class="score">Σκορ: <b id="scoreNow">0</b> / <span id="scoreMax">20</span></span>
+    <button id="resetBtn">Επανεκκίνηση</button>
+  </div>
+
+  <div id="questions"></div>
+</section>
+
+<footer>
+  PCAP-31-03 · Block #4 — Object-Oriented Programming · Επαναληπτικό υλικό ·
+  <span style="color:var(--ok)">✓ Επαληθεύτηκε με εκτέλεση</span>
+</footer>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    type:"multi", pick:2,
+    stem:`What is <b>true</b> about object-oriented programming (OOP)? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`A class may exist without its objects, while objects cannot exist without their class`, ok:true},
+      {t:`Polymorphism is a phenomenon which allows you to have many classes of the same name`, ok:false},
+      {t:`A relation between a superclass and its subclass is known as fraternity`, ok:false},
+      {t:`A class is like a blueprint used to construct objects`, ok:true},
+    ],
+    concept:`Βασικοί ορισμοί OOP: class vs object, inheritance, polymorphism.`,
+    steps:[`Η class υπάρχει ανεξάρτητα· τα αντικείμενα χρειάζονται την class τους`,`Η class είναι ένα «καλούπι» για να φτιάχνεις αντικείμενα`],
+    why:`Polymorphism = διαφοροποίηση συμπεριφοράς, όχι πολλές ομώνυμες classes. Η σχέση superclass–subclass λέγεται inheritance, όχι fraternity.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class Package:\n    spam = ''\n    def __init__(self, content):\n        Package.spam += content + ";"\n\ne1 = Package("Capacitors")\ne2 = Package("Transistors")\nprint(e2.spam)`,
+    options:[
+      {t:`<code>Capacitors;Transistors;</code>`, ok:true},
+      {t:`<code>Transistors;</code>`, ok:false},
+      {t:`<code>Capacitors;</code>`, ok:false},
+      {t:`Ο κώδικας πετάει εξαίρεση`, ok:false},
+    ],
+    concept:`Το spam είναι class variable — κοινό για όλα τα αντικείμενα.`,
+    steps:[`κάθε κλήση __init__ προσθέτει στο Package.spam (class variable)`,`e1 → "Capacitors;", e2 → "Capacitors;Transistors;"`,`το e2.spam διαβάζει το κοινό class variable`],
+    why:`Επειδή τροποποιείται το class variable (Package.spam), η τιμή είναι κοινή και συσσωρεύεται.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    cv = 1\n    def __init__(self):\n        self.iv = 2\n\no = A()\nprint(o.cv, o.iv)`,
+    options:[
+      {t:`<code>1 2</code>`, ok:true},
+      {t:`<code>2 1</code>`, ok:false},
+      {t:`<code>1 1</code>`, ok:false},
+      {t:`Ο κώδικας πετάει εξαίρεση`, ok:false},
+    ],
+    concept:`Διάκριση class variable (cv) και instance variable (iv).`,
+    steps:[`cv = 1 ορίζεται σε επίπεδο class`,`iv = 2 ορίζεται ανά αντικείμενο στο __init__`,`το o βλέπει και τα δύο → "1 2"`],
+    why:`Ένα αντικείμενο έχει πρόσβαση και στα class και στα instance variables του.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Given the code below, which lines correctly increment the <code>__element</code> variable by one? (Select <u>two</u> answers.)`,
+    code:`class BluePrint:\n    __element = 1\n    def __init__(self):\n        self.component = 1\n\nproduct = BluePrint()`,
+    options:[
+      {t:`<code>product._BluePrint__element += 1</code>`, ok:true},
+      {t:`<code>BluePrint._BluePrint__element += 1</code>`, ok:true},
+      {t:`<code>BluePrint.element += 1</code>`, ok:false},
+      {t:`<code>_product__element += 1</code>`, ok:false},
+    ],
+    concept:`Name mangling: το __element γίνεται _BluePrint__element.`,
+    steps:[`πρόσβαση μέσω αντικειμένου: product._BluePrint__element`,`πρόσβαση μέσω class: BluePrint._BluePrint__element`],
+    why:`Το BluePrint.element δεν υπάρχει (AttributeError). Το _product__element δεν είναι έγκυρο όνομα (NameError).`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class C:\n    def __init__(self):\n        self.__x = 10\n\nc = C()\nprint(c._C__x)`,
+    options:[
+      {t:`<code>10</code>`, ok:true},
+      {t:`Ο κώδικας πετάει AttributeError`, ok:false},
+      {t:`<code>None</code>`, ok:false},
+      {t:`Ο κώδικας πετάει NameError`, ok:false},
+    ],
+    concept:`Το __x υφίσταται name mangling και γίνεται _C__x.`,
+    steps:[`self.__x = 10 → αποθηκεύεται ως _C__x`,`c._C__x → 10 (η «μυστική» πρόσβαση)`],
+    why:`Το c.__x θα έβγαζε AttributeError· η σωστή πρόσβαση είναι c._C__x.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class Storage:\n    def __init__(self):\n        self.rack = 1\n    def get(self):\n        return self.rack\n\nstuff = Storage()\nprint(Storage.get(stuff))`,
+    options:[
+      {t:`<code>1</code>`, ok:true},
+      {t:`Ο κώδικας πετάει TypeError`, ok:false},
+      {t:`<code>None</code>`, ok:false},
+      {t:`<code>rack</code>`, ok:false},
+    ],
+    concept:`Κλήση μεθόδου από την class απαιτεί ρητό πέρασμα του αντικειμένου.`,
+    steps:[`Storage.get(stuff) → το stuff περνά ως self`,`επιστρέφει self.rack → 1`],
+    why:`Όταν καλείς μέσω της class, πρέπει να δώσεις ρητά το αντικείμενο· εδώ δίνεται το stuff, οπότε δουλεύει.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    def __str__(self):\n        return "object!"\n\nprint(A())`,
+    options:[
+      {t:`<code>object!</code>`, ok:true},
+      {t:`κάτι σαν <code>&lt;__main__.A object at 0x...&gt;</code>`, ok:false},
+      {t:`<code>A</code>`, ok:false},
+      {t:`Ο κώδικας πετάει εξαίρεση`, ok:false},
+    ],
+    concept:`Η __str__ ορίζει τη string αναπαράσταση που χρησιμοποιεί το print.`,
+    steps:[`print(A()) καλεί την __str__ του αντικειμένου`,`επιστρέφει "object!"`],
+    why:`Χωρίς __str__ θα τυπωνόταν η default αναπαράσταση· εδώ έχει υπερκαλυφθεί.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    def __init__(self):\n        print("A", end=" ")\n\nclass B(A):\n    def __init__(self):\n        super().__init__()\n        print("B")\n\nB()`,
+    options:[
+      {t:`<code>A B</code>`, ok:true},
+      {t:`<code>B</code>`, ok:false},
+      {t:`<code>B A</code>`, ok:false},
+      {t:`<code>A</code>`, ok:false},
+    ],
+    concept:`Το super().__init__() καλεί τον constructor του superclass.`,
+    steps:[`B() → εκτελείται το B.__init__`,`super().__init__() → εκτυπώνει "A"`,`μετά εκτυπώνει "B" → "A B"`],
+    why:`Επειδή το super() καλείται ΠΡΙΝ το print("B"), η σειρά είναι "A B", όχι "B A".`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    def __init__(self):\n        print(True)\n\nclass B(A):\n    pass\n\nb = B()`,
+    options:[
+      {t:`<code>True</code>`, ok:true},
+      {t:`Τίποτα δεν εκτυπώνεται`, ok:false},
+      {t:`<code>False</code>`, ok:false},
+      {t:`Ο κώδικας πετάει εξαίρεση`, ok:false},
+    ],
+    concept:`Αν η subclass δεν ορίζει __init__, καλείται αυτόματα ο constructor του superclass.`,
+    steps:[`η B δεν έχει δικό της __init__`,`άρα κατά τη δημιουργία B() καλείται ο A.__init__`,`εκτυπώνεται True`],
+    why:`Ο σιωπηρός constructor του superclass εκτελείται όταν λείπει από την subclass.`
+  },
+  {
+    type:"single",
+    stem:`What happens when the following code runs?`,
+    code:`class A:\n    def __init__():\n        print(True)\n\na = A()`,
+    options:[
+      {t:`Raises <code>TypeError</code>`, ok:true},
+      {t:`Εκτυπώνει <code>True</code>`, ok:false},
+      {t:`Δεν κάνει τίποτα`, ok:false},
+      {t:`Raises <code>NameError</code>`, ok:false},
+    ],
+    concept:`Ο constructor πρέπει υποχρεωτικά να έχει την παράμετρο self.`,
+    steps:[`A() προσπαθεί να καλέσει το __init__ περνώντας το νέο αντικείμενο`,`το __init__() δεν δέχεται παράμετρο → TypeError`],
+    why:`Επειδή λείπει το self, η αυτόματη κλήση με ένα όρισμα αποτυγχάνει με TypeError.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    pass\nclass B(A):\n    pass\n\nprint(issubclass(A, B), issubclass(B, A), issubclass(B, B))`,
+    options:[
+      {t:`<code>False True True</code>`, ok:true},
+      {t:`<code>True False True</code>`, ok:false},
+      {t:`<code>False True False</code>`, ok:false},
+      {t:`<code>True True True</code>`, ok:false},
+    ],
+    concept:`issubclass(X, Y): είναι το X υποκλάση του Y;`,
+    steps:[`issubclass(A, B) → όχι (A είναι ο γονέας) → False`,`issubclass(B, A) → ναι → True`,`issubclass(B, B) → κάθε class είναι υποκλάση του εαυτού της → True`],
+    why:`Προσοχή: η σειρά ορισμάτων μετράει, και κάθε class θεωρείται υποκλάση του εαυτού της.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    pass\nclass B(A):\n    pass\n\no = A()\nprint(isinstance(o, A), isinstance(o, B))`,
+    options:[
+      {t:`<code>True False</code>`, ok:true},
+      {t:`<code>True True</code>`, ok:false},
+      {t:`<code>False True</code>`, ok:false},
+      {t:`<code>False False</code>`, ok:false},
+    ],
+    concept:`Ένα αντικείμενο είναι instance της class του και των superclasses της — όχι των subclasses.`,
+    steps:[`o = A() → instance του A`,`isinstance(o, A) → True`,`isinstance(o, B) → False (το o δεν είναι B)`],
+    why:`Το αντικείμενο του γονέα δεν είναι instance του παιδιού.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    pass\n\no1 = A()\no2 = o1\no3 = A()\nprint(o1 is o2, o1 is o3)`,
+    options:[
+      {t:`<code>True False</code>`, ok:true},
+      {t:`<code>True True</code>`, ok:false},
+      {t:`<code>False False</code>`, ok:false},
+      {t:`<code>False True</code>`, ok:false},
+    ],
+    concept:`Ο τελεστής is ελέγχει ταυτότητα — αν δείχνουν στο ίδιο αντικείμενο.`,
+    steps:[`o2 = o1 → ίδιο αντικείμενο → o1 is o2 → True`,`o3 = A() → νέο, ξεχωριστό αντικείμενο → o1 is o3 → False`],
+    why:`Το is δεν συγκρίνει τιμές αλλά ταυτότητα αντικειμένου.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Given the code below, which expressions evaluate to <b>True</b>? (Select <u>two</u> answers.)`,
+    code:`class Top:\n    value = 3\n    def say(self):\n        return self.value\n\nclass Middle(Top):\n    value = 2\n\nclass Bottom(Middle):\n    def say(self):\n        return -self.value\n\nshort = Bottom()\ntall = Top()\naverage = Middle()`,
+    options:[
+      {t:`<code>short.value == 2</code>`, ok:true},
+      {t:`<code>tall.say() == 2</code>`, ok:false},
+      {t:`<code>isinstance(average, Bottom)</code>`, ok:false},
+      {t:`<code>average.value == 2</code>`, ok:true},
+    ],
+    concept:`Η αναζήτηση ιδιότητας ανεβαίνει την ιεραρχία (instance → class → superclasses).`,
+    steps:[`short (Bottom): δεν έχει δικό value → βρίσκει το value=2 του Middle → 2 ✓`,`average (Middle): value=2 ✓`],
+    why:`tall είναι Top με value=3 (say()→3, όχι 2). Το average είναι Middle, όχι Bottom, άρα isinstance(average, Bottom) → False.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    def do(self): print("A")\nclass BL(A):\n    def do(self): print("BL")\nclass BR(A):\n    def do(self): print("BR")\nclass C(BR, BL):\n    pass\n\nC().do()`,
+    options:[
+      {t:`<code>BR</code>`, ok:true},
+      {t:`<code>BL</code>`, ok:false},
+      {t:`<code>A</code>`, ok:false},
+      {t:`Ο κώδικας πετάει εξαίρεση`, ok:false},
+    ],
+    concept:`Το MRO σαρώνει αριστερά → δεξιά μέσα στο ίδιο επίπεδο.`,
+    steps:[`το C δεν έχει do() → ψάχνει στους superclasses`,`σειρά βάσεων: BR (αριστερά) πριν BL`,`βρίσκει το do() του BR → "BR"`],
+    why:`Επειδή το BR δηλώθηκε πρώτο στις βάσεις, υπερισχύει του BL.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Given the hierarchy below, which class declarations are <b>legal</b>? (Select <u>two</u> answers.)`,
+    code:`class Top:\n    pass\nclass Left(Top):\n    pass\nclass Right(Top):\n    pass`,
+    options:[
+      {t:`<code>class Bottom(Top, Right): pass</code>`, ok:false},
+      {t:`<code>class Bottom(Left, Right): pass</code>`, ok:true},
+      {t:`<code>class Bottom(Top, Left): pass</code>`, ok:false},
+      {t:`<code>class Bottom(Left, Top): pass</code>`, ok:true},
+    ],
+    concept:`Ένας superclass δεν επιτρέπεται να προηγείται μιας υποκλάσης του στις βάσεις (κανόνες MRO).`,
+    steps:[`Bottom(Left, Right): δύο «αδέλφια» — νόμιμο ✓`,`Bottom(Left, Top): το παιδί (Left) πριν τον γονέα (Top) — νόμιμο ✓`],
+    why:`Bottom(Top, Right) και Bottom(Top, Left) βάζουν τον Top ΠΡΙΝ μια υποκλάση του → TypeError (ασυνεπές MRO).`
+  },
+  {
+    type:"single",
+    stem:`To present an object's contents as a string, with which method should you equip its class?`,
+    options:[
+      {t:`<code>__str__()</code>`, ok:true},
+      {t:`<code>__tostring__()</code>`, ok:false},
+      {t:`<code>string()</code>`, ok:false},
+      {t:`<code>str()</code>`, ok:false},
+    ],
+    concept:`Η ειδική μέθοδος για string αναπαράσταση είναι η __str__.`,
+    steps:[`το print(obj) και το str(obj) καλούν την __str__ του αντικειμένου`],
+    why:`Δεν υπάρχουν __tostring__ ή string() ως ειδικές μέθοδοι· το str() είναι built-in συνάρτηση, όχι μέθοδος που ορίζεις στην class.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    pass\nclass B(A):\n    pass\n\nprint(B.__name__, B.__bases__[0].__name__)`,
+    options:[
+      {t:`<code>B A</code>`, ok:true},
+      {t:`<code>A B</code>`, ok:false},
+      {t:`<code>B B</code>`, ok:false},
+      {t:`Ο κώδικας πετάει εξαίρεση`, ok:false},
+    ],
+    concept:`__name__ = όνομα class· __bases__ = tuple με τους άμεσους superclasses.`,
+    steps:[`B.__name__ → "B"`,`B.__bases__ → (A,)· το [0].__name__ → "A"`],
+    why:`Το __bases__ είναι tuple, οπότε το [0] δίνει τον πρώτο (και μοναδικό εδώ) superclass.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    def __init__(self):\n        self.x = 1\n\na = A()\nprint(hasattr(a, "x"), hasattr(a, "y"))`,
+    options:[
+      {t:`<code>True False</code>`, ok:true},
+      {t:`<code>True True</code>`, ok:false},
+      {t:`<code>False False</code>`, ok:false},
+      {t:`Ο κώδικας πετάει AttributeError`, ok:false},
+    ],
+    concept:`Η hasattr ελέγχει αν υπάρχει μια ιδιότητα, χωρίς να πετάει εξαίρεση.`,
+    steps:[`το a έχει x (ορίστηκε στο __init__) → True`,`δεν έχει y → False`],
+    why:`Η hasattr επιστρέφει True/False· η άμεση πρόσβαση a.y θα έβγαζε AttributeError.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`class A:\n    v = 1\n\na = A()\nb = A()\na.v = 5\nprint(a.v, b.v, A.v)`,
+    options:[
+      {t:`<code>5 1 1</code>`, ok:true},
+      {t:`<code>5 5 5</code>`, ok:false},
+      {t:`<code>5 1 5</code>`, ok:false},
+      {t:`<code>1 1 1</code>`, ok:false},
+    ],
+    concept:`Η ανάθεση μέσω instance δημιουργεί instance variable που «σκιάζει» το class variable.`,
+    steps:[`a.v = 5 → φτιάχνει instance variable στο a (δεν αλλάζει το class var)`,`a.v → 5, αλλά b.v → 1 και A.v → 1`],
+    why:`Μόνο το a απέκτησε δικό του v· τα υπόλοιπα βλέπουν ακόμη το class variable = 1.`
+  },
+];
+
+const qBox = document.getElementById('questions');
+document.getElementById('scoreMax').textContent = QUESTIONS.length;
+let answered = {};
+
+function render(){
+  qBox.innerHTML = '';
+  answered = {};
+  updateScore();
+  QUESTIONS.forEach((q, i) => {
+    const isMulti = q.type === 'multi';
+    const card = document.createElement('div');
+    card.className = 'q';
+    card.dataset.i = i;
+    card.innerHTML = `
+      <div class="qhead">
+        <span class="qn">Q${i+1}</span>
+        <span class="qtype ${isMulti?'multi':''}">${isMulti?'Διάλεξε ΑΚΡΙΒΩΣ '+q.pick:'Μία απάντηση'}</span>
+      </div>
+      <div class="stem">${q.stem}</div>
+      ${q.code ? `<pre>${escapeCode(q.code)}</pre>` : ''}
+      <ul class="opts"></ul>
+      <button class="checkbtn">Έλεγχος</button>
+      <div class="explain"></div>`;
+    const ul = card.querySelector('.opts');
+    q.options.forEach((opt, j) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<div class="opt" data-multi="${isMulti?1:0}" data-j="${j}">
+          <span class="mark"></span><span class="otext">${opt.t}</span>
+          <span class="tag"></span></div>`;
+      ul.appendChild(li);
+    });
+    card.querySelectorAll('.opt').forEach(el => el.addEventListener('click', () => selectOpt(card, el, isMulti)));
+    card.querySelector('.checkbtn').addEventListener('click', () => checkQ(card, i));
+    qBox.appendChild(card);
+  });
+}
+
+function selectOpt(card, el, isMulti){
+  if(card.dataset.locked) return;
+  if(isMulti){ el.classList.toggle('sel'); }
+  else { card.querySelectorAll('.opt').forEach(o => o.classList.remove('sel')); el.classList.add('sel'); }
+}
+
+function checkQ(card, i){
+  if(card.dataset.locked) return;
+  const q = QUESTIONS[i];
+  const opts = [...card.querySelectorAll('.opt')];
+  const chosen = opts.filter(o => o.classList.contains('sel')).map(o => +o.dataset.j);
+  if(chosen.length === 0){ flash(card.querySelector('.checkbtn'), 'Διάλεξε πρώτα'); return; }
+  if(q.type === 'multi' && chosen.length !== q.pick){
+    flash(card.querySelector('.checkbtn'), `Διάλεξε ακριβώς ${q.pick}`); return;
+  }
+  card.dataset.locked = '1';
+  const correctSet = q.options.map((o,j)=>o.ok?j:-1).filter(j=>j>=0);
+  let allRight = true;
+  opts.forEach((o,j) => {
+    const isCorrect = q.options[j].ok;
+    const isChosen = chosen.includes(j);
+    if(isCorrect){ o.classList.add('correct'); o.querySelector('.tag').textContent = 'Σωστό'; }
+    if(isChosen && !isCorrect){ o.classList.add('wrong'); o.querySelector('.tag').textContent = 'Η επιλογή σου'; allRight = false; }
+    if(!isChosen && isCorrect){ allRight = false; }
+  });
+  answered[i] = allRight ? 1 : 0;
+  updateScore();
+  card.querySelector('.checkbtn').disabled = true;
+  showExplain(card, q, allRight);
+}
+
+function showExplain(card, q, allRight){
+  const ex = card.querySelector('.explain');
+  let html = `<div class="verdict ${allRight?'ok':'no'}">${allRight?'✓ Σωστά!':'✗ Όχι ακριβώς — δες γιατί:'}</div>`;
+  html += `<h5>Έννοια</h5><p>${q.concept}</p>`;
+  if(q.steps && q.steps.length){
+    html += `<h5>Ανάλυση βήμα-βήμα</h5>`;
+    q.steps.forEach(s => html += `<p>• ${s}</p>`);
+  }
+  html += `<h5>Γιατί όχι τα άλλα</h5><p>${q.why}</p>`;
+  if(q.note) html += `<div class="note">📌 ${q.note}</div>`;
+  if(q.type === 'multi') html += `<div class="note">⚠️ Multi-select: χωρίς partial credit. Μόνο η ακριβώς σωστή ομάδα μετράει.</div>`;
+  ex.innerHTML = html;
+  ex.classList.add('show');
+}
+
+function updateScore(){
+  const s = Object.values(answered).reduce((a,b)=>a+b,0);
+  document.getElementById('scoreNow').textContent = s;
+}
+function flash(btn, msg){
+  const old = btn.textContent; btn.textContent = msg;
+  setTimeout(()=>btn.textContent = old, 1100);
+}
+function escapeCode(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+document.getElementById('resetBtn').addEventListener('click', render);
+render();
+</script>
+</body>
+</html>
