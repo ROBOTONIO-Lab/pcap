@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCAP · Επαναληπτικό Module 2 — Exceptions</title>
+<style>
+  :root{
+    --navy:#11294b; --navy-2:#1d3b66; --navy-soft:#2c4f80;
+    --gold:#c8a233; --gold-soft:#e6cd84; --gold-bg:#fbf4dd;
+    --bg:#f6f3ec; --surface:#ffffff; --ink:#1c2128; --ink-soft:#52606d;
+    --line:#e3ddcd; --ok:#1e7a45; --ok-bg:#e6f3ea; --no:#b5392b; --no-bg:#fbe9e7;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px; margin:0 auto; padding:0 20px 80px;}
+
+  /* ---------- Header ---------- */
+  header.hero{
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:#fff; padding:34px 0 30px; border-bottom:4px solid var(--gold);
+  }
+  .hero .wrap{padding-bottom:0}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold-soft); font-weight:700; margin:0 0 6px;
+  }
+  .hero h1{margin:0; font-size:1.9rem; font-weight:800; letter-spacing:-.01em;}
+  .hero h1 span{color:var(--gold-soft);}
+  .hero p.sub{margin:10px 0 0; color:#d9e2ef; max-width:62ch; font-size:.98rem;}
+  .badges{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;}
+  .badge{
+    background:rgba(255,255,255,.10); border:1px solid rgba(230,205,132,.35);
+    color:#fff; font-size:.78rem; padding:5px 11px; border-radius:999px; font-weight:600;
+  }
+  .badge b{color:var(--gold-soft);}
+
+  /* ---------- Sticky nav ---------- */
+  nav.jump{
+    position:sticky; top:0; z-index:20; background:rgba(246,243,236,.92);
+    backdrop-filter:blur(6px); border-bottom:1px solid var(--line);
+  }
+  nav.jump .wrap{display:flex; gap:6px; padding:10px 20px;}
+  nav.jump a{
+    flex:1; text-align:center; text-decoration:none; color:var(--navy);
+    font-weight:700; font-size:.86rem; padding:8px 6px; border-radius:8px;
+    border:1px solid transparent;
+  }
+  nav.jump a:hover{background:#fff; border-color:var(--line);}
+
+  /* ---------- Sections ---------- */
+  section{margin-top:42px; scroll-margin-top:64px;}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:4px;}
+  .sec-num{font-family:var(--mono); color:var(--gold); font-weight:700; font-size:.9rem;}
+  h2{margin:0; font-size:1.4rem; color:var(--navy); font-weight:800;}
+  .sec-sub{margin:4px 0 18px; color:var(--ink-soft); font-size:.92rem;}
+  h3{margin:24px 0 8px; font-size:1.02rem; color:var(--navy-2); font-weight:700;}
+
+  code{font-family:var(--mono); font-size:.86em; background:#eef0e8;
+    padding:1px 5px; border-radius:4px; color:#243a5e;}
+  pre{font-family:var(--mono); background:var(--navy); color:#e8eef7;
+    padding:13px 15px; border-radius:9px; overflow-x:auto; font-size:.84rem;
+    margin:10px 0; line-height:1.5;}
+  pre .kw{color:#8fd3ff;} pre .fn{color:var(--gold-soft);} pre .cm{color:#90a4bf;}
+
+  /* ---------- Tables (memory map) ---------- */
+  .tbl{width:100%; border-collapse:collapse; background:var(--surface);
+    border:1px solid var(--line); border-radius:10px; overflow:hidden; font-size:.9rem;}
+  .tbl caption{caption-side:top; text-align:left; font-weight:700; color:var(--navy-2);
+    padding:0 0 7px; font-size:1rem;}
+  .tbl th{background:var(--navy); color:#fff; text-align:left; padding:9px 12px; font-weight:600;}
+  .tbl td{padding:8px 12px; border-top:1px solid var(--line); vertical-align:top;}
+  .tbl tr:nth-child(even) td{background:#faf8f2;}
+  .tbl td:first-child{white-space:nowrap; font-family:var(--mono); font-size:.82rem; color:#243a5e;}
+  .map-block{margin-bottom:22px;}
+
+  /* ---------- Trap cards ---------- */
+  .trap{background:var(--surface); border:1px solid var(--line);
+    border-left:5px solid var(--gold); border-radius:9px; padding:14px 16px; margin:12px 0;}
+  .trap h4{margin:0 0 6px; font-size:1rem; color:var(--navy); display:flex; gap:8px; align-items:center;}
+  .trap h4 .pin{font-size:1rem;}
+  .trap p{margin:6px 0; font-size:.92rem;}
+  .trap .key{background:var(--gold-bg); border:1px solid var(--gold-soft);
+    border-radius:7px; padding:8px 11px; margin-top:8px; font-size:.88rem;}
+  .trap .key b{color:#8a6d12;}
+
+  /* ---------- Drill ---------- */
+  .drill-bar{position:sticky; top:52px; z-index:15; display:flex; justify-content:space-between;
+    align-items:center; background:var(--navy); color:#fff; padding:10px 16px;
+    border-radius:10px; margin:8px 0 18px;}
+  .drill-bar .score{font-weight:700;}
+  .drill-bar .score b{color:var(--gold-soft); font-size:1.15rem;}
+  .drill-bar button{background:var(--gold); color:var(--navy); border:none;
+    font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer; font-size:.85rem;}
+  .drill-bar button:hover{background:var(--gold-soft);}
+
+  .q{background:var(--surface); border:1px solid var(--line); border-radius:11px;
+    padding:18px 18px 16px; margin:14px 0;}
+  .q .qhead{display:flex; gap:10px; align-items:flex-start; margin-bottom:4px;}
+  .q .qn{font-family:var(--mono); font-weight:700; color:var(--gold); font-size:.85rem;
+    background:var(--navy); padding:2px 8px; border-radius:6px; flex:none;}
+  .q .qtype{font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-soft); border:1px solid var(--line); padding:2px 7px; border-radius:6px; flex:none;}
+  .q .qtype.multi{color:#8a6d12; border-color:var(--gold-soft); background:var(--gold-bg);}
+  .q .stem{font-size:.96rem; margin:8px 0 4px;}
+  .opts{list-style:none; margin:10px 0 0; padding:0;}
+  .opts li{margin:7px 0;}
+  .opt{display:flex; gap:10px; align-items:flex-start; width:100%; text-align:left;
+    background:#fbfaf6; border:1.5px solid var(--line); border-radius:9px;
+    padding:10px 12px; cursor:pointer; font-size:.9rem; color:var(--ink); transition:.12s;}
+  .opt:hover{border-color:var(--navy-soft);}
+  .opt .mark{flex:none; width:18px; height:18px; border:2px solid var(--navy-soft);
+    border-radius:50%; margin-top:1px;}
+  .opt[data-multi="1"] .mark{border-radius:5px;}
+  .opt.sel{border-color:var(--navy-2); background:#eef3fa;}
+  .opt.sel .mark{background:var(--navy-2); box-shadow:inset 0 0 0 3px #fff;}
+  .opt code{background:#e4e7df;}
+  .opt.correct{border-color:var(--ok); background:var(--ok-bg);}
+  .opt.correct .mark{background:var(--ok); border-color:var(--ok);}
+  .opt.wrong{border-color:var(--no); background:var(--no-bg);}
+  .opt.wrong .mark{background:var(--no); border-color:var(--no);}
+  .opt .tag{margin-left:auto; font-size:.75rem; font-weight:700; align-self:center; flex:none;}
+  .opt.correct .tag{color:var(--ok);}
+  .opt.wrong .tag{color:var(--no);}
+
+  .checkbtn{margin-top:12px; background:var(--navy); color:#fff; border:none;
+    font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; font-size:.86rem;}
+  .checkbtn:hover{background:var(--navy-2);}
+  .checkbtn:disabled{opacity:.5; cursor:default;}
+
+  .explain{display:none; margin-top:13px; border-top:1px dashed var(--line); padding-top:12px;}
+  .explain.show{display:block;}
+  .explain .verdict{font-weight:700; margin-bottom:8px;}
+  .explain .verdict.ok{color:var(--ok);} .explain .verdict.no{color:var(--no);}
+  .explain h5{margin:10px 0 3px; font-size:.82rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--navy-2);}
+  .explain p{margin:3px 0; font-size:.9rem;}
+  .explain .note{background:var(--gold-bg); border-left:4px solid var(--gold);
+    border-radius:0 7px 7px 0; padding:8px 11px; margin-top:10px; font-size:.86rem;}
+
+  footer{margin-top:50px; padding-top:18px; border-top:1px solid var(--line);
+    color:var(--ink-soft); font-size:.82rem; text-align:center;}
+
+  @media (max-width:560px){
+    .hero h1{font-size:1.5rem;} h2{font-size:1.2rem;}
+    nav.jump a{font-size:.78rem;}
+  }
+  @media print{
+    nav.jump,.drill-bar,.checkbtn,#drill{display:none;}
+    body{background:#fff;} .trap,.q,.tbl{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">PCAP-31-03 · Επαναληπτικό</p>
+    <h1>Block #2 — <span>Exceptions</span></h1>
+    <p class="sub">Σύντομη, στοχευμένη επανάληψη για την τελική ευθεία. Διάβασε τον Χάρτη μνήμης,
+       σάρωσε τις Παγίδες, και κλείσε με το Drill. Στόχος: σίγουροι πόντοι, όχι θεωρία.</p>
+    <div class="badges">
+      <span class="badge"><b>14%</b> του exam</span>
+      <span class="badge"><b>5</b> ερωτήσεις στο πραγματικό test</span>
+      <span class="badge"><b>1+1</b> / <b>2</b> πόντοι ανά ερώτηση</span>
+      <span class="badge">single &amp; multiple-choice</span>
+    </div>
+  </div>
+</header>
+
+<nav class="jump">
+  <div class="wrap">
+    <a href="#map">📋 Χάρτης μνήμης</a>
+    <a href="#traps">⚠️ Παγίδες</a>
+    <a href="#drill">🎯 Drill</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============== A. MEMORY MAP ============== -->
+<section id="map">
+  <div class="sec-head"><span class="sec-num">A</span><h2>Χάρτης μνήμης</h2></div>
+  <p class="sec-sub">Μόνο ό,τι θέλει ακριβή ανάκληση στο exam. Αν θυμάσαι αυτούς τους πίνακες, καλύπτεις το μεγαλύτερο μέρος του block.</p>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>Δομή <code>try … except … else … finally</code></caption>
+    <thead><tr><th>Κλάδος</th><th>Πότε εκτελείται</th></tr></thead>
+    <tbody>
+      <tr><td>try</td><td>Το τμήμα που <b>μπορεί</b> να προκαλέσει εξαίρεση</td></tr>
+      <tr><td>except E:</td><td>Όταν προκύψει εξαίρεση τύπου <code>E</code> (ή υποκλάσης της)</td></tr>
+      <tr><td>except (E1, E2):</td><td>Χειρισμός πολλών εξαιρέσεων στον ίδιο κλάδο</td></tr>
+      <tr><td>except E as e:</td><td>Πιάνει την εξαίρεση <b>και</b> δίνει πρόσβαση στο αντικείμενο <code>e</code></td></tr>
+      <tr><td>except:</td><td>Default κλάδος — <b>πάντα τελευταίος</b>· πιάνει ό,τι δεν έπιασαν οι προηγούμενοι</td></tr>
+      <tr><td>else:</td><td>Μόνο αν <b>ΔΕΝ</b> προέκυψε εξαίρεση· μετά απ' όλα τα except</td></tr>
+      <tr><td>finally:</td><td><b>ΠΑΝΤΑ</b> εκτελείται (με ή χωρίς εξαίρεση)· τελευταίος</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+    <p style="font-weight:700;color:var(--navy-2);margin:0 0 6px">Ιεραρχία εξαιρέσεων (τα πιο συχνά)</p>
+    <pre><span class="cm">BaseException</span>
+ ├─ SystemExit          <span class="cm"># exit()</span>
+ ├─ KeyboardInterrupt   <span class="cm"># Ctrl-C</span>
+ └─ <span class="fn">Exception</span>
+     ├─ ValueError       <span class="cm"># int("abc")</span>
+     ├─ TypeError        <span class="cm"># "1" &gt; 1</span>
+     ├─ ImportError      <span class="cm"># import ανύπαρκτο</span>
+     ├─ AssertionError   <span class="cm"># assert απέτυχε</span>
+     ├─ AttributeError   <span class="cm"># λάθος attribute</span>
+     ├─ LookupError
+     │    ├─ IndexError  <span class="cm"># lst[99]</span>
+     │    └─ KeyError    <span class="cm"># d["x"]</span>
+     └─ ArithmeticError
+          ├─ ZeroDivisionError  <span class="cm"># x/0</span>
+          └─ OverflowError      <span class="cm"># 2.**100000</span></pre>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption>Συχνές built-in εξαιρέσεις — πότε προκύπτουν</caption>
+    <thead><tr><th>Εξαίρεση</th><th>Τυπική αιτία</th></tr></thead>
+    <tbody>
+      <tr><td>ZeroDivisionError</td><td>Διαίρεση με το 0 (υποκλάση του <code>ArithmeticError</code>)</td></tr>
+      <tr><td>IndexError</td><td>Δείκτης εκτός ορίων σε ακολουθία (υποκλάση του <code>LookupError</code>)</td></tr>
+      <tr><td>KeyError</td><td>Ανύπαρκτο κλειδί σε dictionary (υποκλάση του <code>LookupError</code>)</td></tr>
+      <tr><td>ValueError</td><td>Σωστός τύπος, λάθος τιμή — π.χ. <code>int("abc")</code></td></tr>
+      <tr><td>TypeError</td><td>Λάθος τύπος ορίσματος — π.χ. <code>"1" &gt; 1</code></td></tr>
+      <tr><td>AttributeError</td><td>Αναφορά σε ανύπαρκτο attribute</td></tr>
+      <tr><td>ImportError</td><td>Αποτυχημένο <code>import</code></td></tr>
+      <tr><td>AssertionError</td><td>Απέτυχε ένα <code>assert</code></td></tr>
+      <tr><td>FileNotFoundError</td><td>Άνοιγμα ανύπαρκτου αρχείου σε mode <code>"r"</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="map-block">
+  <table class="tbl">
+    <caption><code>raise</code> · <code>assert</code> · ιδιότητες εξαίρεσης</caption>
+    <thead><tr><th>Στοιχείο</th><th>Σημείωση</th></tr></thead>
+    <tbody>
+      <tr><td>raise E</td><td>Πέταξε χειροκίνητα την εξαίρεση <code>E</code> (built-in ή δική σου)</td></tr>
+      <tr><td>raise</td><td>Σκέτο — <b>ξανα-πετάει</b> την τρέχουσα εξαίρεση· μόνο μέσα σε <code>except</code></td></tr>
+      <tr><td>assert cond</td><td>Αν το <code>cond</code> είναι falsy (0, None, "", False) → <code>AssertionError</code></td></tr>
+      <tr><td>e.args</td><td><b>tuple</b> με τα ορίσματα· κενό <code>()</code> αν ο constructor κλήθηκε χωρίς ορίσματα</td></tr>
+      <tr><td>str(e)</td><td>Το μήνυμα της εξαίρεσης</td></tr>
+      <tr><td>class My(Exception)</td><td>Δική σου εξαίρεση — κληρονομεί συνήθως από <code>Exception</code> ή υποκλάση</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ============== B. TRAPS ============== -->
+<section id="traps">
+  <div class="sec-head"><span class="sec-num">B</span><h2>Παγίδες &amp; Προσοχή</h2></div>
+  <p class="sec-sub">Οι λεπτομέρειες που τρώνε πόντους από οριακούς μαθητές. Αυτές χωρίζουν το «το ξέρω περίπου» από το «το πετυχαίνω σίγουρα».</p>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Η σειρά των <code>except</code> μετράει — ειδικό ΠΡΙΝ το γενικό</h4>
+    <p>Η Python ελέγχει τους κλάδους <b>με τη σειρά</b>. Αν βάλεις το γενικό πριν το ειδικό, ο ειδικός γίνεται <b>απρόσιτος</b>.</p>
+    <div class="key"><b>Π.χ.</b> το <code>except ArithmeticError</code> πριν το <code>except ZeroDivisionError</code> κάνει το δεύτερο να μην εκτελεστεί ποτέ — το <code>ZeroDivisionError</code> είναι υποκλάση του <code>ArithmeticError</code>.</div>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Κερδίζει ο ΠΡΩΤΟΣ που ταιριάζει — όχι ο «καλύτερος»</h4>
+    <p>Η Python δεν ψάχνει το πιο ακριβές ταίριασμα. Σταματά στον <b>πρώτο</b> <code>except</code> που πιάνει την εξαίρεση (μετράει και η σχέση υποκλάσης).</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>else</code> μόνο χωρίς εξαίρεση · <code>finally</code> πάντα</h4>
+    <p>Ο <code>else</code> τρέχει <b>μόνο</b> αν ο <code>try</code> ολοκληρώθηκε χωρίς εξαίρεση. Ο <code>finally</code> τρέχει <b>πάντα</b> — ακόμη κι αν προκύψει/ξαναπεταχτεί εξαίρεση.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>except Exception</code> πιάνει σχεδόν τα πάντα</h4>
+    <p>Επειδή τα περισσότερα errors είναι υποκλάσεις του <code>Exception</code>, ένα <code>except Exception</code> τα πιάνει όλα (ZeroDivisionError, IndexError, AssertionError…). <b>Δεν</b> πιάνει όμως <code>SystemExit</code>/<code>KeyboardInterrupt</code> (είναι κάτω από <code>BaseException</code>, όχι <code>Exception</code>).</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Σκέτο <code>raise</code> = ξανα-πέταγμα</h4>
+    <p>Το <code>raise</code> χωρίς όρισμα ξαναπετάει την <b>τρέχουσα</b> εξαίρεση και επιτρέπεται <b>μόνο</b> μέσα σε <code>except</code>. Χρησιμεύει για να χειριστείς εν μέρει και να «παραδώσεις» το υπόλοιπο πιο έξω.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> <code>assert</code>: τι θεωρείται «αποτυχία»</h4>
+    <p>Το <code>assert cond</code> πετάει <code>AssertionError</code> όταν το <code>cond</code> είναι <b>falsy</b>: <code>0</code>, <code>None</code>, κενό string/λίστα, <code>False</code>. Αλλιώς συνεχίζει κανονικά.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Το <code>args</code> είναι tuple — προσοχή στο κενό</h4>
+    <p>Αν η εξαίρεση δημιουργήθηκε <b>χωρίς ορίσματα</b> (<code>raise ZeroDivisionError</code>), το <code>e.args</code> είναι <b>κενό tuple</b> <code>()</code>. Με ορίσματα (<code>raise ZeroDivisionError(2, "x")</code>) γίνεται <code>(2, 'x')</code>.</p>
+  </div>
+
+  <div class="trap">
+    <h4><span class="pin">📌</span> Ιεραρχία: μην μπερδέψεις τους «γονείς»</h4>
+    <p><code>IndexError</code> &amp; <code>KeyError</code> → κάτω από <code>LookupError</code>. <code>ZeroDivisionError</code> &amp; <code>OverflowError</code> → κάτω από <code>ArithmeticError</code>. Το <code>AssertionError</code> είναι υποκλάση του <code>Exception</code> — <b>όχι</b> του <code>RuntimeError</code> ή του <code>ArithmeticError</code>.</p>
+    <div class="key"><b>Multi-select:</b> ΜΗΔΕΝ partial credit — διάλεξε ακριβώς όσες ζητάει η ερώτηση.</div>
+  </div>
+</section>
+
+<!-- ============== C. DRILL ============== -->
+<section id="drill">
+  <div class="sec-head"><span class="sec-num">C</span><h2>Drill — γρήγορη εξάσκηση</h2></div>
+  <p class="sec-sub">12 ερωτήσεις στο ύφος του exam. Απάντησε, πάτησε «Έλεγχος», δες την εξήγηση. Όλος ο κώδικας επαληθεύτηκε με εκτέλεση.</p>
+
+  <div class="drill-bar">
+    <span class="score">Σκορ: <b id="scoreNow">0</b> / <span id="scoreMax">12</span></span>
+    <button id="resetBtn">Επανεκκίνηση</button>
+  </div>
+
+  <div id="questions"></div>
+</section>
+
+<footer>
+  PCAP-31-03 · Block #2 — Exceptions · Επαναληπτικό υλικό ·
+  <span style="color:var(--ok)">✓ Επαληθεύτηκε με εκτέλεση</span>
+</footer>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    type:"multi", pick:2,
+    stem:`Which of the following operations <b>may raise</b> an exception? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`Slicing a string with out-of-range indices`, ok:false},
+      {t:`Invoking the <code>int()</code> function on user input`, ok:true},
+      {t:`Incrementing an integer variable by one`, ok:false},
+      {t:`Indexing a list`, ok:true},
+    ],
+    concept:`Κάποιες πράξεις είναι πάντα ασφαλείς, άλλες μπορούν να αποτύχουν ανάλογα με τα δεδομένα.`,
+    steps:[`int("abc") → ValueError όταν το string δεν είναι έγκυρος αριθμός`,`lst[99] σε μικρή λίστα → IndexError`],
+    why:`Το slicing με δείκτες εκτός ορίων είναι ασφαλές (επιστρέφει κενό/μερικό string). Η αύξηση ακεραίου δεν αποτυγχάνει ποτέ.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Which of the following are names of <b>built-in</b> Python exceptions? (Select <u>two</u> answers.)`,
+    options:[
+      {t:`<code>KeyError</code>`, ok:true},
+      {t:`<code>AssertionError</code>`, ok:true},
+      {t:`<code>LookupException</code>`, ok:false},
+      {t:`<code>ProgramTooComplicatedError</code>`, ok:false},
+    ],
+    concept:`Πρέπει να αναγνωρίζεις τα πραγματικά ονόματα των built-in εξαιρέσεων.`,
+    steps:[`KeyError → ανύπαρκτο κλειδί σε dictionary`,`AssertionError → απέτυχε ένα assert`],
+    why:`Το σωστό όνομα είναι LookupError (όχι LookupException). Το ProgramTooComplicatedError δεν υπάρχει.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`x, y = 3.0, 0.0\ntry:\n    z = x / y\nexcept ArithmeticError:\n    z = -1\nelse:\n    z = -2\nprint(z)`,
+    options:[
+      {t:`<code>-1</code>`, ok:true},
+      {t:`<code>-2</code>`, ok:false},
+      {t:`<code>+inf</code>`, ok:false},
+      {t:`Εμφανίζεται μήνυμα λάθους`, ok:false},
+    ],
+    concept:`Η διαίρεση με 0 πετάει ZeroDivisionError, που είναι υποκλάση του ArithmeticError.`,
+    steps:[`x / y → 3.0 / 0.0 → ZeroDivisionError`,`το except ArithmeticError το πιάνει (υποκλάση) → z = -1`,`ο else παρακάμπτεται γιατί προέκυψε εξαίρεση`],
+    why:`Ο else τρέχει μόνο όταν ΔΕΝ υπάρχει εξαίρεση — εδώ υπάρχει, άρα όχι -2.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`x, y = 0.0, 3.0\ntry:\n    z = x / y\nexcept ArithmeticError:\n    z = -1\nelse:\n    z = -2\nprint(z)`,
+    options:[
+      {t:`<code>-2</code>`, ok:true},
+      {t:`<code>-1</code>`, ok:false},
+      {t:`<code>0.0</code>`, ok:false},
+      {t:`Εμφανίζεται μήνυμα λάθους`, ok:false},
+    ],
+    concept:`Όταν ο try ολοκληρώνεται χωρίς εξαίρεση, εκτελείται ο else.`,
+    steps:[`0.0 / 3.0 → 0.0, καμία εξαίρεση`,`αφού δεν προέκυψε εξαίρεση → εκτελείται ο else → z = -2`],
+    why:`Το except δεν ενεργοποιείται (καμία εξαίρεση), οπότε το z δεν γίνεται -1.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`def fun(x):\n    return 1 / x\n\ndef mid_level(x):\n    try:\n        fun(x)\n    except:\n        raise AssertionError\n    else:\n        return 0\n\ntry:\n    x = mid_level(0)\nexcept Exception:\n    x = -1\nexcept:\n    x = -2\nprint(x)`,
+    options:[
+      {t:`<code>-1</code>`, ok:true},
+      {t:`<code>-2</code>`, ok:false},
+      {t:`<code>0</code>`, ok:false},
+      {t:`Εμφανίζεται μήνυμα λάθους`, ok:false},
+    ],
+    concept:`Οι εξαιρέσεις διαδίδονται (propagate) μέσα από τις κλήσεις συναρτήσεων.`,
+    steps:[`fun(0) → ZeroDivisionError`,`το except (σκέτο) μέσα στο mid_level το πιάνει και κάνει raise AssertionError`,`το AssertionError διαδίδεται προς τα έξω`,`το except Exception το πιάνει (AssertionError = υποκλάση του Exception) → x = -1`],
+    why:`Ο πρώτος κλάδος που ταιριάζει κερδίζει· το except Exception πιάνει πρώτο, οπότε δεν φτάνουμε στο -2.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`try:\n    raise ZeroDivisionError\nexcept Exception as e:\n    print(e.args)`,
+    options:[
+      {t:`<code>()</code>`, ok:true},
+      {t:`<code>('division by zero',)</code>`, ok:false},
+      {t:`<code>None</code>`, ok:false},
+      {t:`<code>ZeroDivisionError</code>`, ok:false},
+    ],
+    concept:`Το args είναι tuple με τα ορίσματα που δόθηκαν στον constructor της εξαίρεσης.`,
+    steps:[`raise ZeroDivisionError → χωρίς ορίσματα`,`άρα e.args είναι κενό tuple → ()`],
+    why:`Μήνυμα μέσα στο args θα υπήρχε μόνο αν περνούσαμε όρισμα, π.χ. raise ZeroDivisionError("...").`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`try:\n    raise ZeroDivisionError(2, "boom")\nexcept Exception as e:\n    print(e.args)`,
+    options:[
+      {t:`<code>(2, 'boom')</code>`, ok:true},
+      {t:`<code>()</code>`, ok:false},
+      {t:`<code>2 boom</code>`, ok:false},
+      {t:`<code>'boom'</code>`, ok:false},
+    ],
+    concept:`Όταν δίνεις ορίσματα στον constructor, μαζεύονται όλα στο tuple args.`,
+    steps:[`raise ZeroDivisionError(2, "boom") → δύο ορίσματα`,`e.args → (2, 'boom')`],
+    why:`Το args κρατά ΟΛΑ τα ορίσματα ως tuple — όχι μόνο το ένα, ούτε ενωμένα ως string.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`data = (3.14, 2.72)\ntry:\n    print(data[2])\nexcept Exception as e:\n    print(e.args)\nelse:\n    print("ok")`,
+    options:[
+      {t:`<code>('tuple index out of range',)</code>`, ok:true},
+      {t:`<code>ok</code>`, ok:false},
+      {t:`<code>2.72</code>`, ok:false},
+      {t:`<code>()</code>`, ok:false},
+    ],
+    concept:`Πρόσβαση σε ανύπαρκτο δείκτη ακολουθίας → IndexError (υποκλάση του Exception).`,
+    steps:[`data[2] σε tuple 2 στοιχείων → IndexError`,`πιάνεται από το except Exception as e`,`το e.args περιέχει το μήνυμα → ('tuple index out of range',)`],
+    why:`Ο else παρακάμπτεται (υπήρξε εξαίρεση), άρα όχι "ok". Το μήνυμα έρχεται έτοιμο από την Python.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`try:\n    assert 0\n    print("ok")\nexcept AssertionError:\n    print("failed")`,
+    options:[
+      {t:`<code>failed</code>`, ok:true},
+      {t:`<code>ok</code>`, ok:false},
+      {t:`<code>0</code>`, ok:false},
+      {t:`Τίποτα δεν εκτυπώνεται`, ok:false},
+    ],
+    concept:`Το assert πετάει AssertionError όταν η συνθήκη είναι falsy.`,
+    steps:[`assert 0 → το 0 είναι falsy → AssertionError`,`το print("ok") δεν εκτελείται ποτέ`,`το except AssertionError το πιάνει → "failed"`],
+    why:`Επειδή η συνθήκη απέτυχε, η ροή πάει κατευθείαν στο except.`
+  },
+  {
+    type:"single",
+    stem:`What is the expected output of the following code?`,
+    code:`def fun(x):\n    assert x >= 0\n    return x ** 0.5\n\ntry:\n    print(fun(-1))\nexcept ValueError:\n    print("value")\nexcept:\n    print("other")`,
+    options:[
+      {t:`<code>other</code>`, ok:true},
+      {t:`<code>value</code>`, ok:false},
+      {t:`<code>1.0</code>`, ok:false},
+      {t:`<code>-1</code>`, ok:false},
+    ],
+    concept:`Πρέπει να ταιριάξεις σωστά τον τύπο της εξαίρεσης με τον κλάδο except.`,
+    steps:[`fun(-1): assert -1 >= 0 → False → AssertionError`,`το AssertionError ΔΕΝ είναι ValueError → ο πρώτος κλάδος δεν ταιριάζει`,`πέφτει στον default except → "other"`],
+    why:`Το AssertionError δεν έχει σχέση κληρονομικότητας με το ValueError, γι' αυτό δεν πιάνεται από το πρώτο except.`
+  },
+  {
+    type:"multi", pick:2,
+    stem:`Which messages appear on the screen when the code runs? (Select <u>two</u> answers.)`,
+    code:`class Accident(Exception):\n    def __init__(self, message):\n        self.message = message\n    def __str__(self):\n        return "problem"\n\ntry:\n    print("action")\n    raise Accident("accident")\nexcept Accident as a:\n    print(a)\nelse:\n    print("success")`,
+    options:[
+      {t:`<code>action</code>`, ok:true},
+      {t:`<code>problem</code>`, ok:true},
+      {t:`<code>accident</code>`, ok:false},
+      {t:`<code>success</code>`, ok:false},
+    ],
+    concept:`Δική σου εξαίρεση με υπερκαλυμμένο __str__ — το print του αντικειμένου χρησιμοποιεί το __str__.`,
+    steps:[`print("action") → εκτυπώνεται πριν το raise → "action"`,`raise Accident(...) → πιάνεται από το except Accident as a`,`print(a) → καλεί το __str__ → "problem"`],
+    why:`Το "accident" (το message) δεν εκτυπώνεται γιατί το __str__ επιστρέφει σταθερά "problem". Το "success" είναι στον else, που παρακάμπτεται.`
+  },
+  {
+    type:"single",
+    stem:`Which statement about the exception hierarchy is <b>true</b>?`,
+    options:[
+      {t:`<code>ZeroDivisionError</code> is a subclass of <code>ArithmeticError</code>`, ok:true},
+      {t:`<code>IndexError</code> is a subclass of <code>ArithmeticError</code>`, ok:false},
+      {t:`<code>BaseException</code> is a subclass of <code>Exception</code>`, ok:false},
+      {t:`<code>AssertionError</code> is a subclass of <code>ZeroDivisionError</code>`, ok:false},
+    ],
+    concept:`Η ιεραρχία ορίζει ποιο except πιάνει ποια εξαίρεση.`,
+    steps:[`ArithmeticError → ZeroDivisionError, OverflowError`,`άρα το ZeroDivisionError είναι όντως υποκλάση του ArithmeticError`],
+    why:`Το IndexError είναι κάτω από LookupError (όχι ArithmeticError). Το BaseException είναι ο ΓΟΝΕΑΣ του Exception (όχι το αντίστροφο). Το AssertionError είναι υποκλάση του Exception, άσχετο με ZeroDivisionError.`
+  },
+];
+
+const qBox = document.getElementById('questions');
+document.getElementById('scoreMax').textContent = QUESTIONS.length;
+let answered = {};
+
+function render(){
+  qBox.innerHTML = '';
+  answered = {};
+  updateScore();
+  QUESTIONS.forEach((q, i) => {
+    const isMulti = q.type === 'multi';
+    const card = document.createElement('div');
+    card.className = 'q';
+    card.dataset.i = i;
+    card.innerHTML = `
+      <div class="qhead">
+        <span class="qn">Q${i+1}</span>
+        <span class="qtype ${isMulti?'multi':''}">${isMulti?'Διάλεξε ΑΚΡΙΒΩΣ '+q.pick:'Μία απάντηση'}</span>
+      </div>
+      <div class="stem">${q.stem}</div>
+      ${q.code ? `<pre>${escapeCode(q.code)}</pre>` : ''}
+      <ul class="opts"></ul>
+      <button class="checkbtn">Έλεγχος</button>
+      <div class="explain"></div>`;
+    const ul = card.querySelector('.opts');
+    q.options.forEach((opt, j) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<div class="opt" data-multi="${isMulti?1:0}" data-j="${j}">
+          <span class="mark"></span><span class="otext">${opt.t}</span>
+          <span class="tag"></span></div>`;
+      ul.appendChild(li);
+    });
+    card.querySelectorAll('.opt').forEach(el => el.addEventListener('click', () => selectOpt(card, el, isMulti)));
+    card.querySelector('.checkbtn').addEventListener('click', () => checkQ(card, i));
+    qBox.appendChild(card);
+  });
+}
+
+function selectOpt(card, el, isMulti){
+  if(card.dataset.locked) return;
+  if(isMulti){ el.classList.toggle('sel'); }
+  else { card.querySelectorAll('.opt').forEach(o => o.classList.remove('sel')); el.classList.add('sel'); }
+}
+
+function checkQ(card, i){
+  if(card.dataset.locked) return;
+  const q = QUESTIONS[i];
+  const opts = [...card.querySelectorAll('.opt')];
+  const chosen = opts.filter(o => o.classList.contains('sel')).map(o => +o.dataset.j);
+  if(chosen.length === 0){ flash(card.querySelector('.checkbtn'), 'Διάλεξε πρώτα'); return; }
+  if(q.type === 'multi' && chosen.length !== q.pick){
+    flash(card.querySelector('.checkbtn'), `Διάλεξε ακριβώς ${q.pick}`); return;
+  }
+  card.dataset.locked = '1';
+  const correctSet = q.options.map((o,j)=>o.ok?j:-1).filter(j=>j>=0);
+  let allRight = true;
+  opts.forEach((o,j) => {
+    const isCorrect = q.options[j].ok;
+    const isChosen = chosen.includes(j);
+    if(isCorrect){ o.classList.add('correct'); o.querySelector('.tag').textContent = 'Σωστό'; }
+    if(isChosen && !isCorrect){ o.classList.add('wrong'); o.querySelector('.tag').textContent = 'Η επιλογή σου'; allRight = false; }
+    if(!isChosen && isCorrect){ allRight = false; }
+  });
+  answered[i] = allRight ? 1 : 0;
+  updateScore();
+  card.querySelector('.checkbtn').disabled = true;
+  showExplain(card, q, allRight);
+}
+
+function showExplain(card, q, allRight){
+  const ex = card.querySelector('.explain');
+  let html = `<div class="verdict ${allRight?'ok':'no'}">${allRight?'✓ Σωστά!':'✗ Όχι ακριβώς — δες γιατί:'}</div>`;
+  html += `<h5>Έννοια</h5><p>${q.concept}</p>`;
+  if(q.steps && q.steps.length){
+    html += `<h5>Ανάλυση βήμα-βήμα</h5>`;
+    q.steps.forEach(s => html += `<p>• ${s}</p>`);
+  }
+  html += `<h5>Γιατί όχι τα άλλα</h5><p>${q.why}</p>`;
+  if(q.note) html += `<div class="note">📌 ${q.note}</div>`;
+  if(q.type === 'multi') html += `<div class="note">⚠️ Multi-select: χωρίς partial credit. Μόνο η ακριβώς σωστή ομάδα μετράει.</div>`;
+  ex.innerHTML = html;
+  ex.classList.add('show');
+}
+
+function updateScore(){
+  const s = Object.values(answered).reduce((a,b)=>a+b,0);
+  document.getElementById('scoreNow').textContent = s;
+}
+function flash(btn, msg){
+  const old = btn.textContent; btn.textContent = msg;
+  setTimeout(()=>btn.textContent = old, 1100);
+}
+function escapeCode(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+document.getElementById('resetBtn').addEventListener('click', render);
+render();
+</script>
+</body>
+</html>
