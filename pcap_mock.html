@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCAP — Mock Exam (Nomikos) · Διαγώνισμα Εξάσκησης</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root{
+    --navy:#0b2545;       /* βαθύ μπλε Python */
+    --navy2:#13315c;
+    --blue:#1f6feb;
+    --steel:#2d5d9e;
+    --gold:#ffd43b;       /* χρυσό Python */
+    --gold-dk:#e6b800;
+    --ink:#0d1b2a;
+    --paper:#f4f7fb;
+    --card:#ffffff;
+    --line:#dbe5f1;
+    --muted:#5b6b80;
+    --good:#1a8a4a;
+    --good-bg:#e7f6ec;
+    --bad:#c0392b;
+    --bad-bg:#fdecea;
+    --note:#8a5a00;
+    --note-bg:#fff7e0;
+    --note-line:#ffd43b;
+    --shadow:0 10px 30px rgba(11,37,69,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Sora',system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 110% -10%, rgba(31,111,235,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(255,212,59,.10), transparent 55%),
+      var(--paper);
+    min-height:100vh;
+    line-height:1.55;
+  }
+  code{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:.92em;
+    background:#eef3fa;border:1px solid #dde7f3;border-radius:5px;padding:1px 5px;color:#163a6b;}
+  .wrap{max-width:880px;margin:0 auto;padding:24px 18px 80px}
+
+  /* ---------- Header ---------- */
+  header.top{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:18px 22px;border-radius:18px;color:#fff;
+    background:linear-gradient(135deg,var(--navy),var(--navy2) 70%);
+    box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  header.top::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+    background:radial-gradient(circle,var(--gold) 0%,transparent 70%);opacity:.18}
+  .logo{width:46px;height:46px;border-radius:12px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--blue),#3b82f6);
+    display:grid;place-items:center;font-weight:800;color:#fff;font-size:20px;
+    border:2px solid rgba(255,212,59,.6)}
+  .logo span{color:var(--gold)}
+  header.top h1{font-size:1.18rem;margin:0;font-weight:800;letter-spacing:.2px}
+  header.top p{margin:2px 0 0;font-size:.82rem;opacity:.85}
+  .badge-py{margin-left:auto;font-size:.72rem;background:rgba(255,212,59,.16);
+    border:1px solid rgba(255,212,59,.4);color:var(--gold);padding:5px 10px;border-radius:999px;font-weight:600}
+
+  /* ---------- Cards ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:26px;margin-top:20px}
+
+  /* ---------- Start screen ---------- */
+  .intro h2{margin:.2em 0 .4em;font-size:1.5rem}
+  .intro .lede{color:var(--muted);font-size:.98rem}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0}
+  .fact{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .fact b{display:block;font-size:1.6rem;color:var(--navy);font-weight:800;line-height:1}
+  .fact span{font-size:.8rem;color:var(--muted)}
+  .rules{font-size:.9rem;color:#37475c;background:var(--paper);border-radius:12px;padding:14px 18px;border:1px solid var(--line)}
+  .rules li{margin:4px 0}
+  .name-row{margin:18px 0 6px}
+  .name-row label{font-size:.85rem;color:var(--muted);display:block;margin-bottom:6px}
+  .name-row input{width:100%;max-width:340px;padding:11px 14px;border-radius:10px;border:1px solid var(--line);
+    font-family:'Sora';font-size:1rem;background:#fff}
+  .name-row input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,111,235,.15)}
+
+  /* ---------- Buttons ---------- */
+  .btn{font-family:'Sora';font-weight:700;border:none;border-radius:12px;padding:13px 24px;
+    font-size:1rem;cursor:pointer;transition:transform .08s ease,box-shadow .2s,background .2s}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(135deg,var(--blue),#3b82f6);color:#fff;
+    box-shadow:0 6px 16px rgba(31,111,235,.35)}
+  .btn-primary:hover{box-shadow:0 8px 22px rgba(31,111,235,.45)}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#3a2e00;
+    box-shadow:0 6px 16px rgba(230,184,0,.4)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+
+  /* ---------- Quiz progress ---------- */
+  .progress-bar{height:8px;background:#e3ebf6;border-radius:999px;overflow:hidden;margin:6px 0 2px}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-top:6px}
+
+  /* ---------- Question ---------- */
+  .qhead{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .qnum{background:var(--navy);color:#fff;font-weight:700;font-size:.78rem;border-radius:8px;padding:4px 10px}
+  .qtype{font-size:.72rem;font-weight:600;border-radius:999px;padding:3px 10px}
+  .qtype.single{background:#e8f0fc;color:var(--steel);border:1px solid #cfe0f7}
+  .qtype.multi{background:#fff3cf;color:var(--note);border:1px solid #ffe393}
+  .qprompt{font-size:1.12rem;font-weight:600;margin:8px 0 6px;line-height:1.5}
+  pre.code{background:#0d1b2a;color:#e6edf3;border-radius:12px;padding:16px 18px;overflow-x:auto;
+    font-family:'JetBrains Mono',monospace;font-size:.88rem;line-height:1.5;margin:14px 0;
+    border:1px solid #1b2c44;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+  pre.code .kw{color:#ff9d76}      /* keywords */
+  pre.code .bi{color:#79c0ff}      /* builtins */
+  pre.code .str{color:#9ece6a}     /* strings */
+  pre.code .num{color:#d2a8ff}     /* numbers */
+  pre.code .com{color:#6b7d94;font-style:italic} /* comments */
+  pre.code .def{color:#ffd43b}     /* def/class names */
+
+  .opts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .opt{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border:1.5px solid var(--line);
+    border-radius:12px;cursor:pointer;background:#fff;transition:.15s;user-select:none}
+  .opt:hover{border-color:var(--blue);background:#f7faff}
+  .opt.sel{border-color:var(--blue);background:#eef5ff;box-shadow:0 0 0 3px rgba(31,111,235,.12)}
+  .opt .mark{flex:0 0 auto;width:22px;height:22px;border:2px solid #b9c8dc;display:grid;place-items:center;
+    margin-top:1px;font-size:.7rem;color:#fff;transition:.15s}
+  .opt.single .mark{border-radius:50%}
+  .opt.multi .mark{border-radius:6px}
+  .opt.sel .mark{background:var(--blue);border-color:var(--blue)}
+  .opt .otext{flex:1;font-size:.98rem;line-height:1.5}
+  .opt .otext code{font-size:.9em}
+
+  .navbtns{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+  .navgrid{display:flex;flex-wrap:wrap;gap:7px;margin-top:22px;padding-top:18px;border-top:1px dashed var(--line)}
+  .navgrid .gbtn{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;
+    font-family:'Sora';font-weight:600;font-size:.8rem;cursor:pointer;color:var(--muted);transition:.12s}
+  .navgrid .gbtn:hover{border-color:var(--blue)}
+  .navgrid .gbtn.answered{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .navgrid .gbtn.current{outline:3px solid var(--gold);outline-offset:1px}
+  .navlegend{font-size:.74rem;color:var(--muted);margin-top:10px;display:flex;gap:16px;flex-wrap:wrap}
+  .navlegend i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:5px}
+
+  /* ---------- Results ---------- */
+  .score-hero{text-align:center;padding:10px 0 6px}
+  .ring{--p:0;width:160px;height:160px;border-radius:50%;margin:6px auto 10px;display:grid;place-items:center;
+    background:conic-gradient(var(--blue) calc(var(--p)*1%), #e3ebf6 0)}
+  .ring .inner{width:128px;height:128px;border-radius:50%;background:#fff;display:grid;place-items:center;
+    box-shadow:inset 0 2px 8px rgba(11,37,69,.08)}
+  .ring .pct{font-size:2.2rem;font-weight:800;color:var(--navy);line-height:1}
+  .ring .sub{font-size:.78rem;color:var(--muted)}
+  .verdict{font-size:1.25rem;font-weight:800;margin:4px 0}
+  .verdict.pass{color:var(--good)}.verdict.fail{color:var(--bad)}
+  .score-line{color:var(--muted);font-size:.95rem}
+  .res-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+
+  .review-h{font-size:1.15rem;font-weight:800;margin:30px 0 4px;color:var(--navy)}
+  .rev{border:1px solid var(--line);border-radius:16px;margin-top:16px;overflow:hidden;background:#fff}
+  .rev-top{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .rev-top.correct{background:var(--good-bg)}
+  .rev-top.wrong{background:var(--bad-bg)}
+  .rev-status{font-weight:800;font-size:.82rem;padding:3px 10px;border-radius:999px}
+  .rev-status.correct{background:var(--good);color:#fff}
+  .rev-status.wrong{background:var(--bad);color:#fff}
+  .rev-body{padding:16px 18px}
+  .rev-opt{padding:9px 13px;border-radius:10px;margin:7px 0;font-size:.93rem;border:1px solid transparent;display:flex;gap:9px;align-items:flex-start}
+  .rev-opt .ic{flex:0 0 auto;font-weight:800}
+  .rev-opt.ok{background:var(--good-bg);border-color:#bfe6cc;color:#155e34}
+  .rev-opt.ok .ic{color:var(--good)}
+  .rev-opt.miss{background:#fff6e6;border-color:#ffe0a3;color:#7a5200}     /* σωστό που δεν επιλέχθηκε */
+  .rev-opt.wrongpick{background:var(--bad-bg);border-color:#f6c6c0;color:#8a241a} /* λάθος επιλογή */
+  .rev-opt.neutral{background:#f7f9fc;border-color:#e6edf5;color:#46586e}
+  .badge-ver{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:700;color:#0f7a3d;
+    background:var(--good-bg);border:1px solid #bfe6cc;border-radius:999px;padding:4px 11px;margin:12px 0 4px}
+  .expl{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}
+  .expl .blk{margin:10px 0}
+  .expl .lbl{display:inline-block;font-size:.74rem;font-weight:800;letter-spacing:.2px;
+    color:var(--steel);background:#eef4fc;border:1px solid #d7e6f9;border-radius:6px;padding:2px 9px;margin-bottom:5px}
+  .expl .blk p{margin:3px 0;font-size:.94rem;color:#2b3a4d}
+  .studynote{margin-top:14px;background:var(--note-bg);border:1px solid #ffe393;border-left:5px solid var(--note-line);
+    border-radius:10px;padding:12px 15px;font-size:.9rem;color:#6b4a00}
+  .studynote b{color:var(--note)}
+
+  .filterbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{font-family:'Sora';font-size:.82rem;font-weight:600;border:1px solid var(--line);background:#fff;
+    border-radius:999px;padding:7px 14px;cursor:pointer;color:var(--muted)}
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  .rev-status.equiv{background:var(--gold-dk);color:#3a2e00}
+  .hidden{display:none !important}
+  footer{text-align:center;color:var(--muted);font-size:.76rem;margin-top:30px}
+  @media(max-width:560px){
+    .card{padding:18px}.qprompt{font-size:1.04rem}
+    header.top h1{font-size:1.02rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="logo">&lt;<span>/</span>&gt;</div>
+    <div>
+      <h1>PCAP — Certified Associate in Python Programming</h1>
+      <p>Mock Exam · Διαγώνισμα εξάσκησης · 40 ερωτήσεις</p>
+    </div>
+    <span class="badge-py">Python</span>
+  </header>
+
+  <!-- ===== START SCREEN ===== -->
+  <section id="screen-start" class="card intro">
+    <h2>Καλώς ήρθες στο διαγώνισμα 👋</h2>
+    <p class="lede">Πρόκειται για προσομοίωση εξέτασης PCAP. Απαντάς και στις 40 ερωτήσεις και στο τέλος βλέπεις τη βαθμολογία σου μαζί με αναλυτική επεξήγηση για κάθε ερώτηση.</p>
+
+    <div class="facts">
+      <div class="fact"><b>40</b><span>ερωτήσεις</span></div>
+      <div class="fact"><b>21</b><span>μονής επιλογής</span></div>
+      <div class="fact"><b>19</b><span>«διάλεξε δύο»</span></div>
+      <div class="fact"><b>70%</b><span>βάση επιτυχίας</span></div>
+    </div>
+
+    <ul class="rules">
+      <li>Στις ερωτήσεις «διάλεξε δύο» πρέπει να επιλέξεις <b>ακριβώς δύο</b> απαντήσεις.</li>
+      <li>Μπορείς να πλοηγείσαι μπρος-πίσω και να αλλάζεις απαντήσεις πριν την υποβολή.</li>
+      <li>Η βαθμολόγηση γίνεται στο τέλος — μια ερώτηση «διάλεξε δύο» μετράει σωστή μόνο αν είναι σωστές <b>και οι δύο</b> επιλογές.</li>
+      <li>Οι λύσεις κώδικα έχουν επαληθευτεί με πραγματική εκτέλεση στην Python.</li>
+      <li>Ερωτήσεις με τη σήμανση <b>⚠️ Ισοδύναμη</b> (στην επισκόπηση) ανακατασκευάστηκαν από τη θεματολογία του βιντεοσκοπημένου διαγωνίσματος, εκεί όπου η αρχική εκφώνηση δεν διαβαζόταν.</li>
+    </ul>
+
+    <div class="name-row">
+      <label for="stuname">Όνομα (προαιρετικό — εμφανίζεται στο αποτέλεσμα)</label>
+      <input id="stuname" type="text" placeholder="π.χ. Μαρία Π." maxlength="40" autocomplete="off">
+    </div>
+
+    <div style="margin-top:18px">
+      <button class="btn btn-primary" onclick="startQuiz()">Ξεκίνα το διαγώνισμα →</button>
+    </div>
+  </section>
+
+  <!-- ===== QUIZ SCREEN ===== -->
+  <section id="screen-quiz" class="card hidden">
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <div class="pmeta"><span id="pmeta-q">Ερώτηση 1 / 40</span><span id="pmeta-a">Απαντημένες: 0 / 40</span></div>
+
+    <div class="qhead" style="margin-top:18px">
+      <span class="qnum" id="q-num">Q1</span>
+      <span class="qtype" id="q-type">Μονή επιλογή</span>
+    </div>
+    <div class="qprompt" id="q-prompt"></div>
+    <div id="q-code"></div>
+    <div class="opts" id="q-opts"></div>
+
+    <div class="navbtns">
+      <button class="btn btn-ghost" id="btn-prev" onclick="go(-1)">← Προηγούμενη</button>
+      <button class="btn btn-primary" id="btn-next" onclick="go(1)">Επόμενη →</button>
+    </div>
+
+    <div class="navgrid" id="navgrid"></div>
+    <div class="navlegend">
+      <span><i style="background:var(--navy)"></i>Απαντημένη</span>
+      <span><i style="background:#fff;border:1px solid var(--line)"></i>Κενή</span>
+      <span><i style="background:#fff;outline:3px solid var(--gold);outline-offset:-2px"></i>Τρέχουσα</span>
+    </div>
+
+    <div style="margin-top:22px;text-align:center">
+      <button class="btn btn-gold" id="btn-submit" onclick="trySubmit()">Υποβολή & Βαθμολογία</button>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <section id="screen-results" class="card hidden">
+    <div class="score-hero">
+      <div class="ring" id="ring"><div class="inner"><div><div class="pct" id="res-pct">0%</div><div class="sub" id="res-frac">0 / 40</div></div></div></div>
+      <div class="verdict" id="res-verdict"></div>
+      <div class="score-line" id="res-line"></div>
+      <div id="res-send" style="font-size:.84rem;margin-top:8px;min-height:1.1em"></div>
+    </div>
+    <div class="res-actions">
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ Εκτύπωση / PDF</button>
+      <button class="btn btn-primary" onclick="restart()">↻ Νέα προσπάθεια</button>
+    </div>
+
+    <div class="review-h">Αναλυτική επισκόπηση</div>
+    <div class="filterbar">
+      <button class="chip active" data-f="all" onclick="setFilter('all',this)">Όλες (40)</button>
+      <button class="chip" data-f="wrong" onclick="setFilter('wrong',this)">Μόνο λάθη</button>
+      <button class="chip" data-f="note" onclick="setFilter('note',this)">Με σημείωση μελέτης</button>
+    </div>
+    <div id="review"></div>
+  </section>
+
+  <footer>
+    Διαγώνισμα εξάσκησης PCAP (βασισμένο στο βιντεοσκοπημένο διαγώνισμα Nomikos) · Όλος ο κώδικας επαληθεύτηκε με εκτέλεση στην Python · ⚠️ Ισοδύναμη = ανακατασκευασμένη ερώτηση.
+  </footer>
+</div>
+
+<script>
+/* ====== ΔΕΔΟΜΕΝΑ ΕΡΩΤΗΣΕΩΝ ====== */
+// PCAP Mock 2 — 40 ερωτήσεις. Κείμενο ερωτήσεων/επιλογών στα αγγλικά (όπως οι αυθεντικές),
+// επεξηγήσεις στα αγγλικά. Όλες οι απαντήσεις επαληθεύτηκαν με εκτέλεση κώδικα.
+// type: "single" (μία απάντηση) ή "multi" (select two)
+// correct: λίστα δεικτών (0-based) στις options
+// verified: true => εμφανίζει badge "✓ Επαληθεύτηκε με εκτέλεση"
+// note: προαιρετική "Σημείωση μελέτης"
+const QUESTIONS = [
+{
+  n:1, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"import sys\n\nb1 = type(dir(sys)) is str\nb2 = type(sys.path[-1]) is str\nprint(b1 and b2)",
+  options:["<code>False</code>","<code>0</code>","<code>True</code>","<code>None</code>"],
+  correct:[0],
+  expl:{
+    concept:"Τι επιστρέφει η <code>dir()</code> και τι τύπου είναι τα στοιχεία του <code>sys.path</code>.",
+    steps:"Η <code>dir(sys)</code> επιστρέφει <b>λίστα</b>, άρα <code>type(...) is str</code> → <code>b1 = False</code>. Τα στοιχεία του <code>sys.path</code> είναι strings → <code>b2 = True</code>. <code>False and True</code> → <code>False</code>.",
+    others:"<code>True</code> θα ίσχυε μόνο αν και τα δύο ήταν strings. <code>0</code>/<code>None</code> δεν προκύπτουν από <code>and</code> εδώ."
+  }
+},
+{
+  n:2, type:"multi", verified:false,
+  prompt:"What is <b>true</b> about Python packages? (Select <u>two</u> answers.)",
+  options:[
+    "<code>__pycache__</code> is the name of a built-in variable.",
+    "The <code>__name__</code> variable's content determines the way in which the module was started.",
+    "<code>hashbang</code> is the name of a built-in Python function.",
+    "A package can be stored as a tree of sub-directories / sub-folders."
+  ],
+  correct:[1,3],
+  expl:{
+    concept:"Βασικά για modules/packages: <code>__name__</code> και δομή πακέτου.",
+    steps:"Το <code>__name__</code> παίρνει <code>'__main__'</code> όταν το αρχείο τρέχει απευθείας, αλλιώς το όνομα του module — άρα δείχνει τον τρόπο εκκίνησης (αληθές). Ένα package είναι δέντρο υποφακέλων με <code>__init__.py</code> (αληθές).",
+    others:"<code>__pycache__</code> είναι <b>φάκελος</b> για το byte-code, όχι built-in μεταβλητή. Δεν υπάρχει built-in συνάρτηση <code>hashbang</code> (το hashbang/shebang είναι η γραμμή <code>#!</code>)."
+  }
+},
+{
+  n:3, type:"multi", verified:false,
+  prompt:"Assuming that the code below has been executed successfully, which of the following expressions will <b>always</b> evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  code:"import random\n\nv1 = random.random()\nv2 = random.random()",
+  options:[
+    "<code>random.choice([1, 2, 3]) &gt; 0</code>",
+    "<code>len(random.sample([1, 2, 3], 1)) &gt; 2</code>",
+    "<code>v1 &lt; 1</code>",
+    "<code>v1 == v2</code>"
+  ],
+  correct:[0,2],
+  expl:{
+    concept:"Συμπεριφορά των <code>random.random()</code>, <code>random.choice()</code> και <code>random.sample()</code>.",
+    steps:"Η <code>random.random()</code> επιστρέφει αριθμό στο <code>[0.0, 1.0)</code>, άρα <code>v1 &lt; 1</code> πάντα αληθές. Η <code>random.choice([1,2,3])</code> δίνει 1/2/3, πάντα <code>&gt; 0</code>.",
+    others:"Η <code>random.sample([1,2,3], 1)</code> έχει μήκος 1, άρα <code>&gt; 2</code> ποτέ. Δύο ανεξάρτητες <code>random()</code> πρακτικά δεν είναι ίσες."
+  }
+},
+{
+  n:4, type:"single", verified:false, equiv:true,
+  prompt:"Which one of the <code>platform</code> module functions should be used to determine the underlying platform name?",
+  options:["<code>platform.processor()</code>","<code>platform.platform()</code>","<code>platform.machine()</code>","<code>platform.node()</code>"],
+  correct:[1],
+  expl:{
+    concept:"Συναρτήσεις του module <code>platform</code> για πληροφορίες συστήματος.",
+    steps:"Η <code>platform.platform()</code> επιστρέφει ένα ενιαίο string που περιγράφει την υποκείμενη πλατφόρμα (λ.χ. λειτουργικό + έκδοση + αρχιτεκτονική).",
+    others:"<code>processor()</code> → όνομα επεξεργαστή, <code>machine()</code> → τύπος μηχανής (π.χ. x86_64), <code>node()</code> → όνομα δικτύου του μηχανήματος."
+  },
+  note:"Οι εναλλακτικές απαντήσεις (distractors) ανακατασκευάστηκαν — στο βίντεο δεν διαβάζονταν καθαρά. Η σωστή απάντηση (<code>platform.platform()</code>) και η εκφώνηση είναι σίγουρες."
+},
+{
+  n:5, type:"multi", verified:false,
+  prompt:"With regards to the directory structure below, select the proper forms of the directives in order to import <code>module_a</code>. (Select <u>two</u> answers.)",
+  code:"pypack (dir)\n  |\n  |--- upper (dir)\n  |      |--- lower (dir)\n  |      |      |--- module_c.py (file)\n  |      |--- module_b.py (file)\n  |\n  |--- module_a.py (file)",
+  options:[
+    "<code>import pypack.module_a</code>",
+    "<code>import module_a from pypack</code>",
+    "<code>import module_a</code>",
+    "<code>from pypack import module_a</code>"
+  ],
+  correct:[0,3],
+  expl:{
+    concept:"Πρόσβαση σε module που βρίσκεται μέσα σε package.",
+    steps:"Το <code>module_a.py</code> είναι απευθείας μέσα στο <code>pypack</code>. Σωστά: <code>import pypack.module_a</code> και <code>from pypack import module_a</code>.",
+    others:"<code>import module_a from pypack</code> είναι άκυρη σύνταξη. <code>import module_a</code> δεν το βρίσκει, γιατί δεν είναι στη ρίζα του <code>sys.path</code>."
+  }
+},
+{
+  n:6, type:"multi", verified:false,
+  prompt:"A Python module named <code>pymod.py</code> contains a variable named <code>pyvar</code>. Which of the following snippets will let you access this variable? (Select <u>two</u> answers.)",
+  options:[
+    "<code>import pymod</code> &nbsp;→&nbsp; access via <code>pymod.pyvar</code>",
+    "<code>from pymod import *</code> &nbsp;→&nbsp; access via <code>pyvar</code>",
+    "<code>from pymod import pyvar</code> &nbsp;→&nbsp; access via <code>pyvar()</code>",
+    "<code>import pyvar from pymod</code> &nbsp;→&nbsp; access via <code>pyvar</code>"
+  ],
+  correct:[0,1],
+  expl:{
+    concept:"Τρόποι import και πώς αναφέρεσαι μετά στο όνομα.",
+    steps:"Με <code>import pymod</code> προσπελαύνεις ως <code>pymod.pyvar</code>. Με <code>from pymod import *</code> το <code>pyvar</code> μπαίνει στο τρέχον namespace.",
+    others:"Το <code>pyvar</code> είναι μεταβλητή, όχι συνάρτηση → <code>pyvar()</code> δεν έχει νόημα. <code>import pyvar from pymod</code> είναι άκυρη σύνταξη."
+  }
+},
+{
+  n:7, type:"multi", verified:true, equiv:true,
+  prompt:"Which of the following snippets will execute without raising any <u>unhandled</u> exceptions? (Select <u>two</u> answers.)",
+  options:[
+    "<code>try:&nbsp; x = 1</code><br><code>except:&nbsp; x = x + 1</code><br><code>else:&nbsp; x = x + 2</code>",
+    "<code>try:&nbsp; print(1/1)</code><br><code>except:&nbsp; print(0/1)</code><br><code>else:&nbsp; print(1/1)</code>",
+    "<code>try:&nbsp; x = y + 1</code><br><code>except (NameError, SystemError):&nbsp; x = y + 1</code><br><code>else:&nbsp; y = 1</code>",
+    "<code>try:&nbsp; print(int('abc'))</code><br><code>except ArithmeticError:&nbsp; print('ok')</code>"
+  ],
+  correct:[0,1],
+  expl:{
+    concept:"Πότε μια εξαίρεση μένει <b>ανεπίλυτη</b> (unhandled).",
+    steps:"(1) Καμία εξαίρεση δεν προκύπτει → τρέχει το <code>else</code>, χωρίς πρόβλημα. (2) <code>1/1</code> δεν σκάει· τρέχει το <code>else</code> ομαλά.",
+    others:"(3) Το <code>x = y + 1</code> ρίχνει <code>NameError</code>· πιάνεται, αλλά <b>μέσα</b> στο <code>except</code> ξανατρέχει <code>y + 1</code> → νέα <code>NameError</code> ανεπίλυτη. (4) Το <code>int('abc')</code> ρίχνει <code>ValueError</code>, που <b>δεν</b> είναι <code>ArithmeticError</code> → ανεπίλυτη."
+  },
+  note:"Η 4η επιλογή ανακατασκευάστηκε (δεν φαινόταν στο βίντεο). Οι επιλογές 1–3 και η λογική επαληθεύονται κανονικά."
+},
+{
+  n:8, type:"single", verified:true,
+  prompt:"What is the expected behavior of the following code?",
+  code:"s = '2A'\ntry:\n    n = int(s)\nexcept:\n    n = 3\nexcept ValueError:\n    n = 2\nexcept ArithmeticError:\n    n = 1\nprint(n)",
+  options:["The code is erroneous and it will not execute","It outputs <code>2</code>","It outputs <code>1</code>","It outputs <code>3</code>"],
+  correct:[0],
+  expl:{
+    concept:"Σειρά των <code>except</code>: το «γυμνό» <code>except:</code> πρέπει να είναι <b>τελευταίο</b>.",
+    steps:"Εδώ το <code>except:</code> μπαίνει <b>πριν</b> από τα <code>except ValueError</code> / <code>except ArithmeticError</code>. Αυτό είναι <code>SyntaxError: default 'except:' must be last</code> — το πρόγραμμα δεν εκτελείται καν.",
+    others:"Δεν φτάνει ποτέ σε εκτέλεση, άρα δεν τυπώνει <code>1</code>, <code>2</code> ή <code>3</code>."
+  }
+},
+{
+  n:9, type:"multi", verified:true, equiv:true,
+  prompt:"What is <b>true</b> about the object created below? (Select <u>two</u> answers.)",
+  code:"class A:\n    x = 1\n    def __init__(self):\n        self.y = 2\n\na = A()",
+  options:[
+    "<code>A.x</code> is a class variable shared by all instances.",
+    "<code>a.y</code> is an instance variable created in the constructor.",
+    "<code>a.x</code> raises an <code>AttributeError</code>.",
+    "<code>A.y</code> evaluates to <code>2</code>."
+  ],
+  correct:[0,1],
+  expl:{
+    concept:"Διαφορά class variable / instance variable.",
+    steps:"Το <code>x</code> ορίζεται στο σώμα της κλάσης → class variable (<code>A.x</code>, κοινό). Το <code>self.y</code> δημιουργείται στον constructor → instance variable του <code>a</code>.",
+    others:"<code>a.x</code> βρίσκει το class variable (όχι σφάλμα). <code>A.y</code> δεν υπάρχει στην κλάση (μόνο στο instance) → <code>AttributeError</code>."
+  },
+  note:"Ισοδύναμη ερώτηση — η αρχική (OOP, select two) δεν διαβαζόταν λόγω αντανάκλασης."
+},
+{
+  n:10, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"s = 'Python'\nprint(s[::-1])",
+  options:["<code>nohtyP</code>","<code>Python</code>","<code>P</code>","The code raises an exception."],
+  correct:[0],
+  expl:{
+    concept:"Slicing με βήμα <code>-1</code> (αντιστροφή string).",
+    steps:"Το <code>s[::-1]</code> διατρέχει το string ανάποδα → <code>'nohtyP'</code>.",
+    others:"<code>'Python'</code> θα ήταν χωρίς βήμα. <code>'P'</code> θα ήταν <code>s[0]</code>. Δεν υπάρχει σφάλμα."
+  },
+  note:"Ισοδύναμη ερώτηση (strings)."
+},
+{
+  n:11, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"print('abc'.find('d'))",
+  options:["<code>-1</code>","<code>0</code>","<code>None</code>","The code raises an exception."],
+  correct:[0],
+  expl:{
+    concept:"Η μέθοδος <code>str.find()</code> όταν δεν βρει το υποσύνολο.",
+    steps:"Το <code>'d'</code> δεν υπάρχει στο <code>'abc'</code>, οπότε η <code>find()</code> επιστρέφει <code>-1</code>.",
+    others:"<code>0</code> θα σήμαινε εύρεση στην αρχή. Η <code>find()</code> δεν επιστρέφει <code>None</code> ούτε ρίχνει σφάλμα (σε αντίθεση με την <code>index()</code>)."
+  },
+  note:"Ισοδύναμη ερώτηση (strings)."
+},
+{
+  n:12, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"t = (1, 2, 3)\nprint(len(t) + max(t))",
+  options:["<code>6</code>","<code>5</code>","<code>3</code>","The code raises an exception."],
+  correct:[0],
+  expl:{
+    concept:"Built-in <code>len()</code> και <code>max()</code> σε tuple.",
+    steps:"<code>len(t) = 3</code>, <code>max(t) = 3</code> → <code>3 + 3 = 6</code>.",
+    others:"<code>5</code>/<code>3</code> προκύπτουν από λάθος υπολογισμό· δεν υπάρχει σφάλμα."
+  },
+  note:"Ισοδύναμη ερώτηση (sequences)."
+},
+{
+  n:13, type:"single", verified:true,
+  prompt:"What is the expected behavior of the following code?",
+  code:"the_list = [1, 2, 3]\nthe_string = ''.join(the_list)\nprint(the_string.isdigit())",
+  options:["It outputs <code>True</code>","It raises an exception","It outputs <code>False</code>","It outputs nothing"],
+  correct:[1],
+  expl:{
+    concept:"Η <code>str.join()</code> απαιτεί <b>strings</b> ως στοιχεία.",
+    steps:"Το <code>''.join([1, 2, 3])</code> ρίχνει <code>TypeError: sequence item 0: expected str instance, int found</code>, γιατί τα στοιχεία είναι <code>int</code>.",
+    others:"Δεν φτάνει ποτέ στην <code>isdigit()</code>, οπότε δεν τυπώνει <code>True</code>/<code>False</code>."
+  }
+},
+{
+  n:14, type:"multi", verified:true, equiv:true,
+  prompt:"Which of the following expressions evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  options:["<code>'abc' &lt; 'abd'</code>","<code>'Abc' &gt; 'abc'</code>","<code>'10' &lt; '9'</code>","<code>'abc' == 'ABC'</code>"],
+  correct:[0,2],
+  expl:{
+    concept:"Σύγκριση strings λεξικογραφικά (κωδικοί Unicode).",
+    steps:"<code>'abc' &lt; 'abd'</code>: ίδια αρχή, <code>'c' &lt; 'd'</code> → <code>True</code>. <code>'10' &lt; '9'</code>: συγκρίνεται ο 1ος χαρακτήρας, <code>'1' &lt; '9'</code> → <code>True</code>.",
+    others:"<code>'Abc' &gt; 'abc'</code>: τα κεφαλαία έχουν μικρότερο κωδικό (<code>'A'=65 &lt; 'a'=97</code>) → <code>False</code>. <code>'abc' == 'ABC'</code> → <code>False</code> (case-sensitive)."
+  },
+  note:"Ισοδύναμη ερώτηση (string comparison)."
+},
+{
+  n:15, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"x = [1, 2, 3]\ny = x\ny[0] = 9\nprint(x[0])",
+  options:["<code>9</code>","<code>1</code>","<code>None</code>","The code raises an exception."],
+  correct:[0],
+  expl:{
+    concept:"Aliasing: <code>y = x</code> δεν αντιγράφει τη λίστα.",
+    steps:"Το <code>y</code> δείχνει στο <b>ίδιο</b> αντικείμενο με το <code>x</code>. Αλλάζοντας <code>y[0]</code>, αλλάζει και το <code>x[0]</code> → <code>9</code>.",
+    others:"<code>1</code> θα ίσχυε αν η <code>y</code> ήταν αντίγραφο (π.χ. <code>x[:]</code> ή <code>x.copy()</code>)."
+  },
+  note:"Ισοδύναμη ερώτηση (mutability/references)."
+},
+{
+  n:16, type:"multi", verified:true, equiv:true,
+  prompt:"Which of the following expressions evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  options:["<code>3 in [1, 2, 3]</code>","<code>'a' in {'a': 1}.values()</code>","<code>2 ** 3 == 8</code>","<code>len('') &gt; 0</code>"],
+  correct:[0,2],
+  expl:{
+    concept:"Τελεστής <code>in</code>, ύψωση σε δύναμη και <code>len()</code>.",
+    steps:"<code>3 in [1,2,3]</code> → <code>True</code>. <code>2 ** 3 == 8</code> → <code>True</code>.",
+    others:"Στο <code>{'a':1}.values()</code> υπάρχει το <code>1</code>, όχι το <code>'a'</code> → <code>False</code>. <code>len('')</code> είναι <code>0</code>, όχι <code>&gt; 0</code>."
+  },
+  note:"Ισοδύναμη ερώτηση."
+},
+{
+  n:17, type:"multi", verified:true, equiv:true,
+  prompt:"Which of the following expressions evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  options:["<code>bool('') == False</code>","<code>bool('0') == True</code>","<code>bool(0) == True</code>","<code>bool([]) == True</code>"],
+  correct:[0,1],
+  expl:{
+    concept:"Truthiness: ποια αντικείμενα θεωρούνται «αληθή».",
+    steps:"Το κενό string είναι falsy → <code>bool('') == False</code>. Το <code>'0'</code> είναι <b>μη κενό</b> string → truthy → <code>bool('0') == True</code>.",
+    others:"Το <code>0</code> είναι falsy → <code>bool(0) == True</code> είναι <code>False</code>. Η κενή λίστα είναι falsy → <code>bool([]) == True</code> είναι <code>False</code>."
+  },
+  note:"Ισοδύναμη ερώτηση (truthiness)."
+},
+{
+  n:18, type:"multi", verified:true, equiv:true,
+  prompt:"Which of the following statements are <b>true</b>? (Select <u>two</u> answers.)",
+  options:[
+    "<code>ZeroDivisionError</code> is a subclass of <code>ArithmeticError</code>.",
+    "<code>IndexError</code> is a subclass of <code>KeyError</code>.",
+    "<code>Exception</code> is a subclass of <code>BaseException</code>.",
+    "<code>ValueError</code> is a subclass of <code>ArithmeticError</code>."
+  ],
+  correct:[0,2],
+  expl:{
+    concept:"Ιεραρχία ενσωματωμένων εξαιρέσεων.",
+    steps:"<code>ZeroDivisionError</code> κληρονομεί από <code>ArithmeticError</code> (αληθές). Όλες οι «κανονικές» εξαιρέσεις κατάγονται από <code>Exception</code>, που κατάγεται από <code>BaseException</code> (αληθές).",
+    others:"<code>IndexError</code> και <code>KeyError</code> είναι αδέλφια (και τα δύο <code>LookupError</code>), όχι το ένα γονιός του άλλου. <code>ValueError</code> δεν κατάγεται από <code>ArithmeticError</code>."
+  },
+  note:"Ισοδύναμη ερώτηση (exception hierarchy)."
+},
+{
+  n:19, type:"multi", verified:true, equiv:true,
+  prompt:"Given the function below, which of the following invocations are valid? (Select <u>two</u> answers.)",
+  code:"def f(a, b=2, *args):\n    return a + b",
+  options:["<code>f(1)</code>","<code>f(1, 2, 3)</code>","<code>f()</code>","<code>f(b=5)</code>"],
+  correct:[0,1],
+  expl:{
+    concept:"Υποχρεωτικές vs προαιρετικές παράμετροι και <code>*args</code>.",
+    steps:"<code>f(1)</code> → το <code>a=1</code>, <code>b=2</code> (default). <code>f(1, 2, 3)</code> → <code>a=1</code>, <code>b=2</code>, και το <code>3</code> πάει στο <code>*args</code>. Και τα δύο έγκυρα.",
+    others:"<code>f()</code> και <code>f(b=5)</code> δεν δίνουν τιμή στο υποχρεωτικό <code>a</code> → <code>TypeError</code>."
+  },
+  note:"Ισοδύναμη ερώτηση (functions/arguments)."
+},
+{
+  n:20, type:"multi", verified:false, equiv:true,
+  prompt:"Which of the following statements about Python strings are <b>true</b>? (Select <u>two</u> answers.)",
+  options:[
+    "Strings are immutable in Python.",
+    "<code>str</code> objects support item assignment, e.g. <code>s[0] = 'x'</code>.",
+    "The <code>+</code> operator concatenates two strings.",
+    "The <code>*</code> operator is illegal for strings."
+  ],
+  correct:[0,2],
+  expl:{
+    concept:"Αμεταβλητότητα (immutability) και τελεστές σε strings.",
+    steps:"Τα strings είναι immutable (αληθές). Το <code>+</code> κάνει concatenation δύο strings (αληθές).",
+    others:"Δεν επιτρέπεται <code>s[0] = 'x'</code> (ακριβώς λόγω immutability) → <code>TypeError</code>. Το <code>*</code> επιτρέπεται (επανάληψη, π.χ. <code>'ab' * 3</code>)."
+  },
+  note:"Ισοδύναμη ερώτηση (strings)."
+},
+{
+  n:21, type:"multi", verified:true, equiv:true,
+  prompt:"Assuming the snippet below has been executed successfully, which of the following expressions evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  code:"d = {'a': 1, 'b': 2}",
+  options:["<code>'a' in d</code>","<code>list(d.keys()) == ['a', 'b']</code>","<code>d['c'] == None</code>","<code>len(d) == 3</code>"],
+  correct:[0,1],
+  expl:{
+    concept:"Λεξικά: έλεγχος κλειδιού, σειρά εισαγωγής, <code>len()</code>.",
+    steps:"<code>'a' in d</code> ελέγχει <b>κλειδιά</b> → <code>True</code>. Από Python 3.7+ διατηρείται η σειρά εισαγωγής → <code>list(d.keys()) == ['a','b']</code>.",
+    others:"<code>d['c']</code> ρίχνει <code>KeyError</code> (δεν επιστρέφει <code>None</code>). <code>len(d)</code> είναι <code>2</code>, όχι <code>3</code>."
+  },
+  note:"Ισοδύναμη ερώτηση (dictionaries)."
+},
+{
+  n:22, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"print(list(range(2, 10, 3)))",
+  options:["<code>[2, 5, 8]</code>","<code>[2, 5, 8, 11]</code>","<code>[2, 4, 6, 8]</code>","<code>[3, 6, 9]</code>"],
+  correct:[0],
+  expl:{
+    concept:"<code>range(start, stop, step)</code> — το <code>stop</code> δεν περιλαμβάνεται.",
+    steps:"Ξεκινά στο 2, βήμα 3, σταματά <b>πριν</b> το 10: <code>2, 5, 8</code>.",
+    others:"Το <code>11</code> θα ξεπερνούσε το όριο. Τα υπόλοιπα έχουν λάθος start/step."
+  },
+  note:"Ισοδύναμη ερώτηση (range)."
+},
+{
+  n:23, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"def fun(n):\n    if n == 0:\n        return 0\n    return n + fun(n - 1)\n\nprint(fun(3))",
+  options:["<code>6</code>","<code>3</code>","<code>0</code>","The code raises <code>RecursionError</code>."],
+  correct:[0],
+  expl:{
+    concept:"Αναδρομή (recursion) με σαφή βασική περίπτωση.",
+    steps:"<code>fun(3) = 3 + fun(2) = 3 + 2 + fun(1) = 3 + 2 + 1 + fun(0) = 6</code>.",
+    others:"Υπάρχει βάση (<code>n == 0</code>), άρα δεν έχουμε άπειρη αναδρομή."
+  },
+  note:"Ισοδύναμη ερώτηση (recursion)."
+},
+{
+  n:24, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"print('a,b,c'.split(','))",
+  options:["<code>['a', 'b', 'c']</code>","<code>'a b c'</code>","<code>('a', 'b', 'c')</code>","<code>['a,b,c']</code>"],
+  correct:[0],
+  expl:{
+    concept:"Η <code>str.split(sep)</code> επιστρέφει <b>λίστα</b>.",
+    steps:"Με διαχωριστικό <code>','</code> προκύπτει <code>['a', 'b', 'c']</code>.",
+    others:"Επιστρέφεται λίστα (όχι tuple ή string). Το <code>['a,b,c']</code> θα προέκυπτε χωρίς διαχωρισμό."
+  },
+  note:"Ισοδύναμη ερώτηση (strings)."
+},
+{
+  n:25, type:"multi", verified:true, equiv:true,
+  prompt:"Assuming the classes below, which of the following are <b>true</b>? (Select <u>two</u> answers.)",
+  code:"class A:\n    def m(self):\n        return 'A'\n\nclass B(A):\n    def m(self):\n        return 'B'\n\nb = B()",
+  options:[
+    "<code>b.m()</code> returns <code>'B'</code>.",
+    "<code>isinstance(b, A)</code> is <code>True</code>.",
+    "<code>issubclass(A, B)</code> is <code>True</code>.",
+    "<code>A().m()</code> returns <code>'B'</code>."
+  ],
+  correct:[0,1],
+  expl:{
+    concept:"Κληρονομικότητα, override μεθόδων, <code>isinstance</code>/<code>issubclass</code>.",
+    steps:"Το <code>B</code> κάνει override τη <code>m()</code> → <code>b.m()</code> δίνει <code>'B'</code>. Το <code>b</code> είναι και <code>A</code> (μέσω κληρονομιάς) → <code>isinstance(b, A)</code> = <code>True</code>.",
+    others:"<code>issubclass(A, B)</code> είναι <code>False</code> (το αντίστροφο ισχύει). Το <code>A().m()</code> δίνει <code>'A'</code>."
+  },
+  note:"Ισοδύναμη ερώτηση (OOP/inheritance)."
+},
+{
+  n:26, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following snippet?",
+  code:"def f(x):\n    return x * 2\n\nprint(f(f(3)))",
+  options:["<code>12</code>","<code>6</code>","<code>9</code>","<code>36</code>"],
+  correct:[0],
+  expl:{
+    concept:"Σύνθεση κλήσεων συνάρτησης (nested call).",
+    steps:"Εσωτερικά: <code>f(3) = 6</code>. Εξωτερικά: <code>f(6) = 12</code>.",
+    others:"<code>6</code> είναι μόνο η εσωτερική κλήση. Τα <code>9</code>/<code>36</code> προκύπτουν από λάθος πράξη."
+  },
+  note:"Ισοδύναμη ερώτηση (functions)."
+},
+{
+  n:27, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected behavior of the following code?",
+  code:"class C:\n    def __init__(self, v):\n        self.__v = v\n\nc = C(5)\nprint(c.__v)",
+  options:["It outputs <code>5</code>","It raises an <code>AttributeError</code>","It outputs <code>None</code>","The code will not compile."],
+  correct:[1],
+  expl:{
+    concept:"Name mangling: τα ονόματα με δύο leading underscores «μπερδεύονται» (<code>_C__v</code>).",
+    steps:"Μέσα στην κλάση το <code>self.__v</code> γίνεται <code>self._C__v</code>. Εκτός κλάσης, το <code>c.__v</code> δεν υπάρχει → <code>AttributeError</code> (θα δούλευε <code>c._C__v</code>).",
+    others:"Δεν τυπώνει <code>5</code> ούτε <code>None</code>· ο κώδικας μεταγλωττίζεται κανονικά, το σφάλμα είναι στην εκτέλεση."
+  },
+  note:"Ισοδύναμη ερώτηση (OOP/name mangling)."
+},
+{
+  n:28, type:"multi", verified:false,
+  prompt:"What is <b>true</b> about Python class constructors? (Select <u>two</u> answers.)",
+  options:[
+    "The constructor must return a value other than <code>None</code>.",
+    "There can be more than one constructor in a Python class.",
+    "The constructor must have at least one parameter (e.g. <code>self</code>).",
+    "The constructor is a method named <code>__init__</code>."
+  ],
+  correct:[2,3],
+  expl:{
+    concept:"Ο constructor στην Python.",
+    steps:"Ο constructor είναι η μέθοδος <code>__init__</code> (αληθές) και πρέπει να έχει τουλάχιστον την παράμετρο <code>self</code> (αληθές).",
+    others:"Ο constructor <b>δεν</b> επιστρέφει τιμή (επιστρέφει <code>None</code>). Δεν υπάρχουν «πολλοί» constructors· ένας ορισμός <code>__init__</code> ανά κλάση (ο τελευταίος υπερισχύει)."
+  }
+},
+{
+  n:29, type:"multi", verified:true, equiv:true,
+  prompt:"Assuming the snippet below has been executed successfully, which of the following expressions evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  code:"class A:\n    pass\n\na = A()\na.x = 10",
+  options:["<code>hasattr(a, 'x')</code>","<code>a.x == 10</code>","<code>hasattr(A, 'x')</code>","<code>'x' in A.__dict__</code>"],
+  correct:[0,1],
+  expl:{
+    concept:"Δυναμική προσθήκη χαρακτηριστικού σε <b>instance</b>.",
+    steps:"Το <code>a.x = 10</code> προσθέτει το <code>x</code> στο instance <code>a</code> → <code>hasattr(a, 'x')</code> = <code>True</code> και <code>a.x == 10</code>.",
+    others:"Το <code>x</code> δεν μπαίνει στην κλάση <code>A</code>, άρα <code>hasattr(A, 'x')</code> = <code>False</code> και <code>'x' in A.__dict__</code> = <code>False</code>."
+  },
+  note:"Ισοδύναμη ερώτηση (OOP/attributes)."
+},
+{
+  n:30, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"try:\n    raise ValueError('x')\nexcept ValueError as e:\n    print(type(e).__name__)",
+  options:["<code>ValueError</code>","<code>x</code>","<code>Exception</code>","The code raises an unhandled exception."],
+  correct:[0],
+  expl:{
+    concept:"Πρόσβαση στο όνομα της κλάσης μιας εξαίρεσης.",
+    steps:"Η <code>ValueError</code> πιάνεται· <code>type(e).__name__</code> δίνει το όνομα της κλάσης → <code>'ValueError'</code>.",
+    others:"Το <code>'x'</code> είναι το μήνυμα (<code>str(e)</code>). Δεν είναι <code>'Exception'</code> (αυτό είναι ο γονιός). Η εξαίρεση πιάνεται κανονικά."
+  },
+  note:"Ισοδύναμη ερώτηση (exceptions)."
+},
+{
+  n:31, type:"multi", verified:true, equiv:true,
+  prompt:"Assuming the code below has been executed successfully, which of the following expressions evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  code:"s = 'abcdef'",
+  options:["<code>s[1:3] == 'bc'</code>","<code>s[-1] == 'f'</code>","<code>s[10] == ''</code>","<code>len(s) == 5</code>"],
+  correct:[0,1],
+  expl:{
+    concept:"Slicing και αρνητική δεικτοδότηση string.",
+    steps:"<code>s[1:3]</code> → χαρακτήρες θέσεων 1 και 2 → <code>'bc'</code>. <code>s[-1]</code> → τελευταίος → <code>'f'</code>.",
+    others:"<code>s[10]</code> είναι εκτός ορίων → <code>IndexError</code> (δεν δίνει <code>''</code>). <code>len(s)</code> είναι <code>6</code>, όχι <code>5</code>."
+  },
+  note:"Ισοδύναμη ερώτηση (strings/slicing)."
+},
+{
+  n:32, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"x = '3'\ny = 4\nprint(x * y)",
+  options:["<code>3333</code>","<code>12</code>","<code>34</code>","The code raises a <code>TypeError</code>."],
+  correct:[0],
+  expl:{
+    concept:"Ο τελεστής <code>*</code> μεταξύ string και int → επανάληψη.",
+    steps:"<code>'3' * 4</code> επαναλαμβάνει το string τέσσερις φορές → <code>'3333'</code>.",
+    others:"<code>12</code> θα ήταν αν το <code>x</code> ήταν αριθμός. Δεν υπάρχει <code>TypeError</code> (string × int επιτρέπεται)."
+  },
+  note:"Ισοδύναμη ερώτηση (strings/operators)."
+},
+{
+  n:33, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"print(2 + 3 * 2 ** 2)",
+  options:["<code>14</code>","<code>20</code>","<code>26</code>","<code>17</code>"],
+  correct:[0],
+  expl:{
+    concept:"Προτεραιότητα τελεστών: <code>**</code> &gt; <code>*</code> &gt; <code>+</code>.",
+    steps:"<code>2 ** 2 = 4</code>, μετά <code>3 * 4 = 12</code>, μετά <code>2 + 12 = 14</code>.",
+    others:"<code>20</code> προκύπτει αν γίνει πρώτα <code>(2+3)*...</code>. Τα υπόλοιπα από άλλη λάθος σειρά."
+  },
+  note:"Ισοδύναμη ερώτηση (operators/precedence)."
+},
+{
+  n:34, type:"multi", verified:true, equiv:true,
+  prompt:"Assuming the code below has been executed successfully, select the expressions which evaluate to <code>True</code>. (Select <u>two</u> answers.)",
+  code:"a = 10\nb = 3",
+  options:["<code>a // b == 3</code>","<code>a % b == 1</code>","<code>a / b == 3</code>","<code>a ** b == 30</code>"],
+  correct:[0,1],
+  expl:{
+    concept:"Ακέραια διαίρεση <code>//</code>, υπόλοιπο <code>%</code>, διαίρεση <code>/</code>, δύναμη <code>**</code>.",
+    steps:"<code>10 // 3 = 3</code> (αληθές). <code>10 % 3 = 1</code> (αληθές).",
+    others:"<code>10 / 3 = 3.333…</code> (όχι 3). <code>10 ** 3 = 1000</code> (όχι 30)."
+  },
+  note:"Ισοδύναμη ερώτηση (arithmetic operators)."
+},
+{
+  n:35, type:"single", verified:true,
+  prompt:"What is the expected behavior of the following code?",
+  code:"x = 3 % 1\ny = 1 if x > 0 else 0\nprint(y)",
+  options:["It outputs <code>0</code>","The code is erroneous and it will not execute","It outputs <code>1</code>","It outputs <code>1.0</code>"],
+  correct:[0],
+  expl:{
+    concept:"Τελεστής υπολοίπου <code>%</code> και conditional expression (ternary).",
+    steps:"<code>3 % 1 = 0</code> (το 3 διαιρείται ακριβώς με το 1). Στο <code>1 if x &gt; 0 else 0</code>, αφού <code>x = 0</code> δεν είναι <code>&gt; 0</code>, επιλέγεται το <code>else</code> → <code>y = 0</code>.",
+    others:"Το <code>1</code> θα προέκυπτε αν ίσχυε <code>x &gt; 0</code>. Δεν υπάρχει σφάλμα ούτε float."
+  }
+},
+{
+  n:36, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"data = [1, 2, 3, 4]\nprint(sum(data) / len(data))",
+  options:["<code>2.5</code>","<code>2</code>","<code>10</code>","<code>2.0</code>"],
+  correct:[0],
+  expl:{
+    concept:"Ο τελεστής <code>/</code> επιστρέφει πάντα <code>float</code>.",
+    steps:"<code>sum(data) = 10</code>, <code>len(data) = 4</code> → <code>10 / 4 = 2.5</code>.",
+    others:"<code>2</code> θα ήταν με <code>//</code>. <code>10</code> είναι μόνο το άθροισμα. Το αποτέλεσμα δεν είναι <code>2.0</code>."
+  },
+  note:"Ισοδύναμη ερώτηση (arithmetic/built-ins)."
+},
+{
+  n:37, type:"multi", verified:false, equiv:true,
+  prompt:"Which of the following statements about the <code>open()</code> function are <b>true</b>? (Select <u>two</u> answers.)",
+  options:[
+    "If <code>open()</code>'s second argument is omitted, the file is opened in text read mode (<code>'rt'</code>).",
+    "Opening a non-existent file in mode <code>'r'</code> raises an exception.",
+    "Mode <code>'w'</code> opens a file for reading only.",
+    "A file opened with <code>open()</code> never needs to be closed."
+  ],
+  correct:[0,1],
+  expl:{
+    concept:"Modes της <code>open()</code> και διαχείριση αρχείων.",
+    steps:"Χωρίς 2ο όρισμα, η <code>open()</code> χρησιμοποιεί <code>'rt'</code> (text read). Άνοιγμα ανύπαρκτου αρχείου σε <code>'r'</code> ρίχνει <code>FileNotFoundError</code>.",
+    others:"Το <code>'w'</code> ανοίγει για <b>εγγραφή</b> (όχι ανάγνωση). Τα αρχεία πρέπει να κλείνουν (<code>close()</code> ή <code>with</code>)."
+  },
+  note:"Ισοδύναμη ερώτηση — η αρχική (statements about open(), select two) δεν διαβαζόταν λόγω αντανάκλασης."
+},
+{
+  n:38, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"myli = [1, 2, 4]\nm = list(map(lambda x: 2 ** x, myli))\nprint(m[-1])",
+  options:["<code>4</code>","<code>16</code>","<code>1</code>","An exception is raised."],
+  correct:[1],
+  expl:{
+    concept:"<code>map()</code> με <code>lambda</code> και αρνητική δεικτοδότηση.",
+    steps:"<code>2 ** x</code> για κάθε στοιχείο: <code>2**1=2</code>, <code>2**2=4</code>, <code>2**4=16</code> → <code>[2, 4, 16]</code>. Το <code>m[-1]</code> είναι <code>16</code>.",
+    others:"Πρόσεξε: είναι <code>2 ** x</code>, όχι <code>x ** 2</code>. Δεν υπάρχει εξαίρεση."
+  }
+},
+{
+  n:39, type:"single", verified:true,
+  prompt:"What is the expected output of the following code if <code>existing_file</code> is the name of a file located inside the working directory?",
+  code:"try:\n    f = open('existing_file', 'w')\n    print(1, end=' ')\nexcept IOError as error:\n    print(error.errno, end=' ')\n    print(2, end=' ')\nelse:\n    f.close()\n    print(3, end=' ')",
+  options:["<code>1 3</code>","<code>1 2</code>","<code>2 3</code>","<code>1 2 3</code>"],
+  correct:[0],
+  expl:{
+    concept:"Δομή <code>try / except / else</code> με άνοιγμα αρχείου σε mode <code>'w'</code>.",
+    steps:"Το άνοιγμα σε <code>'w'</code> πετυχαίνει (το αρχείο υπάρχει/δημιουργείται) → τυπώνει <code>1</code>. Δεν υπάρχει εξαίρεση, άρα τρέχει το <code>else</code>: <code>f.close()</code> και τυπώνει <code>3</code>. Έξοδος: <code>1 3</code>.",
+    others:"Το <code>except</code> θα έτρεχε μόνο σε <code>IOError</code>. Το <code>else</code> τρέχει <b>αντί</b> του <code>except</code>, ποτέ μαζί — άρα όχι <code>1 2 3</code>."
+  }
+},
+{
+  n:40, type:"single", verified:true, equiv:true,
+  prompt:"What is the expected output of the following code?",
+  code:"import os\nprint(type(os.getcwd()).__name__)",
+  options:["<code>str</code>","<code>list</code>","<code>PosixPath</code>","The code raises an exception."],
+  correct:[0],
+  expl:{
+    concept:"Η <code>os.getcwd()</code> επιστρέφει το τρέχον directory ως <b>string</b>.",
+    steps:"<code>type(os.getcwd())</code> είναι <code>str</code>, άρα <code>.__name__</code> δίνει <code>'str'</code>.",
+    others:"Δεν επιστρέφει <code>list</code> ούτε αντικείμενο <code>PosixPath</code> (αυτό είναι του <code>pathlib</code>). Δεν υπάρχει σφάλμα."
+  },
+  note:"Ισοδύναμη ερώτηση — η Q40 δεν εμφανίζεται στο βίντεο (η λήψη σταματά στη Q39)."
+}
+];
+
+
+/* ====== Lightweight Python highlighter (offline) ====== */
+const PY_KW = new Set(["def","class","return","if","else","elif","try","except","finally","raise","for","while","in","not","and","or","is","import","from","as","pass","with","lambda","del","assert","yield","global","nonlocal","break","continue","None","True","False","self"]);
+const PY_BI = new Set(["print","int","str","list","len","sorted","map","abs","float","open","input","dir","hasattr","isinstance","range","tuple","dict","set","floor","ceil"]);
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function highlight(raw){
+  const lines = raw.split("\n");
+  return lines.map(line=>{
+    let out="", i=0;
+    while(i<line.length){
+      const ch=line[i];
+      // comment
+      if(ch==="#"){ out+='<span class="com">'+esc(line.slice(i))+'</span>'; break; }
+      // string
+      if(ch==='"'||ch==="'"){
+        let q=ch,j=i+1,buf=ch;
+        while(j<line.length){ buf+=line[j]; if(line[j]===q && line[j-1]!=="\\"){j++;break;} j++; }
+        out+='<span class="str">'+esc(buf)+'</span>'; i=j; continue;
+      }
+      // number
+      if(/[0-9]/.test(ch) && !/[A-Za-z_]/.test(line[i-1]||"")){
+        let j=i,buf=""; while(j<line.length && /[0-9.]/.test(line[j])){buf+=line[j];j++;}
+        out+='<span class="num">'+buf+'</span>'; i=j; continue;
+      }
+      // identifier / keyword
+      if(/[A-Za-z_]/.test(ch)){
+        let j=i,buf=""; while(j<line.length && /[A-Za-z_0-9]/.test(line[j])){buf+=line[j];j++;}
+        const prevWord = (out.match(/(def|class)<\/span>\s*$/));
+        if(PY_KW.has(buf)) out+='<span class="kw">'+buf+'</span>';
+        else if(prevWord) out+='<span class="def">'+buf+'</span>';
+        else if(PY_BI.has(buf)) out+='<span class="bi">'+buf+'</span>';
+        else out+=esc(buf);
+        i=j; continue;
+      }
+      out+=esc(ch); i++;
+    }
+    return out;
+  }).join("\n");
+}
+  
+
+/* ====== Συλλογή αποτελεσμάτων (Google Sheet) ======
+   Βάλε εδώ μέσα στα εισαγωγικά το URL του Web App που θα φτιάξεις στο
+   Google Apps Script (Deploy → New deployment → Web app). Αν το αφήσεις
+   κενό, το κουίζ λειτουργεί κανονικά αλλά ΔΕΝ στέλνει αποτελέσματα.        */
+const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycbznmCQwmpAnAFBjvlRoUXTUJhqLPmI33MHntK79lZ_f4RFcnHpjh679E4r9eos7rc8/exec";
+const QUIZ_ID = "PCAP Mock — Nomikos (video)";
+
+function sendResults(payload){
+  const el = $("res-send");
+  if(!RESULTS_ENDPOINT){ if(el) el.innerHTML=""; return; }
+  if(el) el.innerHTML = '<span style="color:var(--muted)">⏳ Αποστολή αποτελέσματος…</span>';
+  // mode:'no-cors' + text/plain: το Apps Script δέχεται το POST χωρίς CORS preflight.
+  // Η απόκριση είναι "opaque" (δεν διαβάζεται), γι' αυτό θεωρούμε επιτυχία την ολοκλήρωση χωρίς σφάλμα δικτύου.
+  fetch(RESULTS_ENDPOINT, {
+    method:"POST",
+    mode:"no-cors",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(el) el.innerHTML = '<span style="color:var(--good)">✓ Το αποτέλεσμα καταχωρήθηκε.</span>';
+  }).catch(()=>{
+    if(el) el.innerHTML = '<span style="color:var(--bad)">⚠️ Πρόβλημα σύνδεσης — το αποτέλεσμα ίσως δεν καταχωρήθηκε. Το σκορ σου φαίνεται κανονικά εδώ.</span>';
+  });
+}
+
+/* ====== Κατάσταση ====== */
+const N = QUESTIONS.length;
+let cur = 0;
+let answers = QUESTIONS.map(()=>[]);   // πίνακας επιλεγμένων δεικτών ανά ερώτηση
+let submitted = false;
+let studentName = "";
+
+const $ = id=>document.getElementById(id);
+function show(screen){
+  ["screen-start","screen-quiz","screen-results"].forEach(s=>$(s).classList.add("hidden"));
+  $(screen).classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function startQuiz(){
+  studentName = ($("stuname").value||"").trim();
+  show("screen-quiz");
+  buildNavGrid();
+  render();
+}
+
+function buildNavGrid(){
+  const g=$("navgrid"); g.innerHTML="";
+  for(let i=0;i<N;i++){
+    const b=document.createElement("button");
+    b.className="gbtn"; b.textContent=i+1; b.dataset.i=i;
+    b.onclick=()=>{cur=i;render();};
+    g.appendChild(b);
+  }
+}
+
+function render(){
+  const q=QUESTIONS[cur];
+  $("q-num").textContent="Q"+q.n;
+  const tEl=$("q-type");
+  tEl.textContent = q.type==="multi" ? "Διάλεξε δύο" : "Μονή επιλογή";
+  tEl.className = "qtype "+(q.type==="multi"?"multi":"single");
+  $("q-prompt").innerHTML=q.prompt;
+
+  // code
+  const cEl=$("q-code");
+  if(q.code){ cEl.innerHTML='<pre class="code">'+highlight(q.code)+'</pre>'; }
+  else cEl.innerHTML="";
+
+  // options
+  const oEl=$("q-opts"); oEl.innerHTML="";
+  q.options.forEach((opt,idx)=>{
+    const d=document.createElement("div");
+    d.className="opt "+(q.type==="multi"?"multi":"single");
+    if(answers[cur].includes(idx)) d.classList.add("sel");
+    d.innerHTML='<span class="mark">'+(answers[cur].includes(idx)?(q.type==="multi"?"✓":"●"):"")+'</span><span class="otext">'+opt+'</span>';
+    d.onclick=()=>toggle(idx);
+    oEl.appendChild(d);
+  });
+
+  // progress
+  const answered = answers.filter(a=>a.length>0).length;
+  $("pfill").style.width = ((cur+1)/N*100)+"%";
+  $("pmeta-q").textContent="Ερώτηση "+(cur+1)+" / "+N;
+  $("pmeta-a").textContent="Απαντημένες: "+answered+" / "+N;
+
+  // nav buttons
+  $("btn-prev").disabled = cur===0;
+  $("btn-next").disabled = cur===N-1;
+
+  // nav grid state
+  document.querySelectorAll(".gbtn").forEach(b=>{
+    const i=+b.dataset.i;
+    b.classList.toggle("answered", answers[i].length>0);
+    b.classList.toggle("current", i===cur);
+  });
+}
+
+function toggle(idx){
+  const q=QUESTIONS[cur];
+  let a=answers[cur];
+  if(q.type==="single"){
+    answers[cur]=[idx];
+  } else {
+    if(a.includes(idx)) answers[cur]=a.filter(x=>x!==idx);
+    else {
+      if(a.length>=2){ // αντικατάσταση της παλαιότερης επιλογής
+        a=a.slice(1); a.push(idx); answers[cur]=a;
+      } else { a.push(idx); answers[cur]=a; }
+    }
+  }
+  render();
+}
+
+function go(d){ cur=Math.min(N-1,Math.max(0,cur+d)); render(); }
+
+function trySubmit(){
+  const unanswered=[];
+  answers.forEach((a,i)=>{ if(a.length===0) unanswered.push(i+1); });
+  const incomplete=[];
+  answers.forEach((a,i)=>{ if(QUESTIONS[i].type==="multi" && a.length===1) incomplete.push(i+1); });
+
+  let msg="";
+  if(unanswered.length) msg+="Δεν έχεις απαντήσει "+unanswered.length+" ερωτήσεις: "+unanswered.join(", ")+".\n";
+  if(incomplete.length) msg+="Σε "+incomplete.length+" ερωτήσεις «διάλεξε δύο» έχεις επιλέξει μόνο μία: "+incomplete.join(", ")+".\n";
+  if(msg){ msg+="\nΘέλεις να υποβάλεις έτσι;"; if(!confirm(msg)) return; }
+  else { if(!confirm("Υποβολή του διαγωνίσματος και εμφάνιση βαθμολογίας;")) return; }
+
+  submitted=true;
+  scoreAndShow();
+}
+
+function arrEq(a,b){ if(a.length!==b.length) return false; const s=[...a].sort(),t=[...b].sort(); return s.every((v,i)=>v===t[i]); }
+
+function scoreAndShow(){
+  let correct=0;
+  const perResult=QUESTIONS.map((q,i)=>{
+    const ok=arrEq(answers[i], q.correct);
+    if(ok) correct++;
+    return ok;
+  });
+  const pct=Math.round(correct/N*100);
+  $("res-pct").textContent=pct+"%";
+  $("res-frac").textContent=correct+" / "+N;
+  $("ring").style.setProperty("--p",pct);
+  const pass=pct>=70;
+  const v=$("res-verdict");
+  v.textContent = (pass?"Επιτυχία! 🎉":"Χρειάζεται περισσότερη εξάσκηση") ;
+  v.className="verdict "+(pass?"pass":"fail");
+  $("res-line").textContent=(studentName?studentName+" — ":"")+"Σωστές "+correct+" από "+N+" ερωτήσεις"+(pass?" (πάνω από τη βάση 70%).":" (βάση επιτυχίας: 70%).");
+
+  buildReview(perResult);
+  show("screen-results");
+
+  // Αποστολή αποτελέσματος στο Google Sheet (αν έχει ρυθμιστεί endpoint)
+  sendResults({
+    quiz: QUIZ_ID,
+    name: studentName || "(ανώνυμος)",
+    score: correct,
+    total: N,
+    percent: pct,
+    pass: pass,
+    marks: perResult           // πίνακας true/false ανά ερώτηση (Q1..Q40)
+  });
+}
+
+function optClass(q,idx,chosen){
+  const isCorrect=q.correct.includes(idx);
+  const isChosen=chosen.includes(idx);
+  if(isCorrect && isChosen) return ["ok","✓"];
+  if(isCorrect && !isChosen) return ["miss","→"]; // σωστό που έχασε ο μαθητής
+  if(!isCorrect && isChosen) return ["wrongpick","✗"];
+  return ["neutral",""];
+}
+
+function buildReview(perResult){
+  const root=$("review"); root.innerHTML="";
+  QUESTIONS.forEach((q,i)=>{
+    const ok=perResult[i];
+    const chosen=answers[i];
+    const wrap=document.createElement("div");
+    wrap.className="rev";
+    wrap.dataset.ok = ok?"1":"0";
+    wrap.dataset.note = q.note?"1":"0";
+
+    let html='<div class="rev-top '+(ok?"correct":"wrong")+'">'+
+      '<span class="qnum">Q'+q.n+'</span>'+
+      '<span class="rev-status '+(ok?"correct":"wrong")+'">'+(ok?"Σωστό":"Λάθος")+'</span>'+(q.equiv?'<span class="rev-status equiv">⚠️ Ισοδύναμη</span>':'')+
+      '<span style="font-size:.8rem;color:var(--muted)">'+(q.type==="multi"?"Διάλεξε δύο":"Μονή επιλογή")+'</span></div>';
+
+    html+='<div class="rev-body">';
+    html+='<div class="qprompt" style="font-size:1rem">'+q.prompt+'</div>';
+    if(q.code) html+='<pre class="code">'+highlight(q.code)+'</pre>';
+
+    q.options.forEach((opt,idx)=>{
+      const [cls,ic]=optClass(q,idx,chosen);
+      html+='<div class="rev-opt '+cls+'"><span class="ic">'+ic+'</span><span>'+opt+'</span></div>';
+    });
+
+    if(q.verified) html+='<div class="badge-ver">✓ Επαληθεύτηκε με εκτέλεση</div>';
+
+    html+='<div class="expl">'+
+      '<div class="blk"><span class="lbl">Έννοια</span><p>'+q.expl.concept+'</p></div>'+
+      '<div class="blk"><span class="lbl">Ανάλυση βήμα-βήμα</span><p>'+q.expl.steps+'</p></div>'+
+      '<div class="blk"><span class="lbl">Γιατί όχι τα άλλα</span><p>'+q.expl.others+'</p></div>'+
+      '</div>';
+
+    if(q.note) html+='<div class="studynote"><b>📌 Σημείωση μελέτης:</b> '+q.note+'</div>';
+
+    html+='</div>';
+    wrap.innerHTML=html;
+    root.appendChild(wrap);
+  });
+}
+
+function setFilter(f,el){
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  el.classList.add("active");
+  document.querySelectorAll(".rev").forEach(r=>{
+    let show=true;
+    if(f==="wrong") show = r.dataset.ok==="0";
+    if(f==="note")  show = r.dataset.note==="1";
+    r.style.display = show ? "" : "none";
+  });
+}
+
+function restart(){
+  cur=0; answers=QUESTIONS.map(()=>[]); submitted=false;
+  document.querySelectorAll(".chip").forEach((c,i)=>c.classList.toggle("active",i===0));
+  show("screen-start");
+}
+
+/* Enter στο όνομα ξεκινά το κουίζ */
+document.addEventListener("DOMContentLoaded",()=>{
+  $("stuname").addEventListener("keydown",e=>{ if(e.key==="Enter") startQuiz(); });
+});
+</script>
+</body>
+</html>
