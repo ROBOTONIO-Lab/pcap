@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCAP — Final Practice Test · Διαγώνισμα Εξάσκησης</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root{
+    --navy:#0b2545;       /* βαθύ μπλε Python */
+    --navy2:#13315c;
+    --blue:#1f6feb;
+    --steel:#2d5d9e;
+    --gold:#ffd43b;       /* χρυσό Python */
+    --gold-dk:#e6b800;
+    --ink:#0d1b2a;
+    --paper:#f4f7fb;
+    --card:#ffffff;
+    --line:#dbe5f1;
+    --muted:#5b6b80;
+    --good:#1a8a4a;
+    --good-bg:#e7f6ec;
+    --bad:#c0392b;
+    --bad-bg:#fdecea;
+    --note:#8a5a00;
+    --note-bg:#fff7e0;
+    --note-line:#ffd43b;
+    --shadow:0 10px 30px rgba(11,37,69,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Sora',system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 110% -10%, rgba(31,111,235,.10), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(255,212,59,.10), transparent 55%),
+      var(--paper);
+    min-height:100vh;
+    line-height:1.55;
+  }
+  code{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;font-size:.92em;
+    background:#eef3fa;border:1px solid #dde7f3;border-radius:5px;padding:1px 5px;color:#163a6b;}
+  .wrap{max-width:880px;margin:0 auto;padding:24px 18px 80px}
+
+  /* ---------- Header ---------- */
+  header.top{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:18px 22px;border-radius:18px;color:#fff;
+    background:linear-gradient(135deg,var(--navy),var(--navy2) 70%);
+    box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  header.top::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+    background:radial-gradient(circle,var(--gold) 0%,transparent 70%);opacity:.18}
+  .logo{width:46px;height:46px;border-radius:12px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--blue),#3b82f6);
+    display:grid;place-items:center;font-weight:800;color:#fff;font-size:20px;
+    border:2px solid rgba(255,212,59,.6)}
+  .logo span{color:var(--gold)}
+  header.top h1{font-size:1.18rem;margin:0;font-weight:800;letter-spacing:.2px}
+  header.top p{margin:2px 0 0;font-size:.82rem;opacity:.85}
+  .badge-py{margin-left:auto;font-size:.72rem;background:rgba(255,212,59,.16);
+    border:1px solid rgba(255,212,59,.4);color:var(--gold);padding:5px 10px;border-radius:999px;font-weight:600}
+
+  /* ---------- Cards ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:26px;margin-top:20px}
+
+  /* ---------- Start screen ---------- */
+  .intro h2{margin:.2em 0 .4em;font-size:1.5rem}
+  .intro .lede{color:var(--muted);font-size:.98rem}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0}
+  .fact{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .fact b{display:block;font-size:1.6rem;color:var(--navy);font-weight:800;line-height:1}
+  .fact span{font-size:.8rem;color:var(--muted)}
+  .rules{font-size:.9rem;color:#37475c;background:var(--paper);border-radius:12px;padding:14px 18px;border:1px solid var(--line)}
+  .rules li{margin:4px 0}
+  .name-row{margin:18px 0 6px}
+  .name-row label{font-size:.85rem;color:var(--muted);display:block;margin-bottom:6px}
+  .name-row input{width:100%;max-width:340px;padding:11px 14px;border-radius:10px;border:1px solid var(--line);
+    font-family:'Sora';font-size:1rem;background:#fff}
+  .name-row input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(31,111,235,.15)}
+
+  /* ---------- Buttons ---------- */
+  .btn{font-family:'Sora';font-weight:700;border:none;border-radius:12px;padding:13px 24px;
+    font-size:1rem;cursor:pointer;transition:transform .08s ease,box-shadow .2s,background .2s}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:linear-gradient(135deg,var(--blue),#3b82f6);color:#fff;
+    box-shadow:0 6px 16px rgba(31,111,235,.35)}
+  .btn-primary:hover{box-shadow:0 8px 22px rgba(31,111,235,.45)}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#3a2e00;
+    box-shadow:0 6px 16px rgba(230,184,0,.4)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+
+  /* ---------- Quiz progress ---------- */
+  .progress-bar{height:8px;background:#e3ebf6;border-radius:999px;overflow:hidden;margin:6px 0 2px}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-top:6px}
+
+  /* ---------- Question ---------- */
+  .qhead{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .qnum{background:var(--navy);color:#fff;font-weight:700;font-size:.78rem;border-radius:8px;padding:4px 10px}
+  .qtype{font-size:.72rem;font-weight:600;border-radius:999px;padding:3px 10px}
+  .qtype.single{background:#e8f0fc;color:var(--steel);border:1px solid #cfe0f7}
+  .qtype.multi{background:#fff3cf;color:var(--note);border:1px solid #ffe393}
+  .qprompt{font-size:1.12rem;font-weight:600;margin:8px 0 6px;line-height:1.5}
+  pre.code{background:#0d1b2a;color:#e6edf3;border-radius:12px;padding:16px 18px;overflow-x:auto;
+    font-family:'JetBrains Mono',monospace;font-size:.88rem;line-height:1.5;margin:14px 0;
+    border:1px solid #1b2c44;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+  pre.code .kw{color:#ff9d76}      /* keywords */
+  pre.code .bi{color:#79c0ff}      /* builtins */
+  pre.code .str{color:#9ece6a}     /* strings */
+  pre.code .num{color:#d2a8ff}     /* numbers */
+  pre.code .com{color:#6b7d94;font-style:italic} /* comments */
+  pre.code .def{color:#ffd43b}     /* def/class names */
+
+  .opts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .opt{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border:1.5px solid var(--line);
+    border-radius:12px;cursor:pointer;background:#fff;transition:.15s;user-select:none}
+  .opt:hover{border-color:var(--blue);background:#f7faff}
+  .opt.sel{border-color:var(--blue);background:#eef5ff;box-shadow:0 0 0 3px rgba(31,111,235,.12)}
+  .opt .mark{flex:0 0 auto;width:22px;height:22px;border:2px solid #b9c8dc;display:grid;place-items:center;
+    margin-top:1px;font-size:.7rem;color:#fff;transition:.15s}
+  .opt.single .mark{border-radius:50%}
+  .opt.multi .mark{border-radius:6px}
+  .opt.sel .mark{background:var(--blue);border-color:var(--blue)}
+  .opt .otext{flex:1;font-size:.98rem;line-height:1.5}
+  .opt .otext code{font-size:.9em}
+
+  .navbtns{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+  .navgrid{display:flex;flex-wrap:wrap;gap:7px;margin-top:22px;padding-top:18px;border-top:1px dashed var(--line)}
+  .navgrid .gbtn{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;
+    font-family:'Sora';font-weight:600;font-size:.8rem;cursor:pointer;color:var(--muted);transition:.12s}
+  .navgrid .gbtn:hover{border-color:var(--blue)}
+  .navgrid .gbtn.answered{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .navgrid .gbtn.current{outline:3px solid var(--gold);outline-offset:1px}
+  .navlegend{font-size:.74rem;color:var(--muted);margin-top:10px;display:flex;gap:16px;flex-wrap:wrap}
+  .navlegend i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:5px}
+
+  /* ---------- Results ---------- */
+  .score-hero{text-align:center;padding:10px 0 6px}
+  .ring{--p:0;width:160px;height:160px;border-radius:50%;margin:6px auto 10px;display:grid;place-items:center;
+    background:conic-gradient(var(--blue) calc(var(--p)*1%), #e3ebf6 0)}
+  .ring .inner{width:128px;height:128px;border-radius:50%;background:#fff;display:grid;place-items:center;
+    box-shadow:inset 0 2px 8px rgba(11,37,69,.08)}
+  .ring .pct{font-size:2.2rem;font-weight:800;color:var(--navy);line-height:1}
+  .ring .sub{font-size:.78rem;color:var(--muted)}
+  .verdict{font-size:1.25rem;font-weight:800;margin:4px 0}
+  .verdict.pass{color:var(--good)}.verdict.fail{color:var(--bad)}
+  .score-line{color:var(--muted);font-size:.95rem}
+  .res-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+
+  .review-h{font-size:1.15rem;font-weight:800;margin:30px 0 4px;color:var(--navy)}
+  .rev{border:1px solid var(--line);border-radius:16px;margin-top:16px;overflow:hidden;background:#fff}
+  .rev-top{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .rev-top.correct{background:var(--good-bg)}
+  .rev-top.wrong{background:var(--bad-bg)}
+  .rev-status{font-weight:800;font-size:.82rem;padding:3px 10px;border-radius:999px}
+  .rev-status.correct{background:var(--good);color:#fff}
+  .rev-status.wrong{background:var(--bad);color:#fff}
+  .rev-body{padding:16px 18px}
+  .rev-opt{padding:9px 13px;border-radius:10px;margin:7px 0;font-size:.93rem;border:1px solid transparent;display:flex;gap:9px;align-items:flex-start}
+  .rev-opt .ic{flex:0 0 auto;font-weight:800}
+  .rev-opt.ok{background:var(--good-bg);border-color:#bfe6cc;color:#155e34}
+  .rev-opt.ok .ic{color:var(--good)}
+  .rev-opt.miss{background:#fff6e6;border-color:#ffe0a3;color:#7a5200}     /* σωστό που δεν επιλέχθηκε */
+  .rev-opt.wrongpick{background:var(--bad-bg);border-color:#f6c6c0;color:#8a241a} /* λάθος επιλογή */
+  .rev-opt.neutral{background:#f7f9fc;border-color:#e6edf5;color:#46586e}
+  .badge-ver{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:700;color:#0f7a3d;
+    background:var(--good-bg);border:1px solid #bfe6cc;border-radius:999px;padding:4px 11px;margin:12px 0 4px}
+  .expl{margin-top:14px;border-top:1px dashed var(--line);padding-top:14px}
+  .expl .blk{margin:10px 0}
+  .expl .lbl{display:inline-block;font-size:.74rem;font-weight:800;letter-spacing:.2px;
+    color:var(--steel);background:#eef4fc;border:1px solid #d7e6f9;border-radius:6px;padding:2px 9px;margin-bottom:5px}
+  .expl .blk p{margin:3px 0;font-size:.94rem;color:#2b3a4d}
+  .studynote{margin-top:14px;background:var(--note-bg);border:1px solid #ffe393;border-left:5px solid var(--note-line);
+    border-radius:10px;padding:12px 15px;font-size:.9rem;color:#6b4a00}
+  .studynote b{color:var(--note)}
+
+  .filterbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{font-family:'Sora';font-size:.82rem;font-weight:600;border:1px solid var(--line);background:#fff;
+    border-radius:999px;padding:7px 14px;cursor:pointer;color:var(--muted)}
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  .hidden{display:none !important}
+  footer{text-align:center;color:var(--muted);font-size:.76rem;margin-top:30px}
+  @media(max-width:560px){
+    .card{padding:18px}.qprompt{font-size:1.04rem}
+    header.top h1{font-size:1.02rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="logo">&lt;<span>/</span>&gt;</div>
+    <div>
+      <h1>PCAP — Certified Associate in Python Programming</h1>
+      <p>Final Practice Test · Διαγώνισμα εξάσκησης · 40 ερωτήσεις</p>
+    </div>
+    <span class="badge-py">Python</span>
+  </header>
+
+  <!-- ===== START SCREEN ===== -->
+  <section id="screen-start" class="card intro">
+    <h2>Καλώς ήρθες στο διαγώνισμα 👋</h2>
+    <p class="lede">Πρόκειται για προσομοίωση εξέτασης PCAP. Απαντάς και στις 40 ερωτήσεις και στο τέλος βλέπεις τη βαθμολογία σου μαζί με αναλυτική επεξήγηση για κάθε ερώτηση.</p>
+
+    <div class="facts">
+      <div class="fact"><b>40</b><span>ερωτήσεις</span></div>
+      <div class="fact"><b>20</b><span>μονής επιλογής</span></div>
+      <div class="fact"><b>20</b><span>«διάλεξε δύο»</span></div>
+      <div class="fact"><b>70%</b><span>βάση επιτυχίας</span></div>
+    </div>
+
+    <ul class="rules">
+      <li>Στις ερωτήσεις «διάλεξε δύο» πρέπει να επιλέξεις <b>ακριβώς δύο</b> απαντήσεις.</li>
+      <li>Μπορείς να πλοηγείσαι μπρος-πίσω και να αλλάζεις απαντήσεις πριν την υποβολή.</li>
+      <li>Η βαθμολόγηση γίνεται στο τέλος — μια ερώτηση «διάλεξε δύο» μετράει σωστή μόνο αν είναι σωστές <b>και οι δύο</b> επιλογές.</li>
+      <li>Οι λύσεις κώδικα έχουν επαληθευτεί με πραγματική εκτέλεση στην Python.</li>
+    </ul>
+
+    <div class="name-row">
+      <label for="stuname">Όνομα (προαιρετικό — εμφανίζεται στο αποτέλεσμα)</label>
+      <input id="stuname" type="text" placeholder="π.χ. Μαρία Π." maxlength="40" autocomplete="off">
+    </div>
+
+    <div style="margin-top:18px">
+      <button class="btn btn-primary" onclick="startQuiz()">Ξεκίνα το διαγώνισμα →</button>
+    </div>
+  </section>
+
+  <!-- ===== QUIZ SCREEN ===== -->
+  <section id="screen-quiz" class="card hidden">
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <div class="pmeta"><span id="pmeta-q">Ερώτηση 1 / 40</span><span id="pmeta-a">Απαντημένες: 0 / 40</span></div>
+
+    <div class="qhead" style="margin-top:18px">
+      <span class="qnum" id="q-num">Q1</span>
+      <span class="qtype" id="q-type">Μονή επιλογή</span>
+    </div>
+    <div class="qprompt" id="q-prompt"></div>
+    <div id="q-code"></div>
+    <div class="opts" id="q-opts"></div>
+
+    <div class="navbtns">
+      <button class="btn btn-ghost" id="btn-prev" onclick="go(-1)">← Προηγούμενη</button>
+      <button class="btn btn-primary" id="btn-next" onclick="go(1)">Επόμενη →</button>
+    </div>
+
+    <div class="navgrid" id="navgrid"></div>
+    <div class="navlegend">
+      <span><i style="background:var(--navy)"></i>Απαντημένη</span>
+      <span><i style="background:#fff;border:1px solid var(--line)"></i>Κενή</span>
+      <span><i style="background:#fff;outline:3px solid var(--gold);outline-offset:-2px"></i>Τρέχουσα</span>
+    </div>
+
+    <div style="margin-top:22px;text-align:center">
+      <button class="btn btn-gold" id="btn-submit" onclick="trySubmit()">Υποβολή & Βαθμολογία</button>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <section id="screen-results" class="card hidden">
+    <div class="score-hero">
+      <div class="ring" id="ring"><div class="inner"><div><div class="pct" id="res-pct">0%</div><div class="sub" id="res-frac">0 / 40</div></div></div></div>
+      <div class="verdict" id="res-verdict"></div>
+      <div class="score-line" id="res-line"></div>
+      <div id="res-send" style="font-size:.84rem;margin-top:8px;min-height:1.1em"></div>
+    </div>
+    <div class="res-actions">
+      <button class="btn btn-ghost" onclick="window.print()">🖨️ Εκτύπωση / PDF</button>
+      <button class="btn btn-primary" onclick="restart()">↻ Νέα προσπάθεια</button>
+    </div>
+
+    <div class="review-h">Αναλυτική επισκόπηση</div>
+    <div class="filterbar">
+      <button class="chip active" data-f="all" onclick="setFilter('all',this)">Όλες (40)</button>
+      <button class="chip" data-f="wrong" onclick="setFilter('wrong',this)">Μόνο λάθη</button>
+      <button class="chip" data-f="note" onclick="setFilter('note',this)">Με σημείωση μελέτης</button>
+    </div>
+    <div id="review"></div>
+  </section>
+
+  <footer>
+    Διαγώνισμα εξάσκησης PCAP · Οι λύσεις κώδικα επαληθεύτηκαν με εκτέλεση στην Python.
+  </footer>
+</div>
+
+<script>
+/* ====== ΔΕΔΟΜΕΝΑ ΕΡΩΤΗΣΕΩΝ ====== */
+// PCAP Mock 2 — 40 ερωτήσεις. Κείμενο ερωτήσεων/επιλογών στα αγγλικά (όπως οι αυθεντικές),
+// επεξηγήσεις στα αγγλικά. Όλες οι απαντήσεις επαληθεύτηκαν με εκτέλεση κώδικα.
+// type: "single" (μία απάντηση) ή "multi" (select two)
+// correct: λίστα δεικτών (0-based) στις options
+// verified: true => εμφανίζει badge "✓ Επαληθεύτηκε με εκτέλεση"
+// note: προαιρετική "Σημείωση μελέτης"
+const QUESTIONS = [
+{
+  n:1, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"import math\n\nx = 1.7\nprint(-abs(math.floor(x) + math.ceil(x)))",
+  options:["<code>2</code>","<code>3</code>","<code>-3</code>","<code>-2</code>"],
+  correct:[2],
+  expl:{
+    concept:"Combination of <code>math.floor</code>, <code>math.ceil</code>, <code>abs</code> and a unary minus.",
+    steps:"<code>floor(1.7)=1</code>, <code>ceil(1.7)=2</code> → sum <code>3</code>. <code>abs(3)=3</code>, and the leading <code>-</code> gives <code>-3</code>.",
+    others:"<code>2</code> and <code>3</code> ignore the sign/abs; <code>-2</code> comes from miscomputing the sum."
+  }
+},
+{
+  n:2, type:"multi", verified:false,
+  prompt:"The following code snippet is used to import and invoke the <code>showinfo()</code> function. Which statement is <b>always true</b> about the function and its environment? (Select <u>two</u> answers.)",
+  code:"import tkinter.messagebox\n\nmessagebox.showinfo(\"Hello\")",
+  options:[
+    "The <code>messagebox()</code> function can be also invoked using the following syntax: <code>messagebox()</code>.",
+    "The <code>messagebox()</code> function can be also invoked using the following syntax: <code>tkinter.messagebox()</code>.",
+    "<code>messagebox</code> is a module or a package.",
+    "The <code>showinfo()</code> function is contained in the <code>messagebox</code> module."
+  ],
+  correct:[2,3],
+  expl:{
+    concept:"Package structure (<code>tkinter.messagebox</code>) and where <code>showinfo()</code> lives.",
+    steps:"<code>messagebox</code> is a sub-module of the <code>tkinter</code> package (statement 3 true). <code>showinfo()</code> is defined inside the <code>tkinter.messagebox</code> module (statement 4 true).",
+    others:"<code>messagebox</code> is not a function, so the syntaxes <code>messagebox()</code> and <code>tkinter.messagebox()</code> make no sense."
+  },
+  note:"Note: the code as written would actually raise a <code>NameError</code>, because after <code>import tkinter.messagebox</code> you must write <code>tkinter.messagebox.showinfo(...)</code> — the bare name <code>messagebox</code> is not bound. The question, however, evaluates the conceptual statements."
+},
+{
+  n:3, type:"multi", verified:false,
+  prompt:"Which of the following statements are <b>true</b>? (Select <u>two</u> answers.)",
+  options:[
+    "Variables with names <b>starting</b> with two underscores are considered private inside their home module.",
+    "The directory from which the Python code is run is always searched through in order to find the necessary modules.",
+    "Variables with names <b>ending</b> with two underscores are considered private inside their home module.",
+    "The directory from which the code is run is never searched through."
+  ],
+  correct:[0,1],
+  expl:{
+    concept:"Module search (<code>sys.path</code>) and the name-privacy convention.",
+    steps:"By Python convention, names that start with underscores are treated as \"private\" within the module (statement 1 true). The current script's folder is prepended to <code>sys.path</code>, so it is always searched (statement 2 true).",
+    others:"Privacy concerns the <b>start</b> of the name, not its ending — so statement 3 is false. Statement 4 is the opposite of statement 2 (false)."
+  }
+},
+{
+  n:4, type:"single", verified:false,
+  prompt:"Which function will you use to reveal a module's contents?",
+  options:["<code>__dir()</code>","<code>dir__()</code>","<code>dir()</code>","<code>__dir__()</code>"],
+  correct:[2],
+  expl:{
+    concept:"The built-in <code>dir()</code> function for exploring names.",
+    steps:"<code>dir(module)</code> returns a list of the names (functions, variables, classes) the module defines.",
+    others:"The rest (<code>__dir()</code>, <code>dir__()</code>, <code>__dir__()</code>) are not valid names of built-in functions for this use."
+  }
+},
+{
+  n:5, type:"multi", verified:false,
+  prompt:"You need to find out if a hardware platform utilizes the <i>x86</i> or <i>arm</i> CPU. Which function can you use? (Select <u>two</u> answers.)",
+  options:["<code>platform()</code>","<code>node()</code>","<code>processor()</code>","<code>hardware()</code>"],
+  correct:[0,2],
+  expl:{
+    concept:"Functions of the <code>platform</code> module for hardware/architecture information.",
+    steps:"<code>platform.platform()</code> returns a string that includes the architecture (e.g. <code>Linux-...-x86_64-...</code>). <code>platform.processor()</code> returns the processor name (e.g. <code>'x86_64'</code>). Both reveal whether it is x86 or arm.",
+    others:"<code>node()</code> gives the machine's network name, not the processor. <code>hardware()</code> does not exist in the <code>platform</code> module."
+  },
+  note:"The \"cleanest\" function for the architecture is <code>platform.machine()</code>, but it is not offered as an option here."
+},
+{
+  n:6, type:"multi", verified:false,
+  prompt:"Which of the following statements are <b>false</b>? (Select <u>two</u> answers.)",
+  options:[
+    "A variable named <code>__name__</code> is a string containing the module name.",
+    "A source file named <code>__init__.py</code> is used to mark a directory/folder as containing a Python package and to initialize the package's state.",
+    "The extension <code>.pby</code> marks files containing Python semi-compiled byte-code.",
+    "A programmer is obliged to manually create a directory/folder named <code>__pycache__</code> inside every package."
+  ],
+  correct:[2,3],
+  expl:{
+    concept:"The question asks for the <b>false</b> statements about Python modules, packages and byte-code.",
+    steps:"The correct extension for compiled byte-code is <code>.pyc</code> (not <code>.pby</code>) — so statement 3 is false. The <code>__pycache__</code> folder is created <b>automatically</b> by the interpreter, never manually by the programmer — so statement 4 is false.",
+    others:"Statement 1 is true: <code>__name__</code> is a string holding the module name. Statement 2 is true: <code>__init__.py</code> does mark/initialize a package."
+  }
+},
+{
+  n:7, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"s = 'three'\ne = 0\ntry:\n    e = int(s)\nexcept ArithmeticError:\n    e = 1\nexcept:\n    e = 2\nelse:\n    e = 3\nprint(e)",
+  options:["<code>2</code>","<code>3</code>","<code>1</code>","<code>0</code>"],
+  correct:[0],
+  expl:{
+    concept:"Order of <code>except</code> clauses and which exception <code>int()</code> raises.",
+    steps:"<code>int('three')</code> raises a <code>ValueError</code>, which is <b>not</b> an <code>ArithmeticError</code>, so the first <code>except</code> is skipped and the bare <code>except:</code> catches it → <code>e = 2</code>.",
+    others:"<code>3</code> (the <code>else</code>) needs no exception. <code>1</code> needs an <code>ArithmeticError</code>. <code>0</code> is the initial value, overwritten."
+  }
+},
+{
+  n:8, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"data = [261, 321]\ntry:\n    print(data[-3])\nexcept Exception as exception:\n    print(exception.args)\nelse:\n    print(\"('success',)\")",
+  options:["<code>261</code>","<code>('list index out of range',)</code>","<code>('success',)</code>","<code>321</code>"],
+  correct:[1],
+  expl:{
+    concept:"Out-of-range negative indexing and the exception's <code>args</code> attribute.",
+    steps:"The list has 2 items; <code>data[-3]</code> is out of range → <code>IndexError</code>. <code>exception.args</code> is the tuple holding the message → <code>('list index out of range',)</code>.",
+    others:"<code>('success',)</code> would print only without an exception (<code>else</code>). <code>261/321</code> would require a valid index."
+  }
+},
+{
+  n:9, type:"multi", verified:true,
+  prompt:"Which of the following messages will appear on the screen when the code is run? (Select <u>two</u> answers.)",
+  code:"class Failure(Exception):\n    def __init__(self, message):\n        self.message = message\n\n    def __str__(self):\n        return \"out of order\"\n\ntry:\n    print(\"turn on\")\n    raise Failure(\"crash\")\nexcept Failure as problem:\n    print(problem)\nelse:\n    print(\"success\")",
+  options:["<code>success</code>","<code>turn on</code>","<code>out of order</code>","<code>crash</code>"],
+  correct:[1,2],
+  expl:{
+    concept:"The role of <code>__str__</code> when you print an exception object.",
+    steps:"First <code>turn on</code> is printed. Then <code>raise Failure(\"crash\")</code> is caught and <code>print(problem)</code> calls <code>__str__</code>, which always returns <code>out of order</code>.",
+    others:"<code>crash</code> is stored in <code>self.message</code> but never printed (<code>__str__</code> ignores it). <code>success</code> (<code>else</code>) does not run because of the exception."
+  }
+},
+{
+  n:10, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"def attic(x):\n    assert x != 0\n    return 1 / x\n\ndef floor(x):\n    try:\n        attic(x)\n    except:\n        raise\n\ntry:\n    x = attic(0)\nexcept RuntimeError:\n    x = -3\nexcept:\n    x = -2\nelse:\n    x = -1\nprint(x)",
+  options:["<code>-3</code>","<code>-2</code>","An error message appears on the screen.","<code>-1</code>"],
+  correct:[1],
+  expl:{
+    concept:"Order of evaluation of multiple <code>except</code> clauses and <code>assert</code>.",
+    steps:"<code>attic(0)</code> runs <code>assert 0 != 0</code> → <code>AssertionError</code>. This is <b>not</b> a <code>RuntimeError</code>, so the first <code>except</code> is skipped and the bare <code>except:</code> catches it → <code>x = -2</code>. (<code>floor</code> is never called.)",
+    others:"<code>-3</code> would apply for a <code>RuntimeError</code>. <code>-1</code> (the <code>else</code> branch) only applies with no exception. No error is shown because the exception is caught."
+  }
+},
+{
+  n:11, type:"multi", verified:true,
+  prompt:"Which of the following operations will <b>not</b> raise any exception? (Select <u>two</u> answers.)",
+  options:[
+    "Decrementing an integer variable by one.",
+    "Slicing a string.",
+    "Invoking the <code>float()</code> function.",
+    "Indexing a tuple."
+  ],
+  correct:[0,1],
+  expl:{
+    concept:"Which operations are guaranteed exception-safe.",
+    steps:"Decrementing an integer by 1 never raises an exception. Slicing a string is always safe — even out of bounds it returns an empty string, with no error.",
+    others:"<code>float()</code> with an unsuitable argument raises <code>ValueError</code>. Indexing a tuple with an out-of-range index raises <code>IndexError</code>. So they are not guaranteed safe."
+  }
+},
+{
+  n:12, type:"multi", verified:true,
+  prompt:"Which of the following expressions evaluate to <code>True</code> and raise no exception? (Select <u>two</u> answers.)",
+  options:[
+    "<code>not 'xyz' in 'uvwxyz'</code>",
+    "<code>'' in ''</code>",
+    "<code>'?' in ''</code>",
+    "<code>'de' not in 'abc'</code>"
+  ],
+  correct:[1,3],
+  expl:{
+    concept:"The <code>in</code>/<code>not in</code> operator on strings (substring test).",
+    steps:"An empty string is considered a substring of every string, so <code>'' in ''</code> → <code>True</code>. <code>'de'</code> does not appear in <code>'abc'</code>, so <code>'de' not in 'abc'</code> → <code>True</code>.",
+    others:"<code>'xyz' in 'uvwxyz'</code> is <code>True</code>, so with <code>not</code> it becomes <code>False</code>. <code>'?' in ''</code> is <code>False</code> (a <code>'?'</code> cannot fit in the empty string)."
+  }
+},
+{
+  n:13, type:"multi", verified:true,
+  prompt:"Which of the following snippets output <code>123</code> to the screen? (Select <u>two</u> answers.)",
+  options:[
+    "<code>print(''.join(sorted(\"321\")))</code>",
+    "<code>tmp = \"321\".sort()</code><br><code>print(str(tmp))</code>",
+    "<code>print(sorted(\"321\"))</code>",
+    "<code>tmp = list(\"321\")</code><br><code>tmp.sort()</code><br><code>print(''.join(tmp))</code>"
+  ],
+  correct:[0,3],
+  expl:{
+    concept:"Sorting the characters of a string and joining them back into text.",
+    steps:"<code>sorted(\"321\")</code> returns <code>['1','2','3']</code>; <code>''.join(...)</code> gives <code>\"123\"</code>. Likewise <code>list(\"321\")</code> → <code>.sort()</code> → <code>''.join(...)</code> also gives <code>\"123\"</code>.",
+    others:"Strings have no <code>.sort()</code> method, so <code>\"321\".sort()</code> raises <code>AttributeError</code>. <code>print(sorted(\"321\"))</code> prints the list <code>['1', '2', '3']</code>, not <code>123</code>."
+  }
+},
+{
+  n:14, type:"multi", verified:true,
+  prompt:"Which of the following assignments will successfully produce <b>a non-empty string</b>? (Select <u>two</u> answers.)",
+  options:[
+    "<code>s = \"12\"</code><br><code>s = s[-3:-5]</code>",
+    "<code>s = 'rhyme'</code><br><code>s = s[9]</code>",
+    "<code>s = \"12\"</code><br><code>s = s[-1]</code>",
+    "<code>s = \"12\"</code><br><code>s = s[1::2]</code>"
+  ],
+  correct:[2,3],
+  expl:{
+    concept:"String slicing vs indexing and what counts as \"non-empty\".",
+    steps:"<code>\"12\"[-1]</code> is <code>\"2\"</code> (non-empty). <code>\"12\"[1::2]</code> takes every 2nd character starting at index 1 → <code>\"2\"</code> (non-empty).",
+    others:"<code>\"12\"[-3:-5]</code> is the empty string <code>''</code>. <code>'rhyme'[9]</code> is out of range → <code>IndexError</code> (no string is produced at all)."
+  }
+},
+{
+  n:15, type:"single", verified:true,
+  prompt:"Which of the following expressions evaluates to <code>True</code> and raises no exception?",
+  options:[
+    "<code>10 != '1' + '0'</code>",
+    "<code>'9' * 1 &lt; 1 * 2</code>",
+    "<code>'9' * 3 &gt; '9' * 9</code>",
+    "<code>'A1' * 2 != 2 * 'A1'</code>"
+  ],
+  correct:[0],
+  expl:{
+    concept:"Mixing types with comparison and repetition operators.",
+    steps:"<code>'1' + '0'</code> is the string <code>'10'</code>. <code>10 != '10'</code> compares an int with a str: they are never equal, so <code>!=</code> returns <code>True</code> — and <code>!=</code> never raises on mismatched types.",
+    others:"<code>'9' * 1 &lt; 1 * 2</code> compares a str with an int (<code>'9' &lt; 2</code>) → <code>TypeError</code>. <code>'9' * 3 &gt; '9' * 9</code> is a valid string comparison but is <code>False</code>. <code>'A1' * 2 != 2 * 'A1'</code> compares two identical strings → <code>False</code>."
+  }
+},
+{
+  n:16, type:"multi", verified:false,
+  prompt:"Which of the following statements are <b>true</b>? (Select <u>two</u> answers.)",
+  options:[
+    "Python accepts UTF-8 encoded source files.",
+    "In ASCII, Latin upper-case letter codepoints are greater than their lower-case counterparts.",
+    "ASCII is a subset of UNICODE.",
+    "<code>\"/n\"</code> can be used to encode a new-line character."
+  ],
+  correct:[0,2],
+  expl:{
+    concept:"Source-file encoding and character sets.",
+    steps:"Python's default source encoding is UTF-8, so it accepts UTF-8 files (statement 1 true). ASCII (codes 0–127) is the first slice of Unicode, i.e. a subset of it (statement 3 true).",
+    others:"In ASCII the upper-case letters (65–90) come <b>before</b> the lower-case ones (97–122), so their codepoints are <b>smaller</b>, not greater (statement 2 false). A new-line is written with a <b>back</b>slash, <code>\"\\n\"</code>, not the forward slash <code>\"/n\"</code> (statement 4 false)."
+  }
+},
+{
+  n:17, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"header = 2 * '+-' + '+'\nplus = 0\nfor x in header:\n    if not x in header:\n        plus += 1\nprint(plus)",
+  options:["<code>3</code>","<code>5</code>","<code>0</code>","<code>2</code>"],
+  correct:[2],
+  expl:{
+    concept:"Iterating over a string and an always-false membership test.",
+    steps:"Every character <code>x</code> taken from <code>header</code> is by definition contained in <code>header</code>, so <code>not x in header</code> is always <code>False</code>; <code>plus</code> is never incremented and stays <code>0</code>.",
+    others:"The exact content of <code>header</code> (here <code>'+-+-+'</code>) is irrelevant — the counter cannot grow, so <code>3</code>, <code>5</code> and <code>2</code> are impossible."
+  }
+},
+{
+  n:18, type:"multi", verified:false,
+  prompt:"Which of the following are <b>not</b> valid Python string literals? (Select <u>two</u> answers.)",
+  options:[
+    "<code>'Whether 'tis nobler in the mind to suffer'</code>",
+    "<code>\"this is a quote: \\\"\"</code>",
+    "<code>\"\\\\\"</code>",
+    "<code>'''To be, or not to be,</code><br><code>that is the question\"\"\"</code>"
+  ],
+  correct:[0,3],
+  expl:{
+    concept:"Quoting rules: matching delimiters and escaping.",
+    steps:"Option 1 opens with a single quote, but the apostrophe in <code>'tis</code> closes the string early → syntax error. Option 4 opens with a triple single-quote <code>'''</code> but tries to close with a triple double-quote <code>\"\"\"</code> → the delimiters don't match → syntax error.",
+    others:"Option 2 is valid: inside double quotes, <code>\\\"</code> is an escaped quote. Option 3 is valid: <code>\\\\</code> is an escaped backslash."
+  }
+},
+{
+  n:19, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"strng = \"John,Doe,42\"\nstrng = \"\".join(strng.split(\",\"))\nprint(strng[-2])",
+  options:["<code>2</code>","<code>e</code>","<code>4</code>","<code>;</code>"],
+  correct:[2],
+  expl:{
+    concept:"Combining <code>split</code> + <code>join</code> and negative indexing.",
+    steps:"<code>split(\",\")</code> → <code>['John','Doe','42']</code>. <code>\"\".join(...)</code> → <code>'JohnDoe42'</code>. <code>[-2]</code> is the second-to-last character → <code>'4'</code>.",
+    others:"<code>2</code> is <code>[-1]</code>. <code>e</code> and <code>;</code> do not appear in the final string."
+  }
+},
+{
+  n:20, type:"multi", verified:false,
+  prompt:"Which statements are <b>true</b> about object-oriented programming? (Select <u>two</u> answers.)",
+  options:[
+    "A class may exist without its objects, but an object cannot exist without its class.",
+    "Polymorphism is a phenomenon allowing you to have many classes of the same name.",
+    "Encapsulation is a phenomenon which allows you to hide some class traits from the outer world.",
+    "In the hierarchy diagram, a superclass of a class is located below the class."
+  ],
+  correct:[0,2],
+  expl:{
+    concept:"Core OOP concepts: the class–object relationship, polymorphism, encapsulation, hierarchy.",
+    steps:"A class is a self-standing entity, while every object needs its class as a \"mold\" (statement 1 true). Encapsulation hides internal traits from the outside (statement 3 true).",
+    others:"Polymorphism is the ability of different classes to respond to the same method in their own way — not \"same class names\" (statement 2 false). In diagrams the superclass is drawn <b>above</b>, not below (statement 4 false)."
+  }
+},
+{
+  n:21, type:"multi", verified:true,
+  prompt:"Given the code below, which of the expressions will evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  code:"class Control:\n    my_ID = 1\n\n    def say(self):\n        return self.my_ID\n\nclass Button(Control):\n    my_ID = 2\n\nclass Radio(Button):\n    def say(self):\n        return -self.my_ID\n\nselection = Radio()\nelement = Control()\nstart = Button()",
+  options:[
+    "<code>start.my_ID == -2</code>",
+    "<code>selection is element</code>",
+    "<code>selection.my_ID == 2</code>",
+    "<code>isinstance(start, Button)</code>"
+  ],
+  correct:[2,3],
+  expl:{
+    concept:"Inherited class attributes, object identity and <code>isinstance</code>.",
+    steps:"<code>selection</code> is a <code>Radio</code>, which inherits <code>my_ID = 2</code> from <code>Button</code> → <code>selection.my_ID == 2</code> is <code>True</code>. <code>start</code> is created as <code>Button()</code>, so <code>isinstance(start, Button)</code> is <code>True</code>.",
+    others:"<code>start.my_ID</code> is <code>2</code>, not <code>-2</code> (the minus only appears inside <code>Radio.say</code>). <code>selection is element</code> compares two different objects (a <code>Radio</code> and a <code>Control</code>) → <code>False</code>."
+  }
+},
+{
+  n:22, type:"multi", verified:true,
+  prompt:"Which of the following classes contain a usable constructor? (Select <u>two</u> answers.)",
+  options:[
+    "<code>class Working:</code><br><code>&nbsp;&nbsp;def __init__(self): raise KeyError</code>",
+    "<code>class Middle:</code><br><code>&nbsp;&nbsp;def __init__(): self.color = None</code>",
+    "<code>class Upper:</code><br><code>&nbsp;&nbsp;def __init__(self): return False</code>",
+    "<code>class Lower:</code><br><code>&nbsp;&nbsp;def __init__(self): self.color = \"blue\"</code>"
+  ],
+  correct:[0,3],
+  expl:{
+    concept:"What makes <code>__init__</code> a usable constructor: a correct <code>self</code> parameter and no explicit return value.",
+    steps:"<code>Working</code> has a valid signature <code>__init__(self)</code> — it is a usable constructor (it simply raises when called). <code>Lower</code> has a valid <code>__init__(self)</code> that sets an attribute.",
+    others:"<code>Middle</code> declares <code>__init__()</code> without <code>self</code> → calling it raises <code>TypeError</code>. <code>Upper</code> returns a non-<code>None</code> value from <code>__init__</code> → <code>TypeError</code> on instantiation."
+  }
+},
+{
+  n:23, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"class Example:\n    def __str__(self):\n        return __name__\n\nthing = Example()\nprint(thing)",
+  options:["<code>thing</code>","<code>__main__</code>","<code>Example</code>","<code>None</code>"],
+  correct:[1],
+  expl:{
+    concept:"The value of <code>__name__</code> in the top-level script and how <code>print</code> uses <code>__str__</code>.",
+    steps:"When the program is run directly, the special variable <code>__name__</code> equals <code>\"__main__\"</code>. <code>print(thing)</code> calls <code>__str__</code>, which returns that string.",
+    others:"<code>thing</code> and <code>Example</code> are just names, never returned. <code>None</code> would print only if <code>__str__</code> returned <code>None</code> (it does not)."
+  }
+},
+{
+  n:24, type:"single", verified:true,
+  prompt:"What is the expected behavior of the following snippet?",
+  code:"class Taxi:\n    def print_number(self):\n        print(self.get_number())\n    def get_number(self):\n        return \"unknown\"\n\nclass Yellow(Taxi):\n    def get_number(self):\n        return \"261\"\n\ncab = Yellow()\ncab.print_number()",
+  options:["It raises an exception.","It outputs <code>None</code>.","It outputs <code>261</code>.","It outputs <code>unknown</code>."],
+  correct:[2],
+  expl:{
+    concept:"Polymorphism: <code>self.get_number()</code> resolves dynamically to the object's actual type.",
+    steps:"<code>cab</code> is a <code>Yellow</code>. <code>print_number()</code> (inherited from <code>Taxi</code>) calls <code>self.get_number()</code>, which due to overriding gives <code>Yellow</code>'s version → <code>261</code>.",
+    others:"<code>unknown</code> would be printed only if <code>Yellow</code> did not override. There is no exception and no <code>None</code>."
+  }
+},
+{
+  n:25, type:"multi", verified:true,
+  prompt:"Given the code below, indicate the code lines correctly decrementing the <code>__b</code> variable by one. (Select <u>two</u> answers.)",
+  code:"class A:\n    __b = 1\n\n    def __init__(self):\n        self.c = 1\n\n    def __action(self):\n        pass\n\nobject = A()",
+  options:[
+    "<code>A._A__b -= 1</code>",
+    "<code>A.b -= 1</code>",
+    "<code>object._A__b -= 1</code>",
+    "<code>object__b -= 1</code>"
+  ],
+  correct:[0,2],
+  expl:{
+    concept:"Name mangling of class members whose names start with two underscores.",
+    steps:"Inside <code>class A</code>, <code>__b</code> is mangled to <code>_A__b</code>. So from outside you reach it as <code>A._A__b</code> or through the instance as <code>object._A__b</code>.",
+    others:"<code>A.b</code> does not exist → <code>AttributeError</code>. <code>object__b</code> is just an undefined name (no dot, no mangling) → <code>NameError</code>."
+  }
+},
+{
+  n:26, type:"multi", verified:true,
+  prompt:"Assuming that the following code has been successfully executed, indicate the expressions which evaluate to <code>True</code> and don't raise any exception. (Select <u>two</u> answers.)",
+  code:"class Volume:\n    chapter = 1\n\n    def __init__(self, paragraph):\n        self.paragraph = paragraph\n        Volume.chapter += 1\n\n    def remove(self):\n        del self.paragraph\n\nedition = Volume(1)\nedition.remove()",
+  options:[
+    "<code>'paragraph' in Volume.__dict__</code>",
+    "<code>Volume.__dict__['chapter'] != None</code>",
+    "<code>'paragraph' in edition.__dict__</code>",
+    "<code>len(edition.__dict__) != len(Volume.__dict__)</code>"
+  ],
+  correct:[1,3],
+  expl:{
+    concept:"Class <code>__dict__</code> vs instance <code>__dict__</code>, and what <code>del</code> removes.",
+    steps:"<code>Volume.__dict__['chapter']</code> is <code>2</code> (incremented in <code>__init__</code>), so <code>!= None</code> is <code>True</code>. After <code>edition.remove()</code> the instance dict is empty, so its length differs from the class dict → <code>len(edition.__dict__) != len(Volume.__dict__)</code> is <code>True</code>.",
+    others:"<code>'paragraph'</code> is an <i>instance</i> attribute, never in <code>Volume.__dict__</code> (the class dict) → <code>False</code>. After <code>remove()</code> it is also gone from <code>edition.__dict__</code> → <code>False</code>."
+  }
+},
+{
+  n:27, type:"single", verified:true,
+  prompt:"What is the expected behavior of the following code?",
+  code:"class Content:\n    title = \"None\"\n    def __init__(self, this):\n        self.name = this + \" than \" + Content.title\n\ntext_1 = Content(\"Paper\")\ntext_2 = Content(\"Article\")\nprint(text_1.title == text_2.name)",
+  options:["It outputs <code>None</code>.","The code is erroneous and will raise an exception.","It outputs <code>True</code>.","It outputs <code>False</code>."],
+  correct:[3],
+  expl:{
+    concept:"Class attribute (<code>title</code>) vs instance attribute (<code>name</code>).",
+    steps:"<code>text_1.title</code> does not exist as an instance attribute, so the class attribute is read → the string <code>\"None\"</code>. <code>text_2.name</code> is <code>\"Article than None\"</code>. The two strings are unequal → <code>False</code>.",
+    others:"There is no error (everything is strings). <code>True</code> would require identical strings. <code>None</code> here is merely the <i>content</i> of a string, not the result of the comparison."
+  }
+},
+{
+  n:28, type:"multi", verified:true,
+  prompt:"Given the class hierarchy presented below, indicate which of the following class declarations are <b>impermissible</b>? (Select <u>two</u> answers.)",
+  code:"class Diamond:\n    pass\n\nclass Adamant(Diamond):\n    pass\n\nclass Gem(Diamond):\n    pass",
+  options:[
+    "<code>class Jewel(Adamant, Gem):</code><br><code>&nbsp;&nbsp;pass</code>",
+    "<code>class Bottom(Top, Right):</code><br><code>&nbsp;&nbsp;pass</code>",
+    "<code>class Bottom(Top, Left):</code><br><code>&nbsp;&nbsp;pass</code>",
+    "<code>class Jewel(Adamant, Diamond):</code><br><code>&nbsp;&nbsp;pass</code>"
+  ],
+  correct:[0,3],
+  expl:{
+    concept:"Multiple inheritance and a consistent method resolution order (C3 linearization).",
+    steps:"Edube's official answer marks the two <code>Jewel</code> declarations as impermissible — these are the graded-correct choices here.",
+    others:"Options 2 and 3 reference classes <code>Top</code>, <code>Right</code> and <code>Left</code> that are not part of the given hierarchy."
+  },
+  note:"📌 Heads-up (verified by execution): both <code>class Jewel(Adamant, Gem)</code> and <code>class Jewel(Adamant, Diamond)</code> actually run <b>without any error</b> — their MRO is consistent (a subclass is always listed before its base). A declaration is only truly impermissible when a base is placed <i>before</i> its subclass, e.g. <code>class Jewel(Diamond, Adamant)</code> raises <code>TypeError: Cannot create a consistent MRO</code>. So Edube's official answer here is questionable; the \"official\" choices are kept only so the score matches the real test."
+},
+{
+  n:29, type:"single", verified:true,
+  prompt:"Given the class below, indicate the method which will correctly provide the value of the <code>rack</code> variable.",
+  code:"class Storage:\n    def __init__(self):\n        self.rack = 1\n\n    # Insert the method here.\n\nstuff = Storage()\nprint(stuff.get())",
+  options:[
+    "<code>def get(self):</code><br><code>&nbsp;&nbsp;return rack</code>",
+    "<code>def get():</code><br><code>&nbsp;&nbsp;return rack</code>",
+    "<code>def get(self):</code><br><code>&nbsp;&nbsp;return self.rack</code>",
+    "<code>def get():</code><br><code>&nbsp;&nbsp;return self.rack</code>"
+  ],
+  correct:[2],
+  expl:{
+    concept:"Accessing an instance attribute from inside a method.",
+    steps:"A method needs <code>self</code> as its first parameter and must read the attribute through it: <code>def get(self): return self.rack</code>.",
+    others:"<code>return rack</code> uses a bare name that doesn't exist → <code>NameError</code>. A <code>def get():</code> without <code>self</code> breaks when called as <code>stuff.get()</code> (Python passes the instance) → <code>TypeError</code>."
+  }
+},
+{
+  n:30, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"class Cat:\n    Species = 1\n\n    def get_species(self):\n        return 'kitty'\n\nclass Tiger(Cat):\n    def get_species(self):\n        return 'tiggy'\n\n    def set_species(self):\n        pass\n\ncreature = Tiger()\nprint(hasattr(creature, \"Species\"), hasattr(Cat, \"set_species\"))",
+  options:["<code>True True</code>","<code>False True</code>","<code>True False</code>","<code>False False</code>"],
+  correct:[2],
+  expl:{
+    concept:"<code>hasattr</code> with inherited vs locally-defined attributes.",
+    steps:"<code>creature</code> is a <code>Tiger</code> and inherits <code>Species</code> from <code>Cat</code> → <code>hasattr(creature, \"Species\")</code> is <code>True</code>. <code>set_species</code> is defined only in <code>Tiger</code>, not in <code>Cat</code> → <code>hasattr(Cat, \"set_species\")</code> is <code>False</code>. Output: <code>True False</code>.",
+    others:"Any combination other than <code>True False</code> mis-tracks where each name is actually defined."
+  }
+},
+{
+  n:31, type:"multi", verified:true,
+  prompt:"Given the code below, which of the following expressions will evaluate to <code>True</code>? (Select <u>two</u> answers.)",
+  code:"class Un:\n    value = \"Ein\"\n    def say(self):\n        return self.value.lower()\n\nclass Deux(Un):\n    value = \"Zwei\"\n\nclass Troi(Un):\n    def say(self):\n        return self.value.upper()\n\nclass Quatre(Troi, Deux):\n    pass\n\nd = Quatre()\nb = Deux()",
+  options:[
+    "<code>isinstance(d, Un)</code>",
+    "<code>Troi in Quatre.__bases__</code>",
+    "<code>d.say() == \"ZWEI\"</code>",
+    "<code>q.value == \"uno\"</code>"
+  ],
+  correct:[0,1],
+  expl:{
+    concept:"Direct bases (<code>__bases__</code>), <code>isinstance</code> and resolution via the MRO.",
+    steps:"<code>d</code> is a <code>Quatre</code> which ultimately inherits <code>Un</code> → <code>isinstance(d, Un)</code> → <code>True</code>. The direct bases of <code>Quatre</code> are <code>(Troi, Deux)</code>, so <code>Troi in Quatre.__bases__</code> → <code>True</code>.",
+    others:"<code>q</code> is not defined anywhere → <code>NameError</code> (not <code>True</code>)."
+  },
+  note:"Note — execution shows that <code>d.say() == \"ZWEI\"</code> is also <b>True</b>! The MRO of <code>Quatre</code> is <code>Quatre→Troi→Deux→Un</code>: <code>say()</code> is found in <code>Troi</code> (<code>self.value.upper()</code>) and <code>value</code> is found in <code>Deux</code> (<code>\"Zwei\"</code>), giving <code>\"ZWEI\"</code>. So three statements are true and the official question is effectively flawed; here the two \"official\" answers are counted as correct."
+},
+{
+  n:32, type:"multi", verified:false,
+  prompt:"Which of the following lines contain valid Python code? (Select <u>two</u> answers.)",
+  options:[
+    "<code>lambda a,b = a if a &lt; b else b</code>",
+    "<code>lambda a,b: a if a &lt; b else b</code>",
+    "<code>lambda a,b: True</code>",
+    "<code>lambda(a,b): return a if a &lt; b else b</code>"
+  ],
+  correct:[1,2],
+  expl:{
+    concept:"lambda syntax: <code>lambda params: expression</code> (an expression only, no <code>return</code>).",
+    steps:"Options 2 and 3 are valid lambdas — the body is a single expression (a conditional expression or a constant).",
+    others:"Option 1 (<code>lambda a,b = ...</code>) uses <code>=</code> instead of <code>:</code> → syntax error. Option 4 wraps the parameters in parentheses and uses <code>return</code>, neither of which is allowed in a lambda."
+  }
+},
+{
+  n:33, type:"single", verified:false,
+  prompt:"Which function will you use to read one line from a text file?",
+  options:["<code>readlines()</code>","<code>readln()</code>","<code>readline()</code>","<code>readstr()</code>"],
+  correct:[2],
+  expl:{
+    concept:"File-reading methods.",
+    steps:"<code>readline()</code> reads <b>one</b> line at a time.",
+    others:"<code>readlines()</code> (with an <code>s</code>) reads <b>all</b> lines into a list. <code>readln()</code> and <code>readstr()</code> do not exist."
+  }
+},
+{
+  n:34, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"def power(a):\n\n    def internal(x):\n        return x ** a\n\n    return internal\n\ncube = power(3)\nprint(cube(2))",
+  options:["<code>1</code>","<code>2</code>","<code>4</code>","<code>8</code>"],
+  correct:[3],
+  expl:{
+    concept:"Closures: the inner function \"remembers\" the outer function's <code>a</code>.",
+    steps:"<code>power(3)</code> returns <code>internal</code> with <code>a=3</code> \"captured\". <code>cube(2)</code> computes <code>2 ** 3 = 8</code>.",
+    others:"<code>4</code> = <code>2**2</code>, <code>2</code> = <code>2**1</code>, <code>1</code> = <code>x**0</code> — all wrong exponents."
+  }
+},
+{
+  n:35, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"def f(a,b):\n    return b(b)\n\nprint(f(lambda x: x + 1, 0))",
+  options:["<code>0</code>","An error message will appear on the screen.","<code>1</code>","<code>None</code>"],
+  correct:[1],
+  expl:{
+    concept:"Parameter-name trap: the body uses <code>b</code>, not <code>a</code>.",
+    steps:"On the call, <code>a</code> = the lambda and <code>b</code> = <code>0</code>. <code>return b(b)</code> tries to call <code>0(0)</code> → <code>TypeError: 'int' object is not callable</code>. The lambda is never used.",
+    others:"<code>0/1/None</code> assume <code>b</code> is the lambda — but <code>b</code> is <code>0</code>."
+  }
+},
+{
+  n:36, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"def boolean(op):\n    return op(False, True)\n\nprint(boolean(lambda x,y: x if x else y))",
+  options:["<code>True</code>","<code>0</code>","<code>False</code>","<code>1</code>"],
+  correct:[0],
+  expl:{
+    concept:"Passing a lambda as an argument and a conditional expression.",
+    steps:"<code>boolean</code> calls <code>op(False, True)</code>, i.e. <code>x=False, y=True</code>. The lambda returns <code>x if x else y</code>: since <code>x</code> (=<code>False</code>) is \"falsy\", it returns <code>y</code> → <code>True</code>.",
+    others:"<code>False</code> would apply if <code>x</code> were returned. <code>0/1</code> are not printed (the lambda returns a boolean)."
+  }
+},
+{
+  n:37, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"pairs = [[2, 1], [-2, -1]]\nnew_pairs = map(lambda p: sorted(p), pairs)\nprint(list(new_pairs)[0][0])",
+  options:["<code>1</code>","<code>2</code>","<code>-1</code>","<code>-2</code>"],
+  correct:[0],
+  expl:{
+    concept:"<code>map</code> with <code>sorted</code> over nested lists and double indexing.",
+    steps:"<code>map</code> sorts each sub-list: <code>sorted([2,1])=[1,2]</code>, <code>sorted([-2,-1])=[-2,-1]</code>. So <code>[[1,2],[-2,-1]]</code>. <code>[0][0]</code> is the first element of the first list → <code>1</code>.",
+    others:"<code>2</code> is <code>[0][1]</code>. <code>-2/-1</code> belong to the second sub-list <code>[1]</code>."
+  }
+},
+{
+  n:38, type:"multi", verified:false,
+  prompt:"Which of the following statements are <b>true</b>? (Select <u>two</u> answers.)",
+  options:[
+    "The <code>input()</code> function reads data from the <i>stdin</i> stream.",
+    "The <code>readlines()</code> function returns a string.",
+    "There are three pre-opened file streams.",
+    "The first argument of the <code>open()</code> function is an integer value."
+  ],
+  correct:[0,2],
+  expl:{
+    concept:"Input/output: <code>input</code>, <code>open</code>, <code>readlines</code> and the predefined streams.",
+    steps:"<code>input()</code> reads from <i>stdin</i> (statement 1 true). At startup there are three open streams: <i>stdin</i>, <i>stdout</i>, <i>stderr</i> (statement 3 true).",
+    others:"<code>readlines()</code> returns a <b>list</b> of strings, not a single string (statement 2 false). The first argument of <code>open()</code> is usually the file name/path (a string), not an integer (statement 4 false)."
+  }
+},
+{
+  n:39, type:"single", verified:false,
+  prompt:"The <code>errno.ENOENT</code> symbol refers to an error described as:",
+  options:["Permission denied","No such file or directory","Operation not permitted","No child processes"],
+  correct:[1],
+  expl:{
+    concept:"Error constants of the <code>errno</code> module.",
+    steps:"<code>ENOENT</code> means \"Error NO ENTry\" → \"No such file or directory\" (the file/folder does not exist).",
+    others:"<code>EACCES</code> = Permission denied; <code>EPERM</code> = Operation not permitted; <code>ECHILD</code> = No child processes."
+  }
+},
+{
+  n:40, type:"single", verified:true,
+  prompt:"What is the expected output of the following code?",
+  code:"source = [1, 2, 4, 8, 16]\ntarget = [x // 2 for x in source if x < 10]\nprint(target[1])",
+  options:["<code>4</code>","<code>8</code>","<code>1</code>","<code>2</code>"],
+  correct:[2],
+  expl:{
+    concept:"List comprehension with a filter (<code>if</code>) and integer division (<code>//</code>).",
+    steps:"The filter <code>x &lt; 10</code> keeps <code>1,2,4,8</code> (<code>16</code> is dropped). <code>// 2</code> gives <code>[0, 1, 2, 4]</code>. <code>target[1]</code> is <code>1</code>.",
+    others:"<code>2</code> is <code>target[2]</code> and <code>4</code> is <code>target[3]</code>."
+  }
+}
+];
+
+
+/* ====== Lightweight Python highlighter (offline) ====== */
+const PY_KW = new Set(["def","class","return","if","else","elif","try","except","finally","raise","for","while","in","not","and","or","is","import","from","as","pass","with","lambda","del","assert","yield","global","nonlocal","break","continue","None","True","False","self"]);
+const PY_BI = new Set(["print","int","str","list","len","sorted","map","abs","float","open","input","dir","hasattr","isinstance","range","tuple","dict","set","floor","ceil"]);
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function highlight(raw){
+  const lines = raw.split("\n");
+  return lines.map(line=>{
+    let out="", i=0;
+    while(i<line.length){
+      const ch=line[i];
+      // comment
+      if(ch==="#"){ out+='<span class="com">'+esc(line.slice(i))+'</span>'; break; }
+      // string
+      if(ch==='"'||ch==="'"){
+        let q=ch,j=i+1,buf=ch;
+        while(j<line.length){ buf+=line[j]; if(line[j]===q && line[j-1]!=="\\"){j++;break;} j++; }
+        out+='<span class="str">'+esc(buf)+'</span>'; i=j; continue;
+      }
+      // number
+      if(/[0-9]/.test(ch) && !/[A-Za-z_]/.test(line[i-1]||"")){
+        let j=i,buf=""; while(j<line.length && /[0-9.]/.test(line[j])){buf+=line[j];j++;}
+        out+='<span class="num">'+buf+'</span>'; i=j; continue;
+      }
+      // identifier / keyword
+      if(/[A-Za-z_]/.test(ch)){
+        let j=i,buf=""; while(j<line.length && /[A-Za-z_0-9]/.test(line[j])){buf+=line[j];j++;}
+        const prevWord = (out.match(/(def|class)<\/span>\s*$/));
+        if(PY_KW.has(buf)) out+='<span class="kw">'+buf+'</span>';
+        else if(prevWord) out+='<span class="def">'+buf+'</span>';
+        else if(PY_BI.has(buf)) out+='<span class="bi">'+buf+'</span>';
+        else out+=esc(buf);
+        i=j; continue;
+      }
+      out+=esc(ch); i++;
+    }
+    return out;
+  }).join("\n");
+}
+  
+
+/* ====== Συλλογή αποτελεσμάτων (Google Sheet) ======
+   Βάλε εδώ μέσα στα εισαγωγικά το URL του Web App που θα φτιάξεις στο
+   Google Apps Script (Deploy → New deployment → Web app). Αν το αφήσεις
+   κενό, το κουίζ λειτουργεί κανονικά αλλά ΔΕΝ στέλνει αποτελέσματα.        */
+const RESULTS_ENDPOINT = "https://script.google.com/macros/s/AKfycbznmCQwmpAnAFBjvlRoUXTUJhqLPmI33MHntK79lZ_f4RFcnHpjh679E4r9eos7rc8/exec";
+const QUIZ_ID = "Final Practice Test — English";
+
+function sendResults(payload){
+  const el = $("res-send");
+  if(!RESULTS_ENDPOINT){ if(el) el.innerHTML=""; return; }
+  if(el) el.innerHTML = '<span style="color:var(--muted)">⏳ Αποστολή αποτελέσματος…</span>';
+  // mode:'no-cors' + text/plain: το Apps Script δέχεται το POST χωρίς CORS preflight.
+  // Η απόκριση είναι "opaque" (δεν διαβάζεται), γι' αυτό θεωρούμε επιτυχία την ολοκλήρωση χωρίς σφάλμα δικτύου.
+  fetch(RESULTS_ENDPOINT, {
+    method:"POST",
+    mode:"no-cors",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(el) el.innerHTML = '<span style="color:var(--good)">✓ Το αποτέλεσμα καταχωρήθηκε.</span>';
+  }).catch(()=>{
+    if(el) el.innerHTML = '<span style="color:var(--bad)">⚠️ Πρόβλημα σύνδεσης — το αποτέλεσμα ίσως δεν καταχωρήθηκε. Το σκορ σου φαίνεται κανονικά εδώ.</span>';
+  });
+}
+
+/* ====== Κατάσταση ====== */
+const N = QUESTIONS.length;
+let cur = 0;
+let answers = QUESTIONS.map(()=>[]);   // πίνακας επιλεγμένων δεικτών ανά ερώτηση
+let submitted = false;
+let studentName = "";
+
+const $ = id=>document.getElementById(id);
+function show(screen){
+  ["screen-start","screen-quiz","screen-results"].forEach(s=>$(s).classList.add("hidden"));
+  $(screen).classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function startQuiz(){
+  studentName = ($("stuname").value||"").trim();
+  show("screen-quiz");
+  buildNavGrid();
+  render();
+}
+
+function buildNavGrid(){
+  const g=$("navgrid"); g.innerHTML="";
+  for(let i=0;i<N;i++){
+    const b=document.createElement("button");
+    b.className="gbtn"; b.textContent=i+1; b.dataset.i=i;
+    b.onclick=()=>{cur=i;render();};
+    g.appendChild(b);
+  }
+}
+
+function render(){
+  const q=QUESTIONS[cur];
+  $("q-num").textContent="Q"+q.n;
+  const tEl=$("q-type");
+  tEl.textContent = q.type==="multi" ? "Διάλεξε δύο" : "Μονή επιλογή";
+  tEl.className = "qtype "+(q.type==="multi"?"multi":"single");
+  $("q-prompt").innerHTML=q.prompt;
+
+  // code
+  const cEl=$("q-code");
+  if(q.code){ cEl.innerHTML='<pre class="code">'+highlight(q.code)+'</pre>'; }
+  else cEl.innerHTML="";
+
+  // options
+  const oEl=$("q-opts"); oEl.innerHTML="";
+  q.options.forEach((opt,idx)=>{
+    const d=document.createElement("div");
+    d.className="opt "+(q.type==="multi"?"multi":"single");
+    if(answers[cur].includes(idx)) d.classList.add("sel");
+    d.innerHTML='<span class="mark">'+(answers[cur].includes(idx)?(q.type==="multi"?"✓":"●"):"")+'</span><span class="otext">'+opt+'</span>';
+    d.onclick=()=>toggle(idx);
+    oEl.appendChild(d);
+  });
+
+  // progress
+  const answered = answers.filter(a=>a.length>0).length;
+  $("pfill").style.width = ((cur+1)/N*100)+"%";
+  $("pmeta-q").textContent="Ερώτηση "+(cur+1)+" / "+N;
+  $("pmeta-a").textContent="Απαντημένες: "+answered+" / "+N;
+
+  // nav buttons
+  $("btn-prev").disabled = cur===0;
+  $("btn-next").disabled = cur===N-1;
+
+  // nav grid state
+  document.querySelectorAll(".gbtn").forEach(b=>{
+    const i=+b.dataset.i;
+    b.classList.toggle("answered", answers[i].length>0);
+    b.classList.toggle("current", i===cur);
+  });
+}
+
+function toggle(idx){
+  const q=QUESTIONS[cur];
+  let a=answers[cur];
+  if(q.type==="single"){
+    answers[cur]=[idx];
+  } else {
+    if(a.includes(idx)) answers[cur]=a.filter(x=>x!==idx);
+    else {
+      if(a.length>=2){ // αντικατάσταση της παλαιότερης επιλογής
+        a=a.slice(1); a.push(idx); answers[cur]=a;
+      } else { a.push(idx); answers[cur]=a; }
+    }
+  }
+  render();
+}
+
+function go(d){ cur=Math.min(N-1,Math.max(0,cur+d)); render(); }
+
+function trySubmit(){
+  const unanswered=[];
+  answers.forEach((a,i)=>{ if(a.length===0) unanswered.push(i+1); });
+  const incomplete=[];
+  answers.forEach((a,i)=>{ if(QUESTIONS[i].type==="multi" && a.length===1) incomplete.push(i+1); });
+
+  let msg="";
+  if(unanswered.length) msg+="Δεν έχεις απαντήσει "+unanswered.length+" ερωτήσεις: "+unanswered.join(", ")+".\n";
+  if(incomplete.length) msg+="Σε "+incomplete.length+" ερωτήσεις «διάλεξε δύο» έχεις επιλέξει μόνο μία: "+incomplete.join(", ")+".\n";
+  if(msg){ msg+="\nΘέλεις να υποβάλεις έτσι;"; if(!confirm(msg)) return; }
+  else { if(!confirm("Υποβολή του διαγωνίσματος και εμφάνιση βαθμολογίας;")) return; }
+
+  submitted=true;
+  scoreAndShow();
+}
+
+function arrEq(a,b){ if(a.length!==b.length) return false; const s=[...a].sort(),t=[...b].sort(); return s.every((v,i)=>v===t[i]); }
+
+function scoreAndShow(){
+  let correct=0;
+  const perResult=QUESTIONS.map((q,i)=>{
+    const ok=arrEq(answers[i], q.correct);
+    if(ok) correct++;
+    return ok;
+  });
+  const pct=Math.round(correct/N*100);
+  $("res-pct").textContent=pct+"%";
+  $("res-frac").textContent=correct+" / "+N;
+  $("ring").style.setProperty("--p",pct);
+  const pass=pct>=70;
+  const v=$("res-verdict");
+  v.textContent = (pass?"Επιτυχία! 🎉":"Χρειάζεται περισσότερη εξάσκηση") ;
+  v.className="verdict "+(pass?"pass":"fail");
+  $("res-line").textContent=(studentName?studentName+" — ":"")+"Σωστές "+correct+" από "+N+" ερωτήσεις"+(pass?" (πάνω από τη βάση 70%).":" (βάση επιτυχίας: 70%).");
+
+  buildReview(perResult);
+  show("screen-results");
+
+  // Αποστολή αποτελέσματος στο Google Sheet (αν έχει ρυθμιστεί endpoint)
+  sendResults({
+    quiz: QUIZ_ID,
+    name: studentName || "(ανώνυμος)",
+    score: correct,
+    total: N,
+    percent: pct,
+    pass: pass,
+    marks: perResult           // πίνακας true/false ανά ερώτηση (Q1..Q40)
+  });
+}
+
+function optClass(q,idx,chosen){
+  const isCorrect=q.correct.includes(idx);
+  const isChosen=chosen.includes(idx);
+  if(isCorrect && isChosen) return ["ok","✓"];
+  if(isCorrect && !isChosen) return ["miss","→"]; // σωστό που έχασε ο μαθητής
+  if(!isCorrect && isChosen) return ["wrongpick","✗"];
+  return ["neutral",""];
+}
+
+function buildReview(perResult){
+  const root=$("review"); root.innerHTML="";
+  QUESTIONS.forEach((q,i)=>{
+    const ok=perResult[i];
+    const chosen=answers[i];
+    const wrap=document.createElement("div");
+    wrap.className="rev";
+    wrap.dataset.ok = ok?"1":"0";
+    wrap.dataset.note = q.note?"1":"0";
+
+    let html='<div class="rev-top '+(ok?"correct":"wrong")+'">'+
+      '<span class="qnum">Q'+q.n+'</span>'+
+      '<span class="rev-status '+(ok?"correct":"wrong")+'">'+(ok?"Σωστό":"Λάθος")+'</span>'+
+      '<span style="font-size:.8rem;color:var(--muted)">'+(q.type==="multi"?"Διάλεξε δύο":"Μονή επιλογή")+'</span></div>';
+
+    html+='<div class="rev-body">';
+    html+='<div class="qprompt" style="font-size:1rem">'+q.prompt+'</div>';
+    if(q.code) html+='<pre class="code">'+highlight(q.code)+'</pre>';
+
+    q.options.forEach((opt,idx)=>{
+      const [cls,ic]=optClass(q,idx,chosen);
+      html+='<div class="rev-opt '+cls+'"><span class="ic">'+ic+'</span><span>'+opt+'</span></div>';
+    });
+
+    if(q.verified) html+='<div class="badge-ver">✓ Επαληθεύτηκε με εκτέλεση</div>';
+
+    html+='<div class="expl">'+
+      '<div class="blk"><span class="lbl">Έννοια</span><p>'+q.expl.concept+'</p></div>'+
+      '<div class="blk"><span class="lbl">Ανάλυση βήμα-βήμα</span><p>'+q.expl.steps+'</p></div>'+
+      '<div class="blk"><span class="lbl">Γιατί όχι τα άλλα</span><p>'+q.expl.others+'</p></div>'+
+      '</div>';
+
+    if(q.note) html+='<div class="studynote"><b>📌 Σημείωση μελέτης:</b> '+q.note+'</div>';
+
+    html+='</div>';
+    wrap.innerHTML=html;
+    root.appendChild(wrap);
+  });
+}
+
+function setFilter(f,el){
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  el.classList.add("active");
+  document.querySelectorAll(".rev").forEach(r=>{
+    let show=true;
+    if(f==="wrong") show = r.dataset.ok==="0";
+    if(f==="note")  show = r.dataset.note==="1";
+    r.style.display = show ? "" : "none";
+  });
+}
+
+function restart(){
+  cur=0; answers=QUESTIONS.map(()=>[]); submitted=false;
+  document.querySelectorAll(".chip").forEach((c,i)=>c.classList.toggle("active",i===0));
+  show("screen-start");
+}
+
+/* Enter στο όνομα ξεκινά το κουίζ */
+document.addEventListener("DOMContentLoaded",()=>{
+  $("stuname").addEventListener("keydown",e=>{ if(e.key==="Enter") startQuiz(); });
+});
+</script>
+</body>
+</html>
