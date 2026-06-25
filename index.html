@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PCAP — Διαγωνίσματα Εξάσκησης</title>
@@ -47,6 +49,8 @@
   .eyebrow{display:flex;align-items:center;gap:10px;margin:40px 2px 0;
     font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
   .eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+  .eyebrow .pill{font-size:.62rem;letter-spacing:.08em;background:var(--gold);color:#3a2e00;
+    padding:2px 8px;border-radius:999px;font-weight:800}
 
   .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:18px}
   a.choice{
@@ -61,6 +65,20 @@
     box-shadow:0 6px 16px rgba(31,111,235,.32)}
   a.choice.gr .go{background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#3a2e00;
     box-shadow:0 6px 16px rgba(230,184,0,.4)}
+
+  /* Featured (νέο) διαγώνισμα */
+  a.choice.feat{background:linear-gradient(135deg,var(--navy),var(--navy2) 75%);border-color:rgba(255,212,59,.45);color:#fff;
+    position:relative;overflow:hidden}
+  a.choice.feat::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;
+    background:radial-gradient(circle,var(--gold) 0%,transparent 70%);opacity:.16}
+  a.choice.feat:hover{border-color:var(--gold);box-shadow:0 18px 40px rgba(11,37,69,.30)}
+  a.choice.feat h3{color:#fff}
+  a.choice.feat .sub{color:rgba(255,255,255,.82)}
+  a.choice.feat .go{background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#3a2e00;
+    box-shadow:0 6px 16px rgba(230,184,0,.4)}
+  .featstats{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 2px}
+  .featstats .s{font-size:.72rem;font-weight:600;color:var(--gold);background:rgba(255,212,59,.14);
+    border:1px solid rgba(255,212,59,.35);border-radius:999px;padding:3px 10px}
 
   .choice.mod{display:flex;flex-direction:column}
   .modnum{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:0 0 auto;
@@ -91,7 +109,27 @@
   <!-- ============ ΔΙΑΓΩΝΙΣΜΑΤΑ ============ -->
   <div class="intro">
     <h2>Διαγωνίσματα εξάσκησης 👇</h2>
-    <p>Δύο πλήρη διαγωνίσματα, 40 ερωτήσεις το καθένα. Όλος ο κώδικας έχει επαληθευτεί με εκτέλεση στην Python.</p>
+    <p>Τρία πλήρη διαγωνίσματα, 40 ερωτήσεις το καθένα. Όλος ο κώδικας έχει επαληθευτεί με εκτέλεση στην Python.</p>
+  </div>
+
+  <!-- Base Mock Test 2026 (νέο) -->
+  <div class="eyebrow">Base Mock Test 2026 <span class="pill">ΝΕΟ</span></div>
+  <div class="intro" style="margin-top:6px">
+    <p>Ανακατασκευή από βιντεοσκοπημένο διαγώνισμα (Nomikos). Ερωτήσεις και κώδικας στα αγγλικά, αναλυτικές επεξηγήσεις στα ελληνικά.</p>
+  </div>
+
+  <div class="choices">
+    <a class="choice feat" href="pcap_mock.html">
+      <div class="flag">🎯</div>
+      <h3>Base Mock Test 2026</h3>
+      <div class="sub">Πλήρες διαγώνισμα 40 ερωτήσεων με επεξήγηση τριών μερών (Έννοια / Ανάλυση / Γιατί όχι τα άλλα) σε κάθε ερώτηση.</div>
+      <div class="featstats">
+        <span class="s">40 ερωτήσεις</span>
+        <span class="s">65 λεπτά</span>
+        <span class="s">βάση 70%</span>
+      </div>
+      <span class="go">Ξεκίνα →</span>
+    </a>
   </div>
 
   <!-- Final Practice Test -->
