@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PCAP Mock 2 · ROBOTONIO-Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0b2545; --navy-2:#13315c; --navy-3:#1d4e89;
+  --gold:#ffd43b; --gold-deep:#d8a200;
+  --paper:#eef2f9; --card:#ffffff; --ink:#0b2545; --muted:#5b6b85;
+  --line:#dde4f1; --green:#1a7f5a; --green-bg:#e7f6ef;
+  --red:#c0392b; --red-bg:#fcebe9; --gold-bg:#fff7d6;
+  --radius:14px; --shadow:0 1px 3px rgba(11,37,69,.08),0 8px 24px rgba(11,37,69,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:'Sora',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+
+/* ---------- Header ---------- */
+.masthead{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.masthead::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(1200px 200px at 80% -40%,rgba(255,212,59,.18),transparent 70%)}
+.masthead .wrap{position:relative;max-width:860px;margin:0 auto;padding:34px 22px 30px}
+.eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);font-weight:600;margin:0 0 8px}
+.masthead h1{font-size:2.1rem;font-weight:800;margin:0;letter-spacing:-.02em}
+.masthead h1 .two{color:var(--gold)}
+.masthead p{margin:10px 0 0;color:#c3d0e6;max-width:54ch;font-size:.96rem}
+.meta-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.chip{font-size:.74rem;font-weight:600;padding:6px 11px;border-radius:999px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#dbe5f5}
+.chip b{color:var(--gold)}
+
+/* ---------- Scoreboard (sticky) ---------- */
+.scorebar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.scorebar .wrap{max-width:860px;margin:0 auto;padding:11px 22px;
+  display:flex;align-items:center;gap:14px}
+.progress{flex:1;height:8px;background:#dde4f1;border-radius:999px;overflow:hidden}
+.progress > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--navy-3),var(--gold));
+  border-radius:999px;transition:width .3s ease}
+.progress-label{font-size:.78rem;color:var(--muted);font-weight:600;white-space:nowrap}
+#scoreOut{font-weight:700;color:var(--navy);white-space:nowrap}
+#scoreOut.show{color:var(--gold-deep)}
+
+/* ---------- Quiz ---------- */
+.quiz{max-width:860px;margin:0 auto;padding:26px 22px 40px;display:flex;flex-direction:column;gap:20px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:22px 22px 20px;scroll-margin-top:70px}
+.q-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.qnum{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.05rem;
+  color:#fff;background:var(--navy);border-radius:9px;padding:5px 10px;letter-spacing:.04em}
+.q-badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-size:.68rem;font-weight:600;padding:4px 9px;border-radius:999px;letter-spacing:.01em}
+.badge-select{background:var(--navy-2);color:#dbe6fb}
+.badge-verified{background:var(--green-bg);color:var(--green);border:1px solid #bce6d4}
+.badge-fix{background:var(--gold-bg);color:var(--gold-deep);border:1px solid #f2d98a}
+.prompt{font-size:1.04rem;font-weight:600;margin:0 0 14px;color:var(--ink)}
+
+.code,.note,.optcode{font-family:'JetBrains Mono',monospace;font-size:.86rem;line-height:1.5;
+  background:var(--navy);color:#e8eefb;border-radius:10px;padding:14px 16px;margin:0 0 14px;
+  overflow-x:auto;white-space:pre;tab-size:4}
+.note{background:#f2f5fb;color:var(--navy);border:1px solid var(--line)}
+
+/* ---------- Options ---------- */
+.opts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1.5px solid var(--line);
+  border-radius:11px;cursor:pointer;transition:border-color .15s,background .15s;background:#fff}
+.opt:hover{border-color:var(--navy-3);background:#f8faff}
+.opt:focus-visible{outline:2px solid var(--navy-3);outline-offset:2px}
+.marker{flex:none;width:20px;height:20px;margin-top:1px;border:2px solid #b9c4da;
+  background:#fff;transition:all .15s}
+.single .marker{border-radius:50%}
+.multi .marker{border-radius:5px}
+.opt[aria-pressed="true"]{border-color:var(--navy-3);background:#eef4ff}
+.opt[aria-pressed="true"] .marker{border-color:var(--navy-3);background:var(--navy-3);
+  box-shadow:inset 0 0 0 3px #fff}
+.multi .opt[aria-pressed="true"] .marker{box-shadow:inset 0 0 0 3px #fff}
+.opttext{padding-top:0}
+.optmono{font-family:'JetBrains Mono',monospace;font-size:.88rem;color:var(--navy);
+  word-break:break-word}
+.optcode{margin:0;width:100%;font-size:.82rem}
+
+/* graded states */
+.graded .opt{cursor:default}
+.graded .opt:hover{background:#fff}
+.opt.is-correct{border-color:var(--green);background:var(--green-bg)}
+.opt.is-correct .marker{border-color:var(--green);background:var(--green)}
+.opt.is-wrong{border-color:var(--red);background:var(--red-bg)}
+.opt.is-wrong .marker{border-color:var(--red);background:var(--red)}
+.opt.is-missed{border-color:var(--gold-deep);background:var(--gold-bg)}
+.opt .tick{margin-left:auto;font-size:.74rem;font-weight:700;align-self:center;white-space:nowrap}
+.opt.is-correct .tick{color:var(--green)}
+.opt.is-wrong .tick{color:var(--red)}
+.opt.is-missed .tick{color:var(--gold-deep)}
+
+/* ---------- Explanation ---------- */
+.explain{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+.ex-verdict{font-weight:700;font-size:.9rem;margin-bottom:12px;padding:8px 12px;border-radius:9px;display:inline-block}
+.ex-verdict.right{background:var(--green-bg);color:var(--green)}
+.ex-verdict.wrong{background:var(--red-bg);color:var(--red)}
+.ex-row{display:flex;gap:12px;margin-bottom:10px;align-items:baseline}
+.ex-tag{flex:none;font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--navy-3);background:#eef3fc;border-radius:6px;padding:4px 8px;min-width:118px;text-align:center}
+.ex-row p{margin:0;font-size:.92rem;color:#2c3a52}
+.explain code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:#eef2f9;
+  padding:1px 5px;border-radius:5px;color:var(--navy)}
+.trap{display:flex;gap:10px;margin-top:6px;background:var(--gold-bg);border:1px solid #f2d98a;
+  border-radius:10px;padding:12px 14px;font-size:.9rem;color:#5c4a12}
+.trap-icon{flex:none}
+.trap code{background:#fdeeb8}
+.fixnote{background:var(--gold-bg);border:1px solid #f2d98a;border-radius:10px;
+  padding:11px 14px;margin-bottom:12px;font-size:.9rem;color:#5c4a12}
+
+/* ---------- Footer / actions ---------- */
+.actions{max-width:860px;margin:0 auto;padding:0 22px 50px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn{font-family:'Sora',sans-serif;font-weight:700;font-size:.95rem;border:none;border-radius:11px;
+  padding:13px 26px;cursor:pointer;transition:transform .1s,box-shadow .15s,background .15s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--navy);color:#fff;box-shadow:0 4px 14px rgba(11,37,69,.25)}
+.btn-primary:hover{background:var(--navy-2)}
+.btn-ghost{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+.btn-ghost:hover{border-color:var(--navy-3)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.result-banner{max-width:860px;margin:0 auto 6px;padding:0 22px}
+.result-banner .inner{background:var(--navy);color:#fff;border-radius:var(--radius);
+  padding:20px 24px;display:flex;align-items:center;gap:18px;box-shadow:var(--shadow)}
+.result-banner .big{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--gold)}
+.result-banner .lbl{font-size:.92rem;color:#c3d0e6}
+.result-banner .lbl b{color:#fff}
+[hidden]{display:none !important}
+
+@media (max-width:560px){
+  .masthead h1{font-size:1.6rem}
+  .ex-row{flex-direction:column;gap:5px}
+  .ex-tag{min-width:0}
+  .quiz{padding:18px 14px 30px}
+  .q{padding:18px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">ROBOTONIO-Lab · Πιστοποίηση PCAP-31-03</p>
+    <h1>PCAP Mock <span class="two">2</span></h1>
+    <p>40 ερωτήσεις εξάσκησης με πλήρεις επεξηγήσεις στα Ελληνικά. Όλος ο εκτελέσιμος κώδικας έχει επαληθευτεί με πραγματική εκτέλεση Python.</p>
+    <div class="meta-strip">
+      <span class="chip"><b>40</b> ερωτήσεις</span>
+      <span class="chip"><b>✓</b> Επαληθευμένες απαντήσεις</span>
+      <span class="chip">Τυχαιοποιημένες θέσεις απαντήσεων</span>
+    </div>
+  </div>
+</header>
+
+<div class="scorebar">
+  <div class="wrap">
+    <div class="progress"><i id="progressFill"></i></div>
+    <span class="progress-label" id="progressLabel">0 / 40 απαντημένες</span>
+    <span id="scoreOut"></span>
+  </div>
+</div>
+
+<div class="result-banner" id="resultBanner" hidden>
+  <div class="inner">
+    <span class="big" id="resultScore">0/40</span>
+    <span class="lbl">Σκορ <b id="resultPct">0%</b> · Οι λάθος ερωτήσεις είναι επισημασμένες παρακάτω με τις επεξηγήσεις τους.</span>
+  </div>
+</div>
+
+<main class="quiz" id="quiz">
+    <article class="q multi" data-n="1" data-select="2" data-correct='[0, 3]'>
+      <header class="q-head">
+        <span class="qnum">01</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is true about Python packages?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">A package is a group of related modules.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">A package is a single file whose name ends with the extension .py.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The __name__ variable always contains the name of a package.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The pyc extension is used to mark semi-compiled Python packages.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Ένα package είναι ένας <b>φάκελος</b> που ομαδοποιεί σχετιζόμενα modules (αρχεία .py). Το .pyc είναι το αρχείο bytecode που παράγεται αυτόματα κατά το import — η ορολογία της PCAP το λέει «semi-compiled».</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Με την εκτέλεση είδαμε ότι μετά από import δημιουργούνται αρχεία <code>.pyc</code> μέσα στο <code>__pycache__</code>, και ότι ένα package είναι φάκελος που περιέχει modules.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το <code>__name__</code> περιέχει όνομα <b>module</b> και γίνεται <code>'__main__'</code> όταν τρέχει κατευθείαν. Ένα μεμονωμένο <code>.py</code> είναι <b>module</b>, όχι package.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Μην μπερδεύεις module (αρχείο) με package (φάκελος + <code>__init__.py</code>).</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="2" data-select="1" data-correct='[1]'>
+      <header class="q-head">
+        <span class="qnum">02</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Which one of the platform module functions should be used to determine the underlying platform name?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">platform.uname()</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">platform.platform()</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">platform.python_version()</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">platform.processor()</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το module <code>platform</code> δίνει πληροφορίες για το σύστημα· κάθε function επιστρέφει διαφορετικό κομμάτι.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>platform.platform()</code> επέστρεψε ολόκληρο το όνομα πλατφόρμας σε ένα string (π.χ. <code>Linux-6.x-x86_64-…</code>) — ακριβώς το ζητούμενο.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>python_version()</code> δίνει την έκδοση Python, <code>processor()</code> μόνο τον επεξεργαστή, και <code>uname()</code> ένα namedtuple με πολλά πεδία (όχι ένα ενιαίο platform name).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>uname()</code> δελεάζει γιατί περιέχει <code>system='Linux'</code>, αλλά δεν είναι ενιαίο όνομα πλατφόρμας.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="3" data-select="2" data-correct='[0, 2]'>
+      <header class="q-head">
+        <span class="qnum">03</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Assuming that the math module has been successfully imported, which of the following expressions evaluate to True?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">math.floor(2.5) == math.trunc(2.5)</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">math.ceil(2.5) &lt; math.floor(2.5)</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">math.hypot(3,4) == math.sqrt(25)</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">math.ceil(2.5) == math.trunc(2.5)</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p><code>ceil</code> στρογγυλοποιεί προς τα πάνω, <code>floor</code> προς τα κάτω, <code>trunc</code> κόβει το δεκαδικό (προς το μηδέν).</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>hypot(3,4)=√25=5.0=sqrt(25)</code> → True. Για θετικό, <code>floor(2.5)=2=trunc(2.5)</code> → True.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>ceil(2.5)=3≠trunc(2.5)=2</code>, και <code>3 &lt; 2</code> είναι False.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Για θετικούς, floor=trunc· διαφέρουν σε αρνητικούς: <code>floor(-2.5)=-3</code> αλλά <code>trunc(-2.5)=-2</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="4" data-select="2" data-correct='[2, 3]'>
+      <header class="q-head">
+        <span class="qnum">04</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">A Python module named pymod.py contains a function named pyfun(). Which of the following snippets will let you invoke this function?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><pre class="optcode">import pyfun from pymod
+pyfun()</pre></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><pre class="optcode">from pymod import *
+pymod.pyfun()</pre></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><pre class="optcode">import pymod
+pymod.pyfun()</pre></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><pre class="optcode">from pymod import pyfun
+pyfun()</pre></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p><code>import pymod</code> φέρνει το όνομα του module (κλήση με πρόθεμα <code>pymod.</code>). <code>from pymod import pyfun</code> φέρνει απευθείας τη function.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Οι snippets 1 και 4 εκτελέστηκαν κανονικά και κάλεσαν τη function.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το <code>import pyfun from pymod</code> είναι λάθος σύνταξη. Το <code>from pymod import *</code> δεν φέρνει το όνομα <code>pymod</code>, οπότε το <code>pymod.pyfun()</code> πετάει NameError.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>*</code> σου δίνει τα περιεχόμενα του module, όχι το ίδιο το όνομα <code>pymod</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="5" data-select="2" data-correct='[0, 1]'>
+      <header class="q-head">
+        <span class="qnum">05</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">With regards to the directory structure below, select the proper forms of the directives in order to import module_a.</p>
+      <pre class="note">pypack (dir)
+ &#9500;&#9472; upper (dir)
+ &#9474;   &#9500;&#9472; lower (dir)
+ &#9474;   &#9474;   &#9492;&#9472; module_c.py (file)
+ &#9474;   &#9492;&#9472; module_b.py (file)
+ &#9492;&#9472; module_a.py (file)</pre>
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">import pypack.module_a</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">from pypack import module_a</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">import module_a</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">import module_a from pypack</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>module_a.py</code> βρίσκεται μέσα στο package <code>pypack</code>, οπότε χρειάζεται το πλήρες path.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>import pypack.module_a</code> και <code>from pypack import module_a</code> δούλεψαν· τα άλλα δύο πέταξαν error.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>import module_a from pypack</code> = λάθος σύνταξη. Το σκέτο <code>import module_a</code> δίνει ModuleNotFoundError (ψάχνει στο root, όχι μέσα στο pypack).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Για εμφωλευμένο module χρειάζεται πάντα το πρόθεμα <code>pypack.</code></div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="6" data-select="1" data-correct='[2]'>
+      <header class="q-head">
+        <span class="qnum">06</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected output of the following code?</p>
+      
+      <pre class="code">import sys
+
+b1 = type(dir(sys)) is str
+b2 = type(sys.path[-1]) is str
+print(b1 and b2)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">None</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">0</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">False</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">True</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>dir()</code> επιστρέφει πάντα <b>list</b>· το <code>sys.path[-1]</code> είναι <b>str</b>.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>b1 = (list is str) = False</code>, <code>b2 = (str is str) = True</code>. <code>False and True = False</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Καμία άλλη τιμή δεν προκύπτει· το <code>and</code> με False αριστερά κάνει short-circuit.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>dir()</code> δεν επιστρέφει ποτέ string.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="7" data-select="1" data-correct='[0]'>
+      <header class="q-head">
+        <span class="qnum">07</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span><span class="badge badge-fix">⚠ Διόρθωση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">m = 0
+
+def foo(n):
+    global m
+    assert m == 0
+    try:
+        return 1/n
+    except ArithmeticError:
+        m += 1
+        raise
+
+try:
+    foo(0)
+except ArithmeticError:
+    m += 2
+except:
+    m += 1
+print(m)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 3</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code is erroneous and it will not execute.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 2</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 1</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="fixnote"><b>⚠ Διόρθωση από την πηγή:</b> Η πηγή σημείωνε «It outputs 2». Η σωστή απάντηση επαληθεύτηκε με εκτέλεση κώδικα.</div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>1/0</code> πετάει <code>ZeroDivisionError</code> (υποκλάση του <code>ArithmeticError</code>).</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Μέσα στο <code>foo</code>: <code>m += 1</code> → m=1, μετά <code>raise</code>. Στο εξωτερικό <code>except ArithmeticError</code>: <code>m += 2</code> → m=3.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το «2» αγνοεί ότι το εσωτερικό handler αύξησε ήδη το m πριν το raise. Ο κώδικας τρέχει κανονικά.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>raise</code> ξανα-πετάει το exception ΑΦΟΥ έχει ήδη κάνει <code>m += 1</code>· έτσι το m αυξάνεται δύο φορές (1+2=3).</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="8" data-select="2" data-correct='[1, 2]'>
+      <header class="q-head">
+        <span class="qnum">08</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is true about the following snippet?</p>
+      
+      <pre class="code">class E(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return &quot;it&#x27;s nice to see you&quot;
+
+
+try:
+    print(&quot;I feel fine&quot;)
+    raise E(&quot;what a pity&quot;)
+except E as e:
+    print(e)
+else:
+    print(&quot;the show must go on&quot;)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code will output the following string: what a pity</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code will output the following string: it&#x27;s nice to see you</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code will output the following string: I feel fine</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code will raise an unhandled exception.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>else</code> ενός <code>try</code> τρέχει μόνο αν ΔΕΝ σηκωθεί exception· το <code>print(e)</code> καλεί το <code>__str__</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Τυπώνεται <code>I feel fine</code>, σηκώνεται το E (handled), και το <code>print(e)</code> δίνει <code>it's nice to see you</code> (από το <code>__str__</code>).</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Δεν είναι unhandled (το <code>except E</code> το πιάνει). Το <code>what a pity</code> μένει μόνο στο <code>self.message</code> — αόρατο, αφού το <code>__str__</code> κάνει override.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Διπλή παγίδα: το <code>__str__</code> κρύβει το message, και το <code>else</code> δεν εκτελείται όταν υπάρχει exception.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="9" data-select="2" data-correct='[0, 3]'>
+      <header class="q-head">
+        <span class="qnum">09</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Which of the following snippets will execute without raising any unhandled exceptions?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><pre class="optcode">try:
+    print(float(&quot;1e1&quot;))
+except (ValueError, NameError):
+    print(float(&quot;1a1&quot;))
+else:
+    print(float(&quot;101&quot;))</pre></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><pre class="optcode">try:
+    print(1/1)
+except ArithmeticError:
+    print(1/0)
+else:
+    print(2/0)</pre></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><pre class="optcode">try:
+    print(1/0)
+except ValueError:
+    print(1/1)
+else:
+    print(1/2)</pre></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><pre class="optcode">try:
+    print(0/1)
+except:
+    print(1/1)
+else:
+    print(2/1)</pre></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το block <code>else</code> εκτελείται ΕΚΤΟΣ της προστασίας του <code>except</code>· μια εξαίρεση εκεί μένει unhandled.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>A: <code>float('1e1')=10.0</code>, μετά <code>else: float('101')</code> — καθαρό. C: <code>0/1=0.0</code>, μετά <code>else: 2/1</code> — καθαρό.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>B: το <code>1/0</code> δίνει ZeroDivisionError που το <code>except ValueError</code> δεν πιάνει. D: το <code>2/0</code> είναι στο <code>else</code>, εκτός προστασίας — unhandled.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Στο D ο handler λέει <code>ArithmeticError</code> και φαίνεται ασφαλές, αλλά το σφάλμα κρύβεται στο <code>else</code>.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="10" data-select="1" data-correct='[2]'>
+      <header class="q-head">
+        <span class="qnum">10</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">s = &#x27;2A&#x27;
+try:
+    n = int(s)
+except ValueError:
+    n = 2
+except ArithmeticError:
+    n = 1
+except:
+    n = 0
+print(n)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code is erroneous and it will not execute.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 1</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 2</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 0</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Σε αλυσίδα <code>except</code> εκτελείται μόνο το πρώτο που ταιριάζει.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>int('2A')</code> σηκώνει <code>ValueError</code> → το πρώτο handler θέτει <code>n = 2</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Τα υπόλοιπα <code>except</code> δεν εξετάζονται αφού ταίριαξε ήδη το πρώτο.</p></div>
+      </div>
+    </article>
+    <article class="q single" data-n="11" data-select="1" data-correct='[3]'>
+      <header class="q-head">
+        <span class="qnum">11</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span><span class="badge badge-fix">⚠ Διόρθωση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">my_list = [1, 2, 3]
+try:
+    my_list[3] = my_list[2]
+except BaseException as error:
+    print(error)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs &lt;class &#x27;IndexError&#x27;&gt;</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code is erroneous and it will not execute.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs error</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs list assignment index out of range</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="fixnote"><b>⚠ Διόρθωση από την πηγή:</b> Η πηγή σημείωνε «It outputs &lt;class 'IndexError'&gt;». Η σωστή απάντηση επαληθεύτηκε με εκτέλεση κώδικα.</div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Ανάθεση σε index εκτός ορίων σηκώνει <code>IndexError: list assignment index out of range</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Το <code>print(error)</code> τυπώνει το <b>μήνυμα</b> (str) του exception, δηλαδή <code>list assignment index out of range</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Για να δεις <code>&lt;class 'IndexError'&gt;</code> θα χρειαζόταν <code>print(type(error))</code>. Ο κώδικας τρέχει (το BaseException το πιάνει).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>print(error)</code> δείχνει το μήνυμα, ΟΧΙ την κλάση του exception.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="12" data-select="1" data-correct='[0]'>
+      <header class="q-head">
+        <span class="qnum">12</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">the_string = &#x27;,,&#x27;.join((&#x27;alpha&#x27;, &#x27;omega&#x27;))
+the_list = the_string.split(&#x27;,&#x27;)
+print(&#x27;,&#x27; in the_list)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs False</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs nothing.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs True</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It raises an exception.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>in</code> σε λίστα ελέγχει αν κάτι είναι <b>στοιχείο</b> της λίστας.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>',,'.join(...)='alpha,,omega'</code>· <code>.split(',')=['alpha','','omega']</code>. Το <code>','</code> δεν είναι στοιχείο → False.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Τα κόμματα «καταναλώθηκαν» από το split ως διαχωριστικά· επιβιώνει μόνο το κενό <code>''</code>, όχι το <code>','</code>.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>in</code> δεν ψάχνει substring μέσα σε στοιχεία — ψάχνει ολόκληρο στοιχείο.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="13" data-select="2" data-correct='[1, 3]'>
+      <header class="q-head">
+        <span class="qnum">13</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Assuming that the snippet below has been executed successfully, which of the following expressions will evaluate to True?</p>
+      
+      <pre class="code">string = &#x27;python&#x27;[::2]
+string = string[-1] + string[-2]</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">string is None</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">string[0] &lt; string[-1]</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">len(string) == 3</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">string[0] == &#x27;o&#x27;</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Δύο επίπεδα: πρώτα slicing με βήμα 2, μετά αναδιάταξη με αρνητικά indices.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>'python'[::2]='pto'</code>· <code>string[-1]+string[-2]='o'+'t'='ot'</code>. Άρα <code>string[0]='o' &lt; 't'</code> και <code>string[0]=='o'</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το string είναι <code>'ot'</code> (όχι None), και <code>len('ot')=2≠3</code>.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Η σύγκριση strings γίνεται λεξικογραφικά κατά ASCII: <code>'o'(111) &lt; 't'(116)</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="14" data-select="2" data-correct='[1, 3]'>
+      <header class="q-head">
+        <span class="qnum">14</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Which of the following expressions evaluate to True?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;in not&#x27; in &#x27;not&#x27;</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;not&#x27; not in &#x27;in&#x27;</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;a&#x27; not in &#x27;ABC&#x27;.lower()</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;t&#x27;.upper() in &#x27;Thames&#x27;</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>in</code>/<code>not in</code> σε strings ελέγχει substring.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>'T' in 'Thames'</code> → True (αρχικό κεφαλαίο). <code>'not'</code> δεν είναι substring του <code>'in'</code> → <code>not in</code> = True.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>'in not'</code> δεν είναι substring του <code>'not'</code>. Το <code>'a' not in 'abc'</code> = False, αφού το <code>'a'</code> ΥΠΑΡΧΕΙ.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>'ABC'.lower()='abc'</code> περιέχει <code>'a'</code>, οπότε το <code>not in</code> δίνει False.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="15" data-select="2" data-correct='[0, 1]'>
+      <header class="q-head">
+        <span class="qnum">15</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Which of the following expressions evaluate to True?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">len(&quot;&quot;&quot;
+&quot;&quot;&quot;) &gt; 0</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">len(&#x27;\&#x27;&#x27;) == 1</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">ord(&quot;z&quot;) - ord(&quot;Z&quot;) == ord(&quot;0&quot;)</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">chr(ord(&#x27;a&#x27;) + 1) == &#x27;B&#x27;</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Σύγκριση κωδικών χαρακτήρων (ord/chr) και μήκη string literals.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Το triple-quoted literal που εκτείνεται σε δύο γραμμές περιέχει <code>\n</code> → <code>len ≥ 1 > 0</code>. Το <code>'\''</code> είναι ένας escaped απόστροφος → <code>len == 1</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>ord('z')-ord('Z')=32≠48=ord('0')</code>. <code>chr(ord('a')+1)='b'≠'B'</code> (πεζό vs κεφαλαίο).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>chr(98)</code> δίνει <code>'b'</code> — προσοχή στο case.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="16" data-select="2" data-correct='[1, 3]'>
+      <header class="q-head">
+        <span class="qnum">16</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Which of the following expressions evaluate to True?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">3 * &#x27;a&#x27; &lt; &#x27;a&#x27; * 2</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;abc&#x27;.upper() &lt; &#x27;abc&#x27;</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">11 == &#x27;011&#x27;</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;1&#x27;+&#x27;2&#x27; * 2 != &#x27;12&#x27;</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Σύγκριση strings κατά ASCII και προτεραιότητα τελεστών (<code>*</code> πριν <code>+</code>).</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>'ABC' &lt; 'abc'</code> (κεφαλαία=μικρότερο ASCII) → True. <code>'1'+'2'*2='122'≠'12'</code> → True.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>'aaa' &lt; 'aa'</code> = False (το <code>'aa'</code> είναι πρόθεμα → μικρότερο). <code>11 == '011'</code> = False (int vs str).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>*</code> εκτελείται πριν το <code>+</code>: <code>'2'*2='22'</code>, μετά <code>'1'+'22'</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="17" data-select="2" data-correct='[0, 1]'>
+      <header class="q-head">
+        <span class="qnum">17</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span></div>
+      </header>
+      <p class="prompt">Which of the following statements are true?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">II in ASCII stands for Information Interchange.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">A code point is a number assigned to a given character.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">ASCII is synonymous with UTF-8.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">\e is an escape sequence used to mark the end of lines.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Βασικές έννοιες κωδικοποίησης χαρακτήρων.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>«code point» = ο αριθμός που αντιστοιχεί σε χαρακτήρα. ASCII = American Standard Code for <b>Information Interchange</b>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το end-of-line escape είναι <code>\n</code>, όχι <code>\e</code> (που δεν είναι καν έγκυρο). Το ASCII δεν ταυτίζεται με το UTF-8.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το UTF-8 είναι υπερσύνολο, συμβατό με ASCII μόνο στους πρώτους 128 χαρακτήρες.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="18" data-select="1" data-correct='[1]'>
+      <header class="q-head">
+        <span class="qnum">18</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">string = str(1/3)
+dummy = &#x27;&#x27;
+for character in string:
+    dummy = dummy + character
+print(dummy[-1])</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It raises an exception.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 3</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs &#x27;None&#x27;</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 0</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Ο βρόχος αντιγράφει χαρακτήρα-χαρακτήρα το string, καταλήγοντας στο ίδιο string.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>str(1/3)='0.3333333333333333'</code>· το <code>dummy</code> γίνεται ίδιο, και <code>dummy[-1]</code> = τελευταίος χαρακτήρας = <code>3</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Ο βρόχος δεν αλλάζει τίποτα· απλώς ξαναχτίζει το string.</p></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="19" data-select="2" data-correct='[1, 2]'>
+      <header class="q-head">
+        <span class="qnum">19</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Which of the following invocations are valid?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;python&#x27;.sorted()</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&quot;python&quot;.find(&quot;&quot;)</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&quot;python&quot;.rindex(&quot;th&quot;)</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">sort(&quot;python&quot;)</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Έγκυρες κλήσεις methods/built-ins σε strings.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>find('')</code> → 0 (έγκυρο), <code>rindex('th')</code> → 2 (έγκυρο).</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Δεν υπάρχει method <code>str.sorted()</code> (AttributeError) ούτε built-in <code>sort()</code> (NameError).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Υπάρχει η συνάρτηση <code>sorted()</code> και η method <code>list.sort()</code>, αλλά όχι σκέτο <code>sort()</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="20" data-select="2" data-correct='[0, 2]'>
+      <header class="q-head">
+        <span class="qnum">20</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Assuming that the code below has been placed inside a file named code.py and executed successfully, which of the following expressions evaluate to True?</p>
+      
+      <pre class="code">class ClassA:
+    var = 1
+    def __init__(self, prop):
+        prop1 = prop2 = prop
+    def __str__(self):
+        return &#x27;Object&#x27;
+
+class ClassB(ClassA):
+    def __init__(self, prop):
+        prop3 = prop**2
+        super().__init__(prop)
+
+Object = ClassB(2)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">ClassA.__module__ == &#x27;__main__&#x27;</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">__name__ == &#x27;code.py&#x27;</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">str(Object) == &#x27;Object&#x27;</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">len(ClassB.__bases__) == 2</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Όταν ένα αρχείο τρέχει κατευθείαν, το <code>__name__</code> και το <code>__module__</code> των κλάσεών του γίνονται <code>'__main__'</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>ClassA.__module__=='__main__'</code> → True. <code>str(Object)</code> καλεί το κληρονομημένο <code>__str__</code> → <code>'Object'</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>__name__</code> είναι <code>'__main__'</code>, όχι <code>'code.py'</code>. Το <code>ClassB.__bases__=(ClassA,)</code> έχει μήκος 1.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Ποτέ δεν είναι το όνομα αρχείου· πάντα <code>'__main__'</code> όταν τρέχει ως main.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="21" data-select="1" data-correct='[2]'>
+      <header class="q-head">
+        <span class="qnum">21</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected output of the following snippet?</p>
+      
+      <pre class="code">class Upper:
+    def method(self):
+        return &#x27;upper&#x27;
+
+class Lower(Upper):
+    def method(self):
+        return &#x27;lower&#x27;
+
+Object = Lower()
+print(isinstance(Object, Upper), end=&#x27; &#x27;)
+print(Object.method())</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">False upper</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">True upper</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">True lower</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">False lower</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>isinstance</code> λαμβάνει υπόψη την κληρονομικότητα· τα overridden methods υπερισχύουν.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Ένα <code>Lower</code> ΕΙΝΑΙ και <code>Upper</code> → True. Το <code>method()</code> καλεί την override του Lower → <code>lower</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Δεν υπάρχει περίπτωση False (είναι instance), ούτε 'upper' (υπερισχύει η override).</p></div>
+      </div>
+    </article>
+    <article class="q single" data-n="22" data-select="1" data-correct='[3]'>
+      <header class="q-head">
+        <span class="qnum">22</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span></div>
+      </header>
+      <p class="prompt">What is the name of the attribute that stores information about a given class&#x27;s super-classes?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">__super__</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">__ancestors__</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">__upper__</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">__bases__</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>__bases__</code> είναι tuple με τις άμεσες βάσεις μιας κλάσης.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>ClassB.__bases__</code> επιστρέφει τις υπερκλάσεις της ClassB.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Τα <code>__upper__</code>, <code>__super__</code>, <code>__ancestors__</code> δεν υπάρχουν.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Για ολόκληρη την ιεραρχία υπάρχει το <code>__mro__</code>.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="23" data-select="1" data-correct='[2]'>
+      <header class="q-head">
+        <span class="qnum">23</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span><span class="badge badge-fix">⚠ Διόρθωση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">class Class:
+    Variable = 0
+    def __init__(self):
+        self.value = 0
+
+object_1 = Class()
+Class.Variable += 1
+object_2 = Class()
+object_2.value += 1
+print(object_2.Variable + object_1.value)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 2</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 0</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 1</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It raises an exception.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="fixnote"><b>⚠ Διόρθωση από την πηγή:</b> Η πηγή σημείωνε «It outputs 2». Η σωστή απάντηση επαληθεύτηκε με εκτέλεση κώδικα.</div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>Variable</code> είναι class variable· το <code>value</code> είναι instance variable.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>Class.Variable</code>→1. <code>object_2.Variable</code> διαβάζει την class var = 1. <code>object_1.value</code> = 0. Άρα <code>1+0=1</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το «2» μπερδεύει το <code>object_2.value</code> (που έγινε 1) με το <code>object_1.value</code> (που έμεινε 0).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Διαβάζουμε <code>object_2.<b>Variable</b></code> και <code>object_1.<b>value</b></code> — όχι το <code>object_2.value</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="24" data-select="2" data-correct='[0, 1]'>
+      <header class="q-head">
+        <span class="qnum">24</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span></div>
+      </header>
+      <p class="prompt">What is true about Python class constructors?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The constructor can be invoked directly under strictly defined circumstances.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The constructor&#x27;s first parameter identifies an object currently being created.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The constructor cannot use the default values of the parameters.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The super-class constructor is invoked implicitly during constructor execution.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Ο constructor (<code>__init__</code>) δέχεται πρώτο το <code>self</code> και μπορεί να κληθεί ρητά.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Το πρώτο param (<code>self</code>) δείχνει το αντικείμενο που δημιουργείται· ο constructor μπορεί να κληθεί άμεσα (π.χ. <code>super().__init__()</code>).</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Ο constructor ΜΠΟΡΕΙ να έχει default τιμές, και ο constructor της υπερκλάσης ΔΕΝ καλείται αυτόματα.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Η υπερκλάση πρέπει να αρχικοποιηθεί ρητά μέσω <code>super().__init__()</code>.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="25" data-select="1" data-correct='[1]'>
+      <header class="q-head">
+        <span class="qnum">25</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">class Class:
+    _Var = 1
+    __Var = 2
+    def __init__(self):
+        self._prop = 3
+        self.__prop = 4
+
+o = Class()
+print(o._Class__Var + o._Class__prop)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 1</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 6</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 3</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It raises an exception.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Ονόματα με δύο leading underscores υφίστανται <b>name mangling</b> → <code>_ClassName__name</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>__Var</code>→<code>_Class__Var=2</code> και <code>__prop</code>→<code>_Class__prop=4</code>. Άρα <code>2+4=6</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Τα <code>_Var</code>/<code>_prop</code> με ένα underscore δεν mangle-άρονται.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το name mangling εφαρμόζεται μόνο σε <code>__name</code> (δύο leading, χωρίς trailing underscores).</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="26" data-select="2" data-correct='[2, 3]'>
+      <header class="q-head">
+        <span class="qnum">26</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Assuming that the code below has been executed successfully, which of the following expressions evaluate to True?</p>
+      
+      <pre class="code">class Class:
+    var = data = 1
+    def __init__(self, value):
+        self.prop = value
+
+Object = Class(2)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">len(Class.__dict__) == 1</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;data&#x27; in Object.__dict__</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;data&#x27; in Class.__dict__</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">&#x27;var&#x27; in Class.__dict__</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p><code>var = data = 1</code> ορίζει δύο class attributes· το instance <code>__dict__</code> έχει μόνο τα instance attributes.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Το <code>Class.__dict__</code> περιέχει <code>var</code> και <code>data</code> → True/True.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το <code>Object.__dict__</code> έχει μόνο <code>prop</code> (όχι data). Το <code>Class.__dict__</code> έχει 7 keys (όχι 1).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Class attributes ζουν στο <code>Class.__dict__</code>, όχι στο <code>Object.__dict__</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="27" data-select="2" data-correct='[2, 3]'>
+      <header class="q-head">
+        <span class="qnum">27</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Which of the following lines of code will work flawlessly when put independently inside the add_new() method in order to make the snippet&#x27;s output equal to [0, 1, 2]?</p>
+      
+      <pre class="code">class MyClass:
+    def __init__(self, size):
+        self.queue = [i for i in range(size)]
+
+    def get(self):
+        return self.queue
+
+    def get_last(self):
+        return self.queue[-1]
+
+    def add_new(self):
+        # Insert the line of code here.
+
+
+Object = MyClass(2)
+Object.add_new()
+print(Object.get())</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">self.queue.append(get_last() + 1)</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">queue.append(self.get_last() + 1)</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">self.queue.append(self.queue[-1] + 1)</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">self.queue.append(self.get_last() + 1)</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Μέσα σε method, η πρόσβαση σε attributes/methods απαιτεί το πρόθεμα <code>self.</code></p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>MyClass(2)</code> → <code>self.queue=[0,1]</code>. Και οι δύο σωστές γραμμές προσθέτουν <code>1+1=2</code> → <code>[0,1,2]</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το σκέτο <code>queue</code> και το σκέτο <code>get_last()</code> δεν υπάρχουν στο scope → NameError.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Χωρίς <code>self.</code> τίποτα από τα μέλη της κλάσης δεν είναι ορατό μέσα στη method.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="28" data-select="2" data-correct='[0, 3]'>
+      <header class="q-head">
+        <span class="qnum">28</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span></div>
+      </header>
+      <p class="prompt">What is true about Object-Oriented Programming in Python?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">A class is a recipe for an object.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">Encapsulation allows you to hide a whole class inside a package.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The arrows on a class diagram are always directed from a superclass towards its subclasses.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">Each object of the same class can have a different set of properties.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Βασικές αρχές OOP στην Python.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Η κλάση είναι «συνταγή» για αντικείμενα, και στην Python κάθε object μπορεί δυναμικά να αποκτήσει διαφορετικά attributes.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Στα UML τα βέλη κληρονομικότητας δείχνουν από την υποκλάση ΠΡΟΣ την υπερκλάση. Το encapsulation αφορά απόκρυψη δεδομένων μέσα σε κλάση, όχι κλάσης σε package.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Η κατεύθυνση των βελών κληρονομικότητας είναι το ανάποδο από αυτό που λέει η πρώτη επιλογή.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="29" data-select="2" data-correct='[2, 3]'>
+      <header class="q-head">
+        <span class="qnum">29</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Assuming that the following piece of code has been executed successfully, which of the expressions evaluate to True?</p>
+      
+      <pre class="code">class A:
+    __VarA = 1
+    def get(self):
+        return self.__VarA
+
+class B(A):
+    __VarA = 2
+    def get(self):
+        return self.__VarA
+
+class C(B):
+    __VarA = 3
+
+obj_a = A()
+obj_b = B()
+obj_c = C()</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">isinstance(obj_b, C)</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">C._C__VarA == 2</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">hasattr(B, &#x27;get&#x27;)</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">obj_c.get() == 2</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Name mangling «κλειδώνει» κάθε <code>__VarA</code> στην κλάση όπου ορίζεται.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>hasattr(B,'get')</code>→True. Η C κληρονομεί το <code>get</code> της B, που επιστρέφει <code>self._B__VarA=2</code> → <code>obj_c.get()==2</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>C._C__VarA=3≠2</code>. <code>isinstance(obj_b, C)</code>=False (η B δεν είναι υποκλάση της C).</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>get</code> της B επιστρέφει πάντα <code>_B__VarA</code>, ανεξάρτητα από τον τύπο του instance.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="30" data-select="2" data-correct='[1, 3]'>
+      <header class="q-head">
+        <span class="qnum">30</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Assuming that the following inheritance set is in force, which of the following classes are declared properly?</p>
+      
+      <pre class="code">class A:
+    pass
+
+class B(A):
+    pass
+
+class C(A):
+    pass
+
+class D(B, C):
+    pass</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">class Class_2(A, B): pass</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">class Class_1(D): pass</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">class Class_3(A, C): pass</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">class Class_4(C, B): pass</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Η MRO (C3 linearization) απαιτεί η υποκλάση να προηγείται της βάσης της στη λίστα bases.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>Class_1(D)</code> = απλή μονή κληρονομικότητα. <code>Class_4(C, B)</code> = δύο αδέλφια (B, C) σε επιτρεπτή σειρά.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>Class_2(A, B)</code> και <code>Class_3(A, C)</code> βάζουν τη βάση <code>A</code> ΠΡΙΝ από το παράγωγό της → ασυνεπής MRO → TypeError.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Δεν μπορείς να δηλώσεις μια βάση πριν από την υποκλάση της στη λίστα bases.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="31" data-select="1" data-correct='[2]'>
+      <header class="q-head">
+        <span class="qnum">31</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">class Super:
+    def make(self):
+        pass
+
+    def doit(self):
+        return self.make()
+
+class Sub_A(Super):
+    def make(self):
+        return 1
+
+class Sub_B(Super):
+    pass
+
+a = Sub_A()
+b = Sub_B()
+print(a.doit() + b.doit())</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 1</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 0</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It raises an exception.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 2</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Μια method με <code>pass</code> επιστρέφει <code>None</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>a.doit()=1</code> (Sub_A κάνει override). <code>b.doit()=None</code> (Sub_B κληρονομεί το <code>make</code> με <code>pass</code>). <code>1+None</code> → TypeError.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Καμία αριθμητική τιμή δεν προκύπτει· η πρόσθεση int+None αποτυγχάνει.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το <code>pass</code> σημαίνει «τίποτα» → η συνάρτηση επιστρέφει σιωπηρά <code>None</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="32" data-select="2" data-correct='[0, 2]'>
+      <header class="q-head">
+        <span class="qnum">32</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span></div>
+      </header>
+      <p class="prompt">Which of the following statements are true?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">stdin, stdout, stderr are the names of pre-opened streams.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">If invoking open() fails, the value None is returned.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The second open() argument is optional.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">open() is a function which returns an int that represents a physical file handle.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Βασικά γεγονότα για file I/O στην Python.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Τα <code>stdin/stdout/stderr</code> είναι προ-ανοιγμένα streams· το 2ο όρισμα του <code>open()</code> (mode) είναι προαιρετικό (default <code>'rt'</code>).</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το <code>open()</code> επιστρέφει file object (όχι int), και σε αποτυχία σηκώνει exception (δεν επιστρέφει None).</p></div>
+      </div>
+    </article>
+    <article class="q single" data-n="33" data-select="1" data-correct='[0]'>
+      <header class="q-head">
+        <span class="qnum">33</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected output of the following code if the file named non_zero_length_existing_text_file is a non-zero length file located inside the working directory?</p>
+      
+      <pre class="code">try:
+    f = open(&#x27;non_zero_length_existing_text_file&#x27;, &#x27;rt&#x27;)
+    spam = f.read(1)
+    print(len(spam))
+    f.close()
+except IOError:
+    print(-1)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">1</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">-1</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">An errno value corresponding to file not found.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">0</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>read(1)</code> διαβάζει έναν χαρακτήρα.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Το αρχείο υπάρχει → δεν σηκώνεται exception. Διαβάζεται 1 χαρακτήρας → <code>len(spam)=1</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Δεν φτάνουμε στο <code>except</code> (το αρχείο υπάρχει)· το <code>read(1)</code> από μη-κενό αρχείο δίνει ακριβώς 1 χαρακτήρα.</p></div>
+      </div>
+    </article>
+    <article class="q single" data-n="34" data-select="1" data-correct='[3]'>
+      <header class="q-head">
+        <span class="qnum">34</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected output of the following code if existing_file is the name of a file located inside the working directory?</p>
+      
+      <pre class="code">try:
+    f = open(&#x27;existing_file&#x27;, &#x27;w&#x27;)
+    print(1, end=&#x27; &#x27;)
+except IOError as error:
+    print(error.errno, end=&#x27; &#x27;)
+    print(2, end=&#x27; &#x27;)
+else:
+    f.close()
+    print(3, end=&#x27; &#x27;)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">1 2</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">1 2 3</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">2 3</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">1 3</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>else</code> ενός <code>try</code> τρέχει όταν ΔΕΝ σηκωθεί exception.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>open(...,'w')</code> πετυχαίνει → τυπώνεται <code>1</code>, το <code>except</code> παρακάμπτεται, τρέχει το <code>else</code> → <code>3</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το <code>2</code> θα τυπωνόταν μόνο αν σηκωνόταν IOError.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Σε επιτυχία, η σειρά είναι try → else (όχι except).</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="35" data-select="1" data-correct='[3]'>
+      <header class="q-head">
+        <span class="qnum">35</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">def foo(x):
+    return -x if x &gt; 0 else x
+
+print(foo(-2))</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 2.0</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code is erroneous and it will not execute.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs 0.0</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs -2</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Conditional expression: <code>A if cond else B</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>-2 &gt; 0</code> είναι False → επιστρέφεται το <code>x</code> = <code>-2</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Το <code>-x</code> (δηλ. 2) θα επιστρεφόταν μόνο αν <code>x &gt; 0</code>. Δεν υπάρχουν δεκαδικά εδώ.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Όταν το <code>x</code> δεν είναι θετικό, επιστρέφεται όπως είναι (<code>-2</code>).</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="36" data-select="1" data-correct='[0]'>
+      <header class="q-head">
+        <span class="qnum">36</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected behavior of the following code?</p>
+      
+      <pre class="code">my_list = [i for i in range(5, 0, -1)]
+m = [my_list[i] for i in range(5) if my_list[i] % 2 == 0]
+print(m)</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs [4, 2]</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">The code is erroneous and it will not execute.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs [0, 1, 2, 3, 4]</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">It outputs [2, 4]</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>List comprehension με φίλτρο, πάνω σε φθίνουσα λίστα.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>my_list=[5,4,3,2,1]</code>· κρατάμε τα άρτια με τη σειρά τους → <code>[4, 2]</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Η σειρά είναι <code>[4, 2]</code> (όχι <code>[2, 4]</code>), λόγω της φθίνουσας διάταξης.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Η σειρά των αποτελεσμάτων ακολουθεί τη σειρά διάσχισης του <code>my_list</code>.</div></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="37" data-select="2" data-correct='[1, 2]'>
+      <header class="q-head">
+        <span class="qnum">37</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">Assuming that the following code has been executed successfully, select the expressions which evaluate to True.</p>
+      
+      <pre class="code">var = 1
+
+def f():
+    global var
+    var += 1
+    def g():
+        return var
+    return g
+
+a = f()
+b = f()</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">a is None</code></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">b() &gt; 2</code></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">a() &gt; 2</code></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><code class="optmono">a is b</code></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Κάθε κλήση <code>f()</code> αυξάνει το global <code>var</code> και επιστρέφει νέα συνάρτηση <code>g</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Μετά από <code>a=f(); b=f()</code> το <code>var</code> έγινε 3. Τα <code>a()</code> και <code>b()</code> επιστρέφουν το τρέχον <code>var=3 &gt; 2</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p><code>a is b</code>=False (κάθε <code>f()</code> δημιουργεί νέο <code>g</code>). Το <code>a</code> είναι function, όχι None.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Τα closures επιστρέφουν το global <code>var</code> τη στιγμή της κλήσης — όχι την τιμή του τότε.</div></div>
+      </div>
+    </article>
+    <article class="q single" data-n="38" data-select="1" data-correct='[1]'>
+      <header class="q-head">
+        <span class="qnum">38</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected output of the following code?</p>
+      
+      <pre class="code">def foo(x, y):
+    return y(x) + y(x + 1)
+
+print(foo(1, lambda x: x * x))</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">An exception is raised.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">5</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">3</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">4</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Συνάρτηση που δέχεται άλλη συνάρτηση (<code>y</code>) ως όρισμα.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>y=lambda x: x*x</code>. <code>y(1)=1</code> + <code>y(2)=4</code> = <code>5</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Δεν σηκώνεται exception· οι κλήσεις του lambda είναι έγκυρες.</p></div>
+      </div>
+    </article>
+    <article class="q single" data-n="39" data-select="1" data-correct='[3]'>
+      <header class="q-head">
+        <span class="qnum">39</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 1</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is the expected output of the following code?</p>
+      
+      <pre class="code">myli = [1, 2, 4]
+m = list(map(lambda x: 2**x, myli))
+print(m[-1])</pre>
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">4</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">1</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">An exception is raised.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">16</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Το <code>map</code> εφαρμόζει το lambda σε κάθε στοιχείο.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p><code>[2**1, 2**2, 2**4]=[2,4,16]</code>· το <code>m[-1]</code> (τελευταίο) = <code>16</code>.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Δεν σηκώνεται exception· το <code>2**4=16</code>.</p></div>
+      </div>
+    </article>
+    <article class="q multi" data-n="40" data-select="2" data-correct='[0, 2]'>
+      <header class="q-head">
+        <span class="qnum">40</span>
+        <div class="q-badges"><span class="badge badge-select">Επίλεξε 2</span><span class="badge badge-verified">✓ Επαληθεύτηκε με εκτέλεση</span></div>
+      </header>
+      <p class="prompt">What is true about lambda functions?</p>
+      
+      
+      <ul class="opts">
+<li class="opt" data-i="0" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">They are called anonymous functions.</span></li>
+<li class="opt" data-i="1" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">They must contain the return keyword.</span></li>
+<li class="opt" data-i="2" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">They can be defined without parameters.</span></li>
+<li class="opt" data-i="3" role="button" tabindex="0" aria-pressed="false"><span class="marker"></span><span class="opttext">They cannot return the None value as a result.</span></li>
+      </ul>
+      <div class="explain" hidden>
+        <div class="ex-verdict"></div>
+<div class="ex-row"><span class="ex-tag">Έννοια</span><p>Τα lambda είναι ανώνυμες συναρτήσεις με σιωπηρό return.</p></div>
+<div class="ex-row"><span class="ex-tag">Ανάλυση</span><p>Επιβεβαιώθηκε: <code>lambda: 42</code> (χωρίς params) και <code>lambda: None</code> (επιστρέφει None) δουλεύουν.</p></div>
+<div class="ex-row"><span class="ex-tag">Γιατί όχι τα άλλα</span><p>Δεν επιτρέπεται η λέξη <code>return</code> μέσα σε lambda (το return είναι σιωπηρό), και ΜΠΟΡΟΥΝ να επιστρέψουν None.</p></div>
+<div class="trap"><span class="trap-icon">📌</span><div><b>Παγίδα &amp; Προσοχή.</b> Το lambda έχει σιωπηρό return — η λέξη-κλειδί <code>return</code> προκαλεί SyntaxError μέσα του.</div></div>
+      </div>
+    </article>
+</main>
+
+<div class="actions">
+  <button class="btn btn-primary" id="submitBtn">Έλεγχος απαντήσεων</button>
+  <button class="btn btn-ghost" id="resetBtn">Καθαρισμός &amp; επανεκκίνηση</button>
+</div>
+
+<script>
+(function(){
+  const quiz = document.getElementById('quiz');
+  const qs = Array.from(quiz.querySelectorAll('.q'));
+  const total = qs.length;
+  let graded = false;
+
+  function answeredCount(){
+    return qs.filter(q => q.querySelectorAll('.opt[aria-pressed="true"]').length > 0).length;
+  }
+  function updateProgress(){
+    const a = answeredCount();
+    document.getElementById('progressFill').style.width = (a/total*100)+'%';
+    document.getElementById('progressLabel').textContent = a+' / '+total+' απαντημένες';
+  }
+
+  function select(q, opt){
+    if (graded) return;
+    const multi = q.dataset.select === '2';
+    const pressed = opt.getAttribute('aria-pressed') === 'true';
+    if (!multi){
+      q.querySelectorAll('.opt').forEach(o => o.setAttribute('aria-pressed','false'));
+      opt.setAttribute('aria-pressed', pressed ? 'false':'true');
+    } else {
+      const chosen = q.querySelectorAll('.opt[aria-pressed="true"]').length;
+      if (!pressed && chosen >= 2) return; // το πολύ 2 επιλογές
+      opt.setAttribute('aria-pressed', pressed ? 'false':'true');
+    }
+    updateProgress();
+  }
+
+  qs.forEach(q => {
+    q.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => select(q, opt));
+      opt.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); select(q, opt); }
+      });
+    });
+  });
+
+  function grade(){
+    if (graded) return;
+    let score = 0;
+    qs.forEach(q => {
+      const correct = JSON.parse(q.dataset.correct);
+      const opts = Array.from(q.querySelectorAll('.opt'));
+      const chosen = opts.filter(o => o.getAttribute('aria-pressed')==='true').map(o => +o.dataset.i);
+      const isRight = chosen.length===correct.length && chosen.every(i => correct.includes(i));
+      if (isRight) score++;
+      q.classList.add('graded');
+      opts.forEach(o => {
+        const i = +o.dataset.i;
+        const inCorrect = correct.includes(i);
+        const picked = chosen.includes(i);
+        if (inCorrect && picked){ o.classList.add('is-correct'); o.insertAdjacentHTML('beforeend','<span class="tick">Σωστό</span>'); }
+        else if (!inCorrect && picked){ o.classList.add('is-wrong'); o.insertAdjacentHTML('beforeend','<span class="tick">Η επιλογή σου</span>'); }
+        else if (inCorrect && !picked){ o.classList.add('is-missed'); o.insertAdjacentHTML('beforeend','<span class="tick">Σωστή απάντηση</span>'); }
+      });
+      const ex = q.querySelector('.explain');
+      const verdict = ex.querySelector('.ex-verdict');
+      verdict.textContent = isRight ? '✓ Σωστή απάντηση' : '✗ Λάθος — δες την ανάλυση';
+      verdict.classList.add(isRight ? 'right':'wrong');
+      ex.hidden = false;
+    });
+    graded = true;
+
+    const pct = Math.round(score/total*100);
+    const out = document.getElementById('scoreOut');
+    out.textContent = 'Σκορ: '+score+'/'+total;
+    out.classList.add('show');
+    document.getElementById('resultScore').textContent = score+'/'+total;
+    document.getElementById('resultPct').textContent = pct+'%';
+    document.getElementById('resultBanner').hidden = false;
+    document.getElementById('submitBtn').disabled = true;
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function reset(){
+    graded = false;
+    qs.forEach(q => {
+      q.classList.remove('graded');
+      q.querySelectorAll('.opt').forEach(o => {
+        o.setAttribute('aria-pressed','false');
+        o.classList.remove('is-correct','is-wrong','is-missed');
+        const t = o.querySelector('.tick'); if (t) t.remove();
+      });
+      const ex = q.querySelector('.explain');
+      ex.hidden = true;
+      const v = ex.querySelector('.ex-verdict');
+      v.textContent=''; v.classList.remove('right','wrong');
+    });
+    document.getElementById('resultBanner').hidden = true;
+    document.getElementById('scoreOut').textContent='';
+    document.getElementById('scoreOut').classList.remove('show');
+    document.getElementById('submitBtn').disabled = false;
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', () => {
+    if (answeredCount() < total){
+      const left = total - answeredCount();
+      if (!confirm('Έχεις '+left+' αναπάντητες ερωτήσεις. Έλεγχος ούτως ή άλλως;')) return;
+    }
+    grade();
+  });
+  document.getElementById('resetBtn').addEventListener('click', reset);
+  updateProgress();
+})();
+</script>
+</body>
+</html>
